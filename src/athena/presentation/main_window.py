@@ -2,10 +2,15 @@
 Main application window.
 """
 
-from __future__ import annotations
+from PySide6.QtWidgets import (
+    QListWidget,
+    QMainWindow,
+    QSplitter,
+    QStatusBar,
+)
 
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QLabel, QMainWindow
+from athena.presentation.home_page import HomePage
+from athena.presentation.navigation import NavigationWidget
 
 
 class MainWindow(QMainWindow):
@@ -15,9 +20,28 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.setWindowTitle("Athena")
+
         self.resize(1400, 900)
 
-        label = QLabel("Welcome to Project Athena")
-        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._create_ui()
 
-        self.setCentralWidget(label)
+    def _create_ui(self) -> None:
+
+        splitter = QSplitter()
+
+        self.navigation = NavigationWidget()
+
+        self.home = HomePage()
+
+        splitter.addWidget(self.navigation)
+        splitter.addWidget(self.home)
+
+        splitter.setStretchFactor(1, 1)
+
+        self.setCentralWidget(splitter)
+
+        status = QStatusBar()
+
+        status.showMessage("Ready")
+
+        self.setStatusBar(status)
