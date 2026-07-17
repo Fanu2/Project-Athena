@@ -9,8 +9,8 @@ from PySide6.QtWidgets import (
     QStatusBar,
 )
 
-from athena.presentation.home_page import HomePage
-from athena.presentation.navigation import NavigationWidget
+from athena.presentation.pages.home_page import HomePage
+from athena.presentation.navigation.navigation_widget import NavigationWidget
 
 
 class MainWindow(QMainWindow):

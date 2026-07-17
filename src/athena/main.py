@@ -5,7 +5,7 @@ Project Athena entry point.
 from __future__ import annotations
 
 from athena.core.application import AthenaApplication
-from athena.presentation.main_window import MainWindow
+from athena.presentation.windows.main_window import MainWindow
 
 
 def main() -> int:
