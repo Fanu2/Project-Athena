@@ -22,7 +22,9 @@ class DocumentToolbar(QWidget):
 
         super().__init__(parent)
 
-        self.import_button = QPushButton("Import")
+        self.import_button = QPushButton("Import File")
+
+        self.import_folder_button = QPushButton("Import Folder")
 
         self.delete_button = QPushButton("Delete")
 
@@ -37,17 +39,31 @@ class DocumentToolbar(QWidget):
 
         layout = QHBoxLayout(self)
 
-        layout.addWidget(self.import_button)
+        layout.addWidget(
+            self.import_button,
+        )
 
-        layout.addWidget(self.delete_button)
+        layout.addWidget(
+            self.import_folder_button,
+        )
 
-        layout.addWidget(self.refresh_button)
+        layout.addWidget(
+            self.delete_button,
+        )
+
+        layout.addWidget(
+            self.refresh_button,
+        )
 
         layout.addStretch()
 
-        layout.addWidget(self.open_folder_button)
+        layout.addWidget(
+            self.open_folder_button,
+        )
 
-        self.setLayout(layout)
+        self.setLayout(
+            layout,
+        )
 
     def set_enabled(
         self,
@@ -55,7 +71,22 @@ class DocumentToolbar(QWidget):
     ) -> None:
         """Enable or disable all toolbar buttons."""
 
-        self.import_button.setEnabled(enabled)
-        self.delete_button.setEnabled(enabled)
-        self.refresh_button.setEnabled(enabled)
-        self.open_folder_button.setEnabled(enabled)
+        self.import_button.setEnabled(
+            enabled,
+        )
+
+        self.import_folder_button.setEnabled(
+            enabled,
+        )
+
+        self.delete_button.setEnabled(
+            enabled,
+        )
+
+        self.refresh_button.setEnabled(
+            enabled,
+        )
+
+        self.open_folder_button.setEnabled(
+            enabled,
+        )

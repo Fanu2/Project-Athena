@@ -115,10 +115,6 @@ class AskAthenaPage(QWidget):
             question,
         )
 
-        result = self._rag_service.answer(
-            question,
-        )
-
         sources = "\n".join(
             [
                 (

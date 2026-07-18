@@ -28,7 +28,7 @@ class WorkspaceDocumentService:
 
     @property
     def document_service(self) -> DocumentService:
-        """Return underlying document service."""
+        """Return the underlying document service."""
 
         return self._documents
 
@@ -47,7 +47,16 @@ class WorkspaceDocumentService:
         self,
         source: Path,
     ) -> Path:
-        """Import a document and index it."""
+        """
+        Import a document and index it.
+
+        Args:
+            source:
+                Source document path.
+
+        Returns:
+            Imported document path inside the workspace.
+        """
 
         document_path = self._documents.import_document(
             source,
@@ -59,11 +68,41 @@ class WorkspaceDocumentService:
 
         return document_path
 
+    def import_folder(
+        self,
+        folder: Path,
+    ) -> list[Path]:
+        """
+        Import and index all supported documents from a folder.
+
+        Args:
+            folder:
+                Folder to scan recursively.
+
+        Returns:
+            List of imported document paths.
+        """
+
+        imported_documents: list[Path] = []
+
+        for source in self._documents.discover_documents(
+            folder,
+        ):
+            imported_documents.append(
+                self.import_document(
+                    source,
+                )
+            )
+
+        return imported_documents
+
     def remove_document(
         self,
         document_path: Path,
     ) -> None:
-        """Remove a document."""
+        """
+        Remove a document.
+        """
 
         self._documents.remove_document(
             document_path,

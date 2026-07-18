@@ -38,6 +38,10 @@ class DocumentActions:
             self.import_document,
         )
 
+        self._page.toolbar.import_folder_button.clicked.connect(
+            self.import_folder,
+        )
+
         self._page.toolbar.delete_button.clicked.connect(
             self.delete_document,
         )
@@ -72,6 +76,29 @@ class DocumentActions:
             QMessageBox.critical(
                 self._page,
                 "Import Failed",
+                str(exc),
+            )
+
+    def import_folder(self) -> None:
+        """Import all supported documents from a folder."""
+
+        folder = QFileDialog.getExistingDirectory(
+            self._page,
+            "Import Folder",
+        )
+
+        if not folder:
+            return
+
+        try:
+            self._page.import_folder(
+                Path(folder),
+            )
+
+        except Exception as exc:
+            QMessageBox.critical(
+                self._page,
+                "Import Folder Failed",
                 str(exc),
             )
 
@@ -115,5 +142,7 @@ class DocumentActions:
             return
 
         QDesktopServices.openUrl(
-            QUrl.fromLocalFile(str(folder)),
+            QUrl.fromLocalFile(
+                str(folder),
+            ),
         )

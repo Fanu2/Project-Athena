@@ -212,7 +212,24 @@ class DocumentLibraryPage(QWidget):
 
         self.refresh()
 
-    def delete_selected_document(self) -> None:
+    def import_folder(
+        self,
+        folder: Path,
+    ) -> None:
+        """Import all supported documents from a folder."""
+
+        if self._document_service is None:
+            return
+
+        self._document_service.import_folder(
+            folder,
+        )
+
+        self.refresh()
+
+    def delete_selected_document(
+        self,
+    ) -> None:
         """Delete the selected document."""
 
         if self._document_service is None:

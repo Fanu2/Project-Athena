@@ -5,7 +5,6 @@ PDF document extractor.
 from __future__ import annotations
 
 from pathlib import Path
-from uuid import uuid4
 
 import fitz
 
@@ -19,7 +18,7 @@ class PDFExtractor(BaseExtractor):
 
     @property
     def supported_extensions(self) -> tuple[str, ...]:
-        """Return supported file extensions."""
+        """Return supported extensions."""
 
         return (".pdf",)
 
@@ -48,7 +47,9 @@ class PDFExtractor(BaseExtractor):
             pages: list[str] = []
 
             for page in pdf:
-                pages.append(page.get_text())
+                pages.append(
+                    page.get_text(),
+                )
 
             pdf.close()
 
@@ -56,7 +57,7 @@ class PDFExtractor(BaseExtractor):
             raise ExtractionError(f"Failed to extract '{document.name}'.") from exc
 
         return ExtractedDocument(
-            document_id=str(uuid4()),
+            document_id=document.name,
             path=document,
             title=document.stem,
             text="\n".join(pages),
