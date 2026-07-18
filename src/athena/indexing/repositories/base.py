@@ -17,18 +17,67 @@ class ChunkRepository(ABC):
         self,
         chunks: list[DocumentChunk],
     ) -> None:
-        """Save chunks."""
+        """
+        Save document chunks.
+
+        Parameters
+        ----------
+        chunks:
+            Chunks to be stored.
+        """
 
     @abstractmethod
     def load_chunks(
         self,
         document_id: str,
     ) -> list[DocumentChunk]:
-        """Load chunks."""
+        """
+        Load all chunks belonging to a document.
+
+        Parameters
+        ----------
+        document_id:
+            Unique document identifier.
+
+        Returns
+        -------
+        list[DocumentChunk]
+            Document chunks in their original order.
+        """
 
     @abstractmethod
     def delete_chunks(
         self,
         document_id: str,
     ) -> None:
-        """Delete chunks."""
+        """
+        Delete all chunks belonging to a document.
+
+        Parameters
+        ----------
+        document_id:
+            Unique document identifier.
+        """
+
+    @abstractmethod
+    def search_chunks(
+        self,
+        query: str,
+        limit: int = 20,
+    ) -> list[DocumentChunk]:
+        """
+        Search indexed document chunks.
+
+        Parameters
+        ----------
+        query:
+            Search text.
+
+        limit:
+            Maximum number of results to return.
+
+        Returns
+        -------
+        list[DocumentChunk]
+            Matching document chunks.
+        """

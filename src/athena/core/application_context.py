@@ -9,11 +9,12 @@ from __future__ import annotations
 from pathlib import Path
 
 from athena.documents.service import DocumentService
-from athena.indexing.repositories.memory import MemoryChunkRepository
+from athena.indexing.repositories.sqlite import SQLiteChunkRepository
 from athena.indexing.service import IndexingService
 from athena.presentation.actions.workspace_actions import (
     WorkspaceActions,
 )
+from athena.search.search_service import SearchService
 from athena.services.workspace_document_service import (
     WorkspaceDocumentService,
 )
@@ -27,11 +28,9 @@ class ApplicationContext:
 
         self.workspace_actions = WorkspaceActions()
 
-        self.chunk_repository = MemoryChunkRepository()
+        self.indexing_service: IndexingService | None = None
 
-        self.indexing_service = IndexingService(
-            self.chunk_repository,
-        )
+        self.search_service: SearchService | None = None
 
         self.document_service: WorkspaceDocumentService | None = None
 
@@ -40,6 +39,25 @@ class ApplicationContext:
         workspace_path: Path,
     ) -> None:
         """Initialize workspace-specific services."""
+
+        athena_directory = workspace_path / ".athena"
+
+        athena_directory.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        chunk_repository = SQLiteChunkRepository(
+            athena_directory / "index.db",
+        )
+
+        self.indexing_service = IndexingService(
+            chunk_repository,
+        )
+
+        self.search_service = SearchService(
+            chunk_repository,
+        )
 
         document_service = DocumentService(
             workspace_path / "documents",
@@ -54,3 +72,7 @@ class ApplicationContext:
         """Release workspace-specific services."""
 
         self.document_service = None
+
+        self.indexing_service = None
+
+        self.search_service = None

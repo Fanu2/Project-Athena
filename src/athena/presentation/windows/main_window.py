@@ -37,6 +37,9 @@ from athena.workspace.exceptions import (
 from athena.workspace.models import (
     Workspace,
 )
+from athena.presentation.search.search_workspace import (
+    SearchWorkspace,
+)
 
 
 class MainWindow(QMainWindow):
@@ -60,6 +63,7 @@ class MainWindow(QMainWindow):
         self.navigation: NavigationWidget
         self.home: HomePage
         self.documents: DocumentLibraryPage
+        self.search: SearchWorkspace
         self.page_stack: QStackedWidget
         self.status_bar: QStatusBar
         self.toolbar: QToolBar
@@ -143,13 +147,14 @@ class MainWindow(QMainWindow):
 
         self.home = HomePage()
         self.documents = DocumentLibraryPage()
+        self.search = SearchWorkspace()
 
         self.document_actions = DocumentActions(
             self.documents,
         )
-
         self.page_stack.addWidget(self.home)
         self.page_stack.addWidget(self.documents)
+        self.page_stack.addWidget(self.search)
 
         splitter.addWidget(self.navigation)
         splitter.addWidget(self.page_stack)
@@ -165,6 +170,9 @@ class MainWindow(QMainWindow):
         self.navigation.documents_selected.connect(
             self.show_documents,
         )
+        self.navigation.search_selected.connect(
+            self.show_search,
+        )
 
     def show_home(self) -> None:
         """Display the Home page."""
@@ -178,6 +186,13 @@ class MainWindow(QMainWindow):
 
         self.page_stack.setCurrentWidget(
             self.documents,
+        )
+
+    def show_search(self) -> None:
+        """Display the Search page."""
+
+        self.page_stack.setCurrentWidget(
+            self.search,
         )
 
     def _create_status_bar(self) -> None:
@@ -216,9 +231,18 @@ class MainWindow(QMainWindow):
                 self.context.document_service,
             )
 
-        self.status_bar.showMessage(f"Workspace: {workspace.name}")
+        if self.context.search_service is not None:
+            self.search.set_search_service(
+                self.context.search_service,
+            )
 
-        self.setWindowTitle(f"Athena — {workspace.name}")
+        self.status_bar.showMessage(
+            f"Workspace: {workspace.name}",
+        )
+
+        self.setWindowTitle(
+            f"Athena — {workspace.name}",
+        )
 
         self._update_action_states()
 
@@ -232,6 +256,8 @@ class MainWindow(QMainWindow):
         self.context.close_workspace()
 
         self.documents.clear_document_service()
+
+        self.search.clear_search_service()
 
         self.status_bar.showMessage("Ready")
 
