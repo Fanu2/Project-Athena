@@ -34,14 +34,20 @@ class DocumentActions:
     def _connect_signals(self) -> None:
         """Connect toolbar signals."""
 
-        self._page.toolbar.import_button.clicked.connect(self.import_document)
+        self._page.toolbar.import_button.clicked.connect(
+            self.import_document,
+        )
 
-        self._page.toolbar.delete_button.clicked.connect(self.delete_document)
+        self._page.toolbar.delete_button.clicked.connect(
+            self.delete_document,
+        )
 
-        self._page.toolbar.refresh_button.clicked.connect(self._page.refresh)
+        self._page.toolbar.refresh_button.clicked.connect(
+            self._page.refresh,
+        )
 
         self._page.toolbar.open_folder_button.clicked.connect(
-            self.open_documents_folder
+            self.open_documents_folder,
         )
 
     def import_document(self) -> None:
@@ -99,8 +105,16 @@ class DocumentActions:
     def open_documents_folder(self) -> None:
         """Open the workspace documents folder."""
 
-        folder = self._page._document_service._documents_dir
+        folder = self._page.documents_directory
+
+        if folder is None:
+            QMessageBox.information(
+                self._page,
+                "No Workspace",
+                "Open a workspace first.",
+            )
+            return
 
         QDesktopServices.openUrl(
-            QUrl.fromLocalFile(str(folder))
+            QUrl.fromLocalFile(str(folder)),
         )

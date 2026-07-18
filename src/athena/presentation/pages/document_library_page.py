@@ -27,14 +27,13 @@ class DocumentLibraryPage(QWidget):
 
     def __init__(
         self,
-        document_service: DocumentService,
-        parent: QWidget | None = None,
+        parent: QWidget |None = None,
     ) -> None:
         """Initialize the document library page."""
 
         super().__init__(parent)
 
-        self._document_service = document_service
+        self._document_service: DocumentService | None = None
 
         self.toolbar = DocumentToolbar()
         self.table = DocumentTable()
@@ -42,7 +41,7 @@ class DocumentLibraryPage(QWidget):
 
         self._setup_ui()
 
-        self.refresh()
+        self.clear_document_service()
 
     def _setup_ui(self) -> None:
         """Configure the page layout."""
@@ -55,14 +54,47 @@ class DocumentLibraryPage(QWidget):
 
         self.setLayout(layout)
 
+    def set_document_service(
+        self,
+        service: DocumentService,
+    ) -> None:
+        """Attach a document service to the page."""
+
+        self._document_service = service
+        self.refresh()
+
+    def clear_document_service(self) -> None:
+        """Detach the current document service."""
+
+        self._document_service = None
+
+        self.table.clear()
+        self.status_label.setText("No workspace open")
+
+    @property
+    def documents_directory(self) -> Path | None:
+        """Return the active workspace documents directory."""
+
+        if self._document_service is None:
+            return None
+
+        return self._document_service.documents_dir
+
     def refresh(self) -> None:
-        """Reload documents from the workspace."""
+        """Reload documents from the active workspace."""
+
+        if self._document_service is None:
+            self.table.clear()
+            self.status_label.setText("No workspace open")
+            return
 
         documents = self._document_service.list_documents()
 
         self.table.set_documents(documents)
 
-        self.status_label.setText(f"{len(documents)} document(s)")
+        self.status_label.setText(
+            f"{len(documents)} document(s)"
+        )
 
     def selected_document(self) -> Document | None:
         """Return the selected document."""
@@ -73,16 +105,20 @@ class DocumentLibraryPage(QWidget):
         self,
         source: Path,
     ) -> None:
-        """Import a document into the workspace."""
+        """Import a document into the active workspace."""
 
-        self._document_service.import_document(
-            source,
-        )
+        if self._document_service is None:
+            return
+
+        self._document_service.import_document(source)
 
         self.refresh()
 
     def delete_selected_document(self) -> None:
         """Delete the selected document."""
+
+        if self._document_service is None:
+            return
 
         document = self.selected_document()
 
@@ -96,8 +132,11 @@ class DocumentLibraryPage(QWidget):
         self.refresh()
 
     def clear(self) -> None:
-        """Clear the page."""
+        """Clear the document table."""
 
         self.table.clear()
 
-        self.status_label.setText("0 document(s)")
+        if self._document_service is None:
+            self.status_label.setText("No workspace open")
+        else:
+            self.status_label.setText("0 document(s)")

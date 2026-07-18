@@ -2,8 +2,6 @@
 Main application window.
 """
 
-from __future__ import annotations
-
 from pathlib import Path
 
 from PySide6.QtGui import QAction
@@ -12,20 +10,36 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QMessageBox,
     QSplitter,
+    QStackedWidget,
     QStatusBar,
     QToolBar,
 )
 
-from athena.presentation.actions.workspace_actions import WorkspaceActions
+from athena.documents.service import DocumentService
+from athena.presentation.actions.document_actions import (
+    DocumentActions,
+)
+from athena.presentation.actions.workspace_actions import (
+    WorkspaceActions,
+)
 from athena.presentation.dialogs.new_workspace_dialog import (
     NewWorkspaceDialog,
 )
 from athena.presentation.navigation.navigation_widget import (
     NavigationWidget,
 )
-from athena.presentation.pages.home_page import HomePage
-from athena.workspace.exceptions import WorkspaceError
-from athena.workspace.models import Workspace
+from athena.presentation.pages.document_library_page import (
+    DocumentLibraryPage,
+)
+from athena.presentation.pages.home_page import (
+    HomePage,
+)
+from athena.workspace.exceptions import (
+    WorkspaceError,
+)
+from athena.workspace.models import (
+    Workspace,
+)
 
 
 class MainWindow(QMainWindow):
@@ -53,6 +67,10 @@ class MainWindow(QMainWindow):
         self._create_status_bar()
 
         self._update_action_states()
+        self.show_home()
+        self.documents: DocumentLibraryPage
+        self.page_stack: QStackedWidget
+        self.document_actions: DocumentActions
 
     def _create_actions(self) -> None:
         """Create application actions."""
@@ -118,14 +136,48 @@ class MainWindow(QMainWindow):
         splitter = QSplitter()
 
         self.navigation = NavigationWidget()
+
+        self.page_stack = QStackedWidget()
+
         self.home = HomePage()
 
+        self.documents = DocumentLibraryPage()
+
+        self.document_actions = DocumentActions(
+            self.documents,
+        )
+
+        self.page_stack.addWidget(self.home)
+        self.page_stack.addWidget(self.documents)
+
         splitter.addWidget(self.navigation)
-        splitter.addWidget(self.home)
+        splitter.addWidget(self.page_stack)
 
         splitter.setStretchFactor(1, 1)
 
         self.setCentralWidget(splitter)
+
+        self.navigation.home_selected.connect(
+            self.show_home,
+        )
+
+        self.navigation.documents_selected.connect(
+            self.show_documents,
+        )
+
+    def show_home(self) -> None:
+        """Display the Home page."""
+
+        self.page_stack.setCurrentWidget(
+            self.home,
+        )
+
+    def show_documents(self) -> None:
+        """Display the Document Library page."""
+
+        self.page_stack.setCurrentWidget(
+            self.documents,
+        )
 
     def _create_status_bar(self) -> None:
         """Create the application status bar."""
@@ -152,9 +204,21 @@ class MainWindow(QMainWindow):
 
         self.home.set_workspace(workspace)
 
-        self.status_bar.showMessage(f"Workspace: {workspace.name}")
+        document_service = DocumentService(
+            workspace.path / "documents",
+        )
 
-        self.setWindowTitle(f"Athena — {workspace.name}")
+        self.documents.set_document_service(
+            document_service,
+        )
+
+        self.status_bar.showMessage(
+            f"Workspace: {workspace.name}"
+        )
+
+        self.setWindowTitle(
+            f"Athena — {workspace.name}"
+        )
 
         self._update_action_states()
 
@@ -164,6 +228,8 @@ class MainWindow(QMainWindow):
         self.current_workspace = None
 
         self.home.clear_workspace()
+
+        self.documents.clear_document_service()
 
         self.status_bar.showMessage("Ready")
 

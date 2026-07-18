@@ -14,7 +14,10 @@ from athena.documents.validators import validate_document
 class DocumentService:
     """High-level document management service."""
 
-    def __init__(self, documents_dir: Path) -> None:
+    def __init__(
+        self,
+        documents_dir: Path,
+    ) -> None:
         """
         Initialize the document service.
 
@@ -24,6 +27,12 @@ class DocumentService:
         """
 
         self._documents_dir = documents_dir
+
+    @property
+    def documents_dir(self) -> Path:
+        """Return the workspace documents directory."""
+
+        return self._documents_dir
 
     def import_document(
         self,
