@@ -27,6 +27,12 @@ class WorkspaceDocumentService:
         self._indexing = indexing_service
 
     @property
+    def document_service(self) -> DocumentService:
+        """Return underlying document service."""
+
+        return self._documents
+
+    @property
     def documents_dir(self) -> Path:
         """Return the workspace documents directory."""
 

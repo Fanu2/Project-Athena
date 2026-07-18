@@ -74,3 +74,26 @@ class DocumentService:
         return DocumentStorage.list_documents(
             self._documents_dir,
         )
+
+    def get_document(
+        self,
+        document_id: str,
+    ) -> Document | None:
+        """
+        Find a document by identifier.
+
+        Args:
+            document_id:
+                Document identifier.
+
+        Returns:
+            Matching document or None.
+        """
+
+        documents = self.list_documents()
+
+        for document in documents:
+            if document.id == document_id:
+                return document
+
+        return None

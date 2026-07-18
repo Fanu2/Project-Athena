@@ -4,20 +4,26 @@ Search workspace widget.
 
 from __future__ import annotations
 
+from PySide6.QtCore import QModelIndex
 from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
     QListView,
     QPushButton,
+    QSplitter,
     QVBoxLayout,
     QWidget,
 )
 
-from athena.search.search_service import SearchService
+from athena.documents.service import DocumentService
+from athena.presentation.search.search_result_viewer import (
+    SearchResultViewer,
+)
 from athena.presentation.search.search_results_model import (
     SearchResultsModel,
 )
+from athena.search.search_service import SearchService
 
 
 class SearchWorkspace(QWidget):
@@ -32,7 +38,9 @@ class SearchWorkspace(QWidget):
         self._search_service: SearchService | None = None
 
         self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText("Search documents...")
+        self.search_input.setPlaceholderText(
+            "Search documents...",
+        )
 
         self.search_button = QPushButton(
             "Search",
@@ -50,6 +58,8 @@ class SearchWorkspace(QWidget):
             self.results_model,
         )
 
+        self.viewer = SearchResultViewer()
+
         self._setup_ui()
 
         self.search_button.clicked.connect(
@@ -58,6 +68,10 @@ class SearchWorkspace(QWidget):
 
         self.search_input.returnPressed.connect(
             self.perform_search,
+        )
+
+        self.results_view.clicked.connect(
+            self._on_result_selected,
         )
 
     def _setup_ui(self) -> None:
@@ -79,8 +93,18 @@ class SearchWorkspace(QWidget):
             search_layout,
         )
 
-        main_layout.addWidget(
+        splitter = QSplitter()
+
+        splitter.addWidget(
             self.results_view,
+        )
+
+        splitter.addWidget(
+            self.viewer,
+        )
+
+        main_layout.addWidget(
+            splitter,
         )
 
         main_layout.addWidget(
@@ -95,12 +119,24 @@ class SearchWorkspace(QWidget):
 
         self._search_service = service
 
+    def set_document_service(
+        self,
+        service: DocumentService,
+    ) -> None:
+        """Attach document service."""
+
+        self.viewer.set_document_service(
+            service,
+        )
+
     def clear_search_service(self) -> None:
         """Remove search service."""
 
         self._search_service = None
 
         self.results_model.set_results([])
+
+        self.viewer.clear()
 
         self.status_label.setText(
             "No workspace open",
@@ -125,6 +161,26 @@ class SearchWorkspace(QWidget):
             results,
         )
 
+        self.viewer.clear()
+
         self.status_label.setText(
             f"{len(results)} result(s)",
+        )
+
+    def _on_result_selected(
+        self,
+        index: QModelIndex,
+    ) -> None:
+        """Display selected result."""
+
+        chunk = self.results_model.get_chunk(
+            index.row(),
+        )
+
+        if chunk is None:
+            self.viewer.clear()
+            return
+
+        self.viewer.show_chunk(
+            chunk,
         )

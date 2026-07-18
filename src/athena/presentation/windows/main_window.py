@@ -226,9 +226,15 @@ class MainWindow(QMainWindow):
             workspace.path,
         )
 
-        if self.context.document_service is not None:
+        document_service = self.context.document_service
+
+        if document_service is not None:
             self.documents.set_document_service(
-                self.context.document_service,
+                document_service,
+            )
+
+            self.search.set_document_service(
+                document_service.document_service,
             )
 
         if self.context.search_service is not None:

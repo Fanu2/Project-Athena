@@ -34,6 +34,17 @@ class SearchResultsModel(QAbstractListModel):
 
         self.endResetModel()
 
+    def get_chunk(
+        self,
+        row: int,
+    ) -> DocumentChunk | None:
+        """Return chunk by row."""
+
+        if row < 0 or row >= len(self._results):
+            return None
+
+        return self._results[row]
+
     def rowCount(
         self,
         parent: QModelIndex | QPersistentModelIndex = QModelIndex(),
