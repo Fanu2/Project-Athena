@@ -95,15 +95,28 @@ class ApplicationContext:
             chunk_repository,
         )
 
+        document_service = DocumentService(
+            workspace_path / "documents",
+        )
+
+        self.document_service = WorkspaceDocumentService(
+            document_service=document_service,
+            indexing_service=self.indexing_service,
+        )
+
         retrieval_service = RetrievalService(
             embedding_service=embedding_service,
             embedding_repository=embedding_repository,
             chunk_repository=chunk_repository,
         )
 
+        context_builder = ContextBuilder(
+            document_service=document_service,
+        )
+
         self.rag_service = RAGService(
             retrieval_service=retrieval_service,
-            context_builder=ContextBuilder(),
+            context_builder=context_builder,
             llm_provider=OllamaProvider(),
             model_name="mistral",
         )
@@ -114,15 +127,6 @@ class ApplicationContext:
 
         self.note_service = NoteService(
             athena_directory / "notes.json",
-        )
-
-        document_service = DocumentService(
-            workspace_path / "documents",
-        )
-
-        self.document_service = WorkspaceDocumentService(
-            document_service=document_service,
-            indexing_service=self.indexing_service,
         )
 
     def close_workspace(self) -> None:

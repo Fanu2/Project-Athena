@@ -115,10 +115,14 @@ class AskAthenaPage(QWidget):
             question,
         )
 
+        result = self._rag_service.answer(
+            question,
+        )
+
         sources = "\n".join(
             [
                 (
-                    f"{source.document_id} "
+                    f"{source.document_name or source.document_id} "
                     f"(page {source.page_number}, "
                     f"score {source.score:.2f})"
                 )

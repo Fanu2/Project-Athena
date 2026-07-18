@@ -11,10 +11,19 @@ from athena.ai.rag.models import (
     RAGSource,
 )
 from athena.ai.retrieval.models import SemanticResult
+from athena.documents.service import DocumentService
 
 
 class ContextBuilder:
     """Build context for language models."""
+
+    def __init__(
+        self,
+        document_service: DocumentService | None = None,
+    ) -> None:
+        """Initialize context builder."""
+
+        self._document_service = document_service
 
     def build(
         self,
@@ -31,10 +40,20 @@ class ContextBuilder:
             results,
             start=1,
         ):
+            document_name = result.document_id
+
+            if self._document_service is not None:
+                document = self._document_service.get_document(
+                    result.document_id,
+                )
+
+                if document is not None:
+                    document_name = document.name
+
             context_parts.append(
                 (
                     f"Source {index}\n"
-                    f"Document: {result.document_id}\n"
+                    f"Document: {document_name}\n"
                     f"Page: {result.page_number}\n"
                     f"{result.text}"
                 )
@@ -44,6 +63,7 @@ class ContextBuilder:
                 RAGSource(
                     chunk_id=result.chunk_id,
                     document_id=result.document_id,
+                    document_name=document_name,
                     page_number=result.page_number,
                     score=result.score,
                     text=result.text,

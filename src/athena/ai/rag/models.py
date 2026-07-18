@@ -15,6 +15,8 @@ class RAGSource:
 
     document_id: str
 
+    document_name: str
+
     page_number: int
 
     score: float
