@@ -15,12 +15,9 @@ from PySide6.QtWidgets import (
     QToolBar,
 )
 
-from athena.documents.service import DocumentService
+from athena.core.application_context import ApplicationContext
 from athena.presentation.actions.document_actions import (
     DocumentActions,
-)
-from athena.presentation.actions.workspace_actions import (
-    WorkspaceActions,
 )
 from athena.presentation.dialogs.new_workspace_dialog import (
     NewWorkspaceDialog,
@@ -45,20 +42,28 @@ from athena.workspace.models import (
 class MainWindow(QMainWindow):
     """Main application window."""
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        context: ApplicationContext,
+    ) -> None:
         """Initialize the main window."""
         super().__init__()
+
+        self.context = context
+        self.workspace_actions = context.workspace_actions
 
         self.setWindowTitle("Athena")
         self.resize(1400, 900)
 
-        self.workspace_actions = WorkspaceActions()
         self.current_workspace: Workspace | None = None
 
         self.navigation: NavigationWidget
         self.home: HomePage
+        self.documents: DocumentLibraryPage
+        self.page_stack: QStackedWidget
         self.status_bar: QStatusBar
         self.toolbar: QToolBar
+        self.document_actions: DocumentActions
 
         self._create_actions()
         self._create_menu()
@@ -68,9 +73,6 @@ class MainWindow(QMainWindow):
 
         self._update_action_states()
         self.show_home()
-        self.documents: DocumentLibraryPage
-        self.page_stack: QStackedWidget
-        self.document_actions: DocumentActions
 
     def _create_actions(self) -> None:
         """Create application actions."""
@@ -140,7 +142,6 @@ class MainWindow(QMainWindow):
         self.page_stack = QStackedWidget()
 
         self.home = HomePage()
-
         self.documents = DocumentLibraryPage()
 
         self.document_actions = DocumentActions(
@@ -192,7 +193,9 @@ class MainWindow(QMainWindow):
 
         workspace_open = self.current_workspace is not None
 
-        self.close_workspace_action.setEnabled(workspace_open)
+        self.close_workspace_action.setEnabled(
+            workspace_open,
+        )
 
     def _set_current_workspace(
         self,
@@ -204,13 +207,14 @@ class MainWindow(QMainWindow):
 
         self.home.set_workspace(workspace)
 
-        document_service = DocumentService(
-            workspace.path / "documents",
+        self.context.open_workspace(
+            workspace.path,
         )
 
-        self.documents.set_document_service(
-            document_service,
-        )
+        if self.context.document_service is not None:
+            self.documents.set_document_service(
+                self.context.document_service,
+            )
 
         self.status_bar.showMessage(f"Workspace: {workspace.name}")
 
@@ -224,6 +228,8 @@ class MainWindow(QMainWindow):
         self.current_workspace = None
 
         self.home.clear_workspace()
+
+        self.context.close_workspace()
 
         self.documents.clear_document_service()
 
@@ -245,7 +251,9 @@ class MainWindow(QMainWindow):
                     dialog.workspace_name,
                 )
 
-                self._set_current_workspace(workspace)
+                self._set_current_workspace(
+                    workspace,
+                )
 
             except WorkspaceError as exc:
                 QMessageBox.critical(
@@ -270,7 +278,9 @@ class MainWindow(QMainWindow):
                 Path(folder),
             )
 
-            self._set_current_workspace(workspace)
+            self._set_current_workspace(
+                workspace,
+            )
 
         except WorkspaceError as exc:
             QMessageBox.critical(
