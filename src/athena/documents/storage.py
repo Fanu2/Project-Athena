@@ -72,12 +72,8 @@ class DocumentStorage:
                     name=path.name,
                     path=path,
                     size=stat.st_size,
-                    created=datetime.fromtimestamp(
-                        stat.st_ctime
-                    ),
-                    modified=datetime.fromtimestamp(
-                        stat.st_mtime
-                    ),
+                    created=datetime.fromtimestamp(stat.st_ctime),
+                    modified=datetime.fromtimestamp(stat.st_mtime),
                 )
             )
 

@@ -38,9 +38,7 @@ class WorkspaceService:
         workspace_path = parent / name
 
         if workspace_path.exists():
-            raise WorkspaceExistsError(
-                f"Workspace '{name}' already exists."
-            )
+            raise WorkspaceExistsError(f"Workspace '{name}' already exists.")
 
         now = datetime.now()
 
@@ -61,9 +59,7 @@ class WorkspaceService:
         """Open an existing workspace."""
 
         if not self._storage.is_workspace(path):
-            raise InvalidWorkspaceError(
-                f"'{path}' is not an Athena workspace."
-            )
+            raise InvalidWorkspaceError(f"'{path}' is not an Athena workspace.")
 
         return self._storage.read_workspace(path)
 

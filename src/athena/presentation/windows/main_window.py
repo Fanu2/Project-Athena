@@ -140,9 +140,7 @@ class MainWindow(QMainWindow):
 
         workspace_open = self.current_workspace is not None
 
-        self.close_workspace_action.setEnabled(
-            workspace_open
-        )
+        self.close_workspace_action.setEnabled(workspace_open)
 
     def _set_current_workspace(
         self,
@@ -154,13 +152,9 @@ class MainWindow(QMainWindow):
 
         self.home.set_workspace(workspace)
 
-        self.status_bar.showMessage(
-            f"Workspace: {workspace.name}"
-        )
+        self.status_bar.showMessage(f"Workspace: {workspace.name}")
 
-        self.setWindowTitle(
-            f"Athena — {workspace.name}"
-        )
+        self.setWindowTitle(f"Athena — {workspace.name}")
 
         self._update_action_states()
 
@@ -184,11 +178,9 @@ class MainWindow(QMainWindow):
 
         if dialog.exec():
             try:
-                workspace = (
-                    self.workspace_actions.create_workspace(
-                        dialog.workspace_location,
-                        dialog.workspace_name,
-                    )
+                workspace = self.workspace_actions.create_workspace(
+                    dialog.workspace_location,
+                    dialog.workspace_name,
                 )
 
                 self._set_current_workspace(workspace)

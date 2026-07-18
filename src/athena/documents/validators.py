@@ -32,25 +32,16 @@ def validate_document(path: Path) -> Path:
     """
 
     if not path.exists():
-        raise InvalidDocumentError(
-            "Document does not exist."
-        )
+        raise InvalidDocumentError("Document does not exist.")
 
     if not path.is_file():
-        raise InvalidDocumentError(
-            "Path is not a file."
-        )
+        raise InvalidDocumentError("Path is not a file.")
 
     suffix = path.suffix.lower()
 
     if suffix not in SUPPORTED_DOCUMENT_TYPES:
-        supported = ", ".join(
-            SUPPORTED_DOCUMENT_TYPES
-        )
+        supported = ", ".join(SUPPORTED_DOCUMENT_TYPES)
 
-        raise InvalidDocumentError(
-            f"Unsupported document type. "
-            f"Supported types: {supported}"
-        )
+        raise InvalidDocumentError(f"Unsupported document type. " f"Supported types: {supported}")
 
     return path
