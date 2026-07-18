@@ -27,7 +27,7 @@ class DocumentLibraryPage(QWidget):
 
     def __init__(
         self,
-        parent: QWidget |None = None,
+        parent: QWidget | None = None,
     ) -> None:
         """Initialize the document library page."""
 
@@ -92,9 +92,7 @@ class DocumentLibraryPage(QWidget):
 
         self.table.set_documents(documents)
 
-        self.status_label.setText(
-            f"{len(documents)} document(s)"
-        )
+        self.status_label.setText(f"{len(documents)} document(s)")
 
     def selected_document(self) -> Document | None:
         """Return the selected document."""

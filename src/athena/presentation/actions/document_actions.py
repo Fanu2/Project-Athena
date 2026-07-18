@@ -92,8 +92,7 @@ class DocumentActions:
             self._page,
             "Delete Document",
             f"Delete '{document.name}'?",
-            QMessageBox.StandardButton.Yes
-            | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             QMessageBox.StandardButton.No,
         )
 

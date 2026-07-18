@@ -28,9 +28,7 @@ class NavigationWidget(QListWidget):
 
         self.setCurrentRow(0)
 
-        self.currentRowChanged.connect(
-            self._on_current_row_changed
-        )
+        self.currentRowChanged.connect(self._on_current_row_changed)
 
     def _on_current_row_changed(
         self,

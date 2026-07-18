@@ -212,13 +212,9 @@ class MainWindow(QMainWindow):
             document_service,
         )
 
-        self.status_bar.showMessage(
-            f"Workspace: {workspace.name}"
-        )
+        self.status_bar.showMessage(f"Workspace: {workspace.name}")
 
-        self.setWindowTitle(
-            f"Athena — {workspace.name}"
-        )
+        self.setWindowTitle(f"Athena — {workspace.name}")
 
         self._update_action_states()
 

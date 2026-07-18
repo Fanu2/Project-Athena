@@ -63,17 +63,11 @@ class DocumentTable(QWidget):
             QHeaderView.ResizeMode.ResizeToContents,
         )
 
-        self._table.setSelectionBehavior(
-            QAbstractItemView.SelectionBehavior.SelectRows
-        )
+        self._table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
 
-        self._table.setSelectionMode(
-            QAbstractItemView.SelectionMode.SingleSelection
-        )
+        self._table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
 
-        self._table.setEditTriggers(
-            QAbstractItemView.EditTrigger.NoEditTriggers
-        )
+        self._table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
 
         self._table.setAlternatingRowColors(True)
         self._table.setSortingEnabled(True)
@@ -109,9 +103,7 @@ class DocumentTable(QWidget):
 
             size_item = QTableWidgetItem(str(size_kb))
 
-            modified_item = QTableWidgetItem(
-                document.modified.strftime("%Y-%m-%d %H:%M")
-            )
+            modified_item = QTableWidgetItem(document.modified.strftime("%Y-%m-%d %H:%M"))
 
             self._table.setItem(
                 row,

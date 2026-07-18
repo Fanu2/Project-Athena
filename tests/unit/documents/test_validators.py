@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from athena.documents.storage import DocumentStorage
 
 
