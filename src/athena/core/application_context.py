@@ -9,12 +9,13 @@ from __future__ import annotations
 from pathlib import Path
 
 from athena.documents.service import DocumentService
-from athena.indexing.repositories.memory import (
-    MemoryChunkRepository,
-)
+from athena.indexing.repositories.memory import MemoryChunkRepository
 from athena.indexing.service import IndexingService
 from athena.presentation.actions.workspace_actions import (
     WorkspaceActions,
+)
+from athena.services.workspace_document_service import (
+    WorkspaceDocumentService,
 )
 
 
@@ -26,13 +27,13 @@ class ApplicationContext:
 
         self.workspace_actions = WorkspaceActions()
 
-        self.document_service: DocumentService | None = None
-
         self.chunk_repository = MemoryChunkRepository()
 
         self.indexing_service = IndexingService(
             self.chunk_repository,
         )
+
+        self.document_service: WorkspaceDocumentService | None = None
 
     def open_workspace(
         self,
@@ -40,8 +41,13 @@ class ApplicationContext:
     ) -> None:
         """Initialize workspace-specific services."""
 
-        self.document_service = DocumentService(
+        document_service = DocumentService(
             workspace_path / "documents",
+        )
+
+        self.document_service = WorkspaceDocumentService(
+            document_service=document_service,
+            indexing_service=self.indexing_service,
         )
 
     def close_workspace(self) -> None:

@@ -13,12 +13,14 @@ from PySide6.QtWidgets import (
 )
 
 from athena.documents.models import Document
-from athena.documents.service import DocumentService
 from athena.presentation.widgets.document_table import (
     DocumentTable,
 )
 from athena.presentation.widgets.document_toolbar import (
     DocumentToolbar,
+)
+from athena.services.workspace_document_service import (
+    WorkspaceDocumentService,
 )
 
 
@@ -33,7 +35,7 @@ class DocumentLibraryPage(QWidget):
 
         super().__init__(parent)
 
-        self._document_service: DocumentService | None = None
+        self._document_service: WorkspaceDocumentService | None = None
 
         self.toolbar = DocumentToolbar()
         self.table = DocumentTable()
@@ -56,7 +58,7 @@ class DocumentLibraryPage(QWidget):
 
     def set_document_service(
         self,
-        service: DocumentService,
+        service: WorkspaceDocumentService,
     ) -> None:
         """Attach a document service to the page."""
 
@@ -108,7 +110,9 @@ class DocumentLibraryPage(QWidget):
         if self._document_service is None:
             return
 
-        self._document_service.import_document(source)
+        self._document_service.import_document(
+            source,
+        )
 
         self.refresh()
 
