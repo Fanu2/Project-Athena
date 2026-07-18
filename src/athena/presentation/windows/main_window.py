@@ -156,8 +156,8 @@ class MainWindow(QMainWindow):
         self.home = HomePage()
         self.documents = DocumentLibraryPage()
         self.search = SearchWorkspace()
-        self.ask_athena = AskAthenaPage()
         self.bookmarks = BookmarkPage()
+        self.ask_athena = AskAthenaPage()
 
         self.document_actions = DocumentActions(
             self.documents,
@@ -177,6 +177,10 @@ class MainWindow(QMainWindow):
 
         self.page_stack.addWidget(
             self.bookmarks,
+        )
+
+        self.page_stack.addWidget(
+            self.ask_athena,
         )
 
         splitter.addWidget(

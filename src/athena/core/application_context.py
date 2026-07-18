@@ -83,15 +83,17 @@ class ApplicationContext:
             athena_directory / "embeddings.db",
         )
 
+        embedding_service = EmbeddingService()
+
         self.indexing_service = IndexingService(
-            chunk_repository,
+            repository=chunk_repository,
+            embedding_service=embedding_service,
+            embedding_repository=embedding_repository,
         )
 
         self.search_service = SearchService(
             chunk_repository,
         )
-
-        embedding_service = EmbeddingService()
 
         retrieval_service = RetrievalService(
             embedding_service=embedding_service,

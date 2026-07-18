@@ -14,15 +14,18 @@ def main() -> int:
 
     app = AthenaApplication()
 
-    # Create shared application services.
     context = ApplicationContext()
 
-    # Create and show the main window.
-    window = MainWindow(context)
+    window = MainWindow(
+        context,
+    )
+
     window.show()
 
     return app.exec()
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(
+        main(),
+    )
