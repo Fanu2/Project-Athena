@@ -40,6 +40,12 @@ from athena.workspace.models import (
 from athena.presentation.search.search_workspace import (
     SearchWorkspace,
 )
+from athena.presentation.pages.bookmark_page import (
+    BookmarkPage,
+)
+from athena.presentation.ai.ask_athena_page import (
+    AskAthenaPage,
+)
 
 
 class MainWindow(QMainWindow):
@@ -64,10 +70,12 @@ class MainWindow(QMainWindow):
         self.home: HomePage
         self.documents: DocumentLibraryPage
         self.search: SearchWorkspace
+        self.ask_athena: AskAthenaPage
         self.page_stack: QStackedWidget
         self.status_bar: QStatusBar
         self.toolbar: QToolBar
         self.document_actions: DocumentActions
+        self.bookmarks = BookmarkPage()
 
         self._create_actions()
         self._create_menu()
@@ -148,20 +156,45 @@ class MainWindow(QMainWindow):
         self.home = HomePage()
         self.documents = DocumentLibraryPage()
         self.search = SearchWorkspace()
+        self.ask_athena = AskAthenaPage()
+        self.bookmarks = BookmarkPage()
 
         self.document_actions = DocumentActions(
             self.documents,
         )
-        self.page_stack.addWidget(self.home)
-        self.page_stack.addWidget(self.documents)
-        self.page_stack.addWidget(self.search)
 
-        splitter.addWidget(self.navigation)
-        splitter.addWidget(self.page_stack)
+        self.page_stack.addWidget(
+            self.home,
+        )
 
-        splitter.setStretchFactor(1, 1)
+        self.page_stack.addWidget(
+            self.documents,
+        )
 
-        self.setCentralWidget(splitter)
+        self.page_stack.addWidget(
+            self.search,
+        )
+
+        self.page_stack.addWidget(
+            self.bookmarks,
+        )
+
+        splitter.addWidget(
+            self.navigation,
+        )
+
+        splitter.addWidget(
+            self.page_stack,
+        )
+
+        splitter.setStretchFactor(
+            1,
+            1,
+        )
+
+        self.setCentralWidget(
+            splitter,
+        )
 
         self.navigation.home_selected.connect(
             self.show_home,
@@ -170,8 +203,17 @@ class MainWindow(QMainWindow):
         self.navigation.documents_selected.connect(
             self.show_documents,
         )
+
         self.navigation.search_selected.connect(
             self.show_search,
+        )
+
+        self.navigation.bookmarks_selected.connect(
+            self.show_bookmarks,
+        )
+
+        self.navigation.ai_selected.connect(
+            self.show_ai,
         )
 
     def show_home(self) -> None:
@@ -188,11 +230,25 @@ class MainWindow(QMainWindow):
             self.documents,
         )
 
+    def show_bookmarks(self) -> None:
+        """Display the bookmarks page."""
+
+        self.page_stack.setCurrentWidget(
+            self.bookmarks,
+        )
+
     def show_search(self) -> None:
         """Display the Search page."""
 
         self.page_stack.setCurrentWidget(
             self.search,
+        )
+
+    def show_ai(self) -> None:
+        """Show Ask Athena page."""
+
+        self.page_stack.setCurrentWidget(
+            self.ask_athena,
         )
 
     def _create_status_bar(self) -> None:
@@ -220,7 +276,9 @@ class MainWindow(QMainWindow):
 
         self.current_workspace = workspace
 
-        self.home.set_workspace(workspace)
+        self.home.set_workspace(
+            workspace,
+        )
 
         self.context.open_workspace(
             workspace.path,
@@ -237,9 +295,32 @@ class MainWindow(QMainWindow):
                 document_service.document_service,
             )
 
-        if self.context.search_service is not None:
+        search_service = self.context.search_service
+
+        if search_service is not None:
             self.search.set_search_service(
-                self.context.search_service,
+                search_service,
+            )
+
+        bookmark_service = self.context.bookmark_service
+
+        if bookmark_service is not None:
+            self.bookmarks.set_bookmark_service(
+                bookmark_service,
+            )
+
+        rag_service = self.context.rag_service
+
+        if rag_service is not None:
+            self.ask_athena.set_rag_service(
+                rag_service,
+            )
+
+        note_service = self.context.note_service
+
+        if note_service is not None:
+            self.documents.set_note_service(
+                note_service,
             )
 
         self.status_bar.showMessage(
@@ -265,9 +346,17 @@ class MainWindow(QMainWindow):
 
         self.search.clear_search_service()
 
-        self.status_bar.showMessage("Ready")
+        self.bookmarks.clear()
 
-        self.setWindowTitle("Athena")
+        self.ask_athena.clear_rag_service()
+
+        self.status_bar.showMessage(
+            "Ready",
+        )
+
+        self.setWindowTitle(
+            "Athena",
+        )
 
         self._update_action_states()
 

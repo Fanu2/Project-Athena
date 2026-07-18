@@ -129,6 +129,40 @@ class SQLiteChunkRepository(ChunkRepository):
             for row in rows
         ]
 
+    def get_chunk(
+        self,
+        chunk_id: str,
+    ) -> DocumentChunk | None:
+        """Return a single chunk by ID."""
+
+        with self._connect() as connection:
+            cursor = connection.execute(
+                """
+                SELECT
+                    chunk_id,
+                    document_id,
+                    chunk_index,
+                    page_number,
+                    text
+                FROM chunks
+                WHERE chunk_id = ?
+                """,
+                (chunk_id,),
+            )
+
+            row = cursor.fetchone()
+
+        if row is None:
+            return None
+
+        return DocumentChunk(
+            chunk_id=row[0],
+            document_id=row[1],
+            chunk_index=row[2],
+            page_number=row[3],
+            text=row[4],
+        )
+
     def delete_chunks(
         self,
         document_id: str,

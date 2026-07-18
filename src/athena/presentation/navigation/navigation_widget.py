@@ -14,6 +14,8 @@ class NavigationWidget(QListWidget):
     home_selected = Signal()
     documents_selected = Signal()
     search_selected = Signal()
+    bookmarks_selected = Signal()
+    ai_selected = Signal()
     settings_selected = Signal()
 
     def __init__(self) -> None:
@@ -26,6 +28,8 @@ class NavigationWidget(QListWidget):
         self.addItem("🏠 Home")
         self.addItem("📄 Documents")
         self.addItem("🔍 Search")
+        self.addItem("⭐ Bookmarks")
+        self.addItem("🤖 Ask Athena")
         self.addItem("⚙ Settings")
 
         self.setCurrentRow(0)
@@ -51,4 +55,10 @@ class NavigationWidget(QListWidget):
                 self.search_selected.emit()
 
             case 3:
+                self.bookmarks_selected.emit()
+
+            case 4:
+                self.ai_selected.emit()
+
+            case 5:
                 self.settings_selected.emit()

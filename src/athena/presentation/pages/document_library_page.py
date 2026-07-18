@@ -8,11 +8,17 @@ from pathlib import Path
 
 from PySide6.QtWidgets import (
     QLabel,
+    QSplitter,
     QVBoxLayout,
     QWidget,
 )
 
+from athena.bookmarks.service import BookmarkService
+from athena.notes.service import NoteService
 from athena.documents.models import Document
+from athena.presentation.widgets.document_details import (
+    DocumentDetails,
+)
 from athena.presentation.widgets.document_table import (
     DocumentTable,
 )
@@ -37,11 +43,19 @@ class DocumentLibraryPage(QWidget):
 
         self._document_service: WorkspaceDocumentService | None = None
 
+        self._bookmark_service: BookmarkService | None = None
+        self._note_service: NoteService | None = None
+
         self.toolbar = DocumentToolbar()
         self.table = DocumentTable()
+        self.details = DocumentDetails()
         self.status_label = QLabel()
 
         self._setup_ui()
+
+        self.table.table.itemSelectionChanged.connect(
+            self._on_document_selected,
+        )
 
         self.clear_document_service()
 
@@ -50,9 +64,37 @@ class DocumentLibraryPage(QWidget):
 
         layout = QVBoxLayout(self)
 
-        layout.addWidget(self.toolbar)
-        layout.addWidget(self.table)
-        layout.addWidget(self.status_label)
+        layout.addWidget(
+            self.toolbar,
+        )
+
+        splitter = QSplitter()
+
+        splitter.addWidget(
+            self.table,
+        )
+
+        splitter.addWidget(
+            self.details,
+        )
+
+        splitter.setStretchFactor(
+            0,
+            2,
+        )
+
+        splitter.setStretchFactor(
+            1,
+            1,
+        )
+
+        layout.addWidget(
+            splitter,
+        )
+
+        layout.addWidget(
+            self.status_label,
+        )
 
         self.setLayout(layout)
 
@@ -63,15 +105,47 @@ class DocumentLibraryPage(QWidget):
         """Attach a document service to the page."""
 
         self._document_service = service
+
         self.refresh()
+
+    def set_bookmark_service(
+        self,
+        service: BookmarkService,
+    ) -> None:
+        """Attach bookmark service."""
+
+        self._bookmark_service = service
+
+        self.details.set_bookmark_service(
+            service,
+        )
+
+    def set_note_service(
+        self,
+        service: NoteService,
+    ) -> None:
+        """Attach note service."""
+
+        self._note_service = service
+
+        self.details.set_note_service(
+            service,
+        )
 
     def clear_document_service(self) -> None:
         """Detach the current document service."""
 
         self._document_service = None
+        self._bookmark_service = None
+        self._note_service = None
 
         self.table.clear()
-        self.status_label.setText("No workspace open")
+
+        self.details.clear()
+
+        self.status_label.setText(
+            "No workspace open",
+        )
 
     @property
     def documents_directory(self) -> Path | None:
@@ -87,14 +161,36 @@ class DocumentLibraryPage(QWidget):
 
         if self._document_service is None:
             self.table.clear()
-            self.status_label.setText("No workspace open")
+            self.details.clear()
+
+            self.status_label.setText(
+                "No workspace open",
+            )
+
             return
 
         documents = self._document_service.list_documents()
 
-        self.table.set_documents(documents)
+        self.table.set_documents(
+            documents,
+        )
 
-        self.status_label.setText(f"{len(documents)} document(s)")
+        self.status_label.setText(
+            f"{len(documents)} document(s)",
+        )
+
+    def _on_document_selected(self) -> None:
+        """Display selected document details."""
+
+        document = self.selected_document()
+
+        if document is None:
+            self.details.clear()
+            return
+
+        self.details.show_document(
+            document,
+        )
 
     def selected_document(self) -> Document | None:
         """Return the selected document."""
@@ -138,7 +234,13 @@ class DocumentLibraryPage(QWidget):
 
         self.table.clear()
 
+        self.details.clear()
+
         if self._document_service is None:
-            self.status_label.setText("No workspace open")
+            self.status_label.setText(
+                "No workspace open",
+            )
         else:
-            self.status_label.setText("0 document(s)")
+            self.status_label.setText(
+                "0 document(s)",
+            )
