@@ -4,9 +4,9 @@ Document table widget.
 
 from __future__ import annotations
 
-
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
+    QAbstractItemView,
     QHeaderView,
     QTableWidget,
     QTableWidgetItem,
@@ -50,34 +50,37 @@ class DocumentTable(QWidget):
 
         header.setSectionResizeMode(
             self.COLUMN_NAME,
-            QHeaderView.Stretch,
+            QHeaderView.ResizeMode.Stretch,
         )
 
         header.setSectionResizeMode(
             self.COLUMN_SIZE,
-            QHeaderView.ResizeToContents,
+            QHeaderView.ResizeMode.ResizeToContents,
         )
 
         header.setSectionResizeMode(
             self.COLUMN_MODIFIED,
-            QHeaderView.ResizeToContents,
+            QHeaderView.ResizeMode.ResizeToContents,
         )
 
-        self._table.setSelectionBehavior(QTableWidget.SelectRows)
+        self._table.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows
+        )
 
-        self._table.setSelectionMode(QTableWidget.SingleSelection)
+        self._table.setSelectionMode(
+            QAbstractItemView.SelectionMode.SingleSelection
+        )
 
-        self._table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self._table.setEditTriggers(
+            QAbstractItemView.EditTrigger.NoEditTriggers
+        )
 
         self._table.setAlternatingRowColors(True)
-
         self._table.setSortingEnabled(True)
-
         self._table.verticalHeader().setVisible(False)
 
         layout = QVBoxLayout(self)
         layout.addWidget(self._table)
-
         self.setLayout(layout)
 
     def set_documents(
@@ -92,10 +95,7 @@ class DocumentTable(QWidget):
         self._table.setRowCount(len(documents))
 
         for row, document in enumerate(documents):
-
-            name_item = QTableWidgetItem(
-                document.name,
-            )
+            name_item = QTableWidgetItem(document.name)
 
             name_item.setData(
                 Qt.ItemDataRole.UserRole,
@@ -107,11 +107,11 @@ class DocumentTable(QWidget):
                 round(document.size / 1024),
             )
 
-            size_item = QTableWidgetItem(
-                str(size_kb),
-            )
+            size_item = QTableWidgetItem(str(size_kb))
 
-            modified_item = QTableWidgetItem(document.modified.strftime("%Y-%m-%d %H:%M"))
+            modified_item = QTableWidgetItem(
+                document.modified.strftime("%Y-%m-%d %H:%M")
+            )
 
             self._table.setItem(
                 row,
@@ -133,9 +133,7 @@ class DocumentTable(QWidget):
 
         self._table.setSortingEnabled(True)
 
-    def selected_document(
-        self,
-    ) -> Document | None:
+    def selected_document(self) -> Document | None:
         """Return the currently selected document."""
 
         row = self._table.currentRow()
@@ -151,9 +149,12 @@ class DocumentTable(QWidget):
         if item is None:
             return None
 
-        return item.data(
-            Qt.ItemDataRole.UserRole,
-        )
+        document = item.data(Qt.ItemDataRole.UserRole)
+
+        if isinstance(document, Document):
+            return document
+
+        return None
 
     def clear(self) -> None:
         """Clear all table contents."""

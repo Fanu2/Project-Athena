@@ -40,7 +40,9 @@ class DocumentActions:
 
         self._page.toolbar.refresh_button.clicked.connect(self._page.refresh)
 
-        self._page.toolbar.open_folder_button.clicked.connect(self.open_documents_folder)
+        self._page.toolbar.open_folder_button.clicked.connect(
+            self.open_documents_folder
+        )
 
     def import_document(self) -> None:
         """Import a document."""
@@ -49,7 +51,7 @@ class DocumentActions:
             self._page,
             "Import Document",
             "",
-            ("Documents (*.pdf *.txt *.md);;" "All Files (*)"),
+            "Documents (*.pdf *.txt *.md);;All Files (*)",
         )
 
         if not filename:
@@ -83,12 +85,13 @@ class DocumentActions:
         answer = QMessageBox.question(
             self._page,
             "Delete Document",
-            (f"Delete '{document.name}'?"),
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No,
+            f"Delete '{document.name}'?",
+            QMessageBox.StandardButton.Yes
+            | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
         )
 
-        if answer != QMessageBox.Yes:
+        if answer != QMessageBox.StandardButton.Yes:
             return
 
         self._page.delete_selected_document()
@@ -98,4 +101,6 @@ class DocumentActions:
 
         folder = self._page._document_service._documents_dir
 
-        QDesktopServices.openUrl(QUrl.fromLocalFile(str(folder)))
+        QDesktopServices.openUrl(
+            QUrl.fromLocalFile(str(folder))
+        )
