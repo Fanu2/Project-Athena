@@ -4,6 +4,8 @@ Document viewer page.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
@@ -100,15 +102,23 @@ class DocumentViewerPage(QWidget):
             "No document loaded",
         )
 
-    def open_document(self, document) -> None:
+    def open_document(
+        self,
+        path: Path,
+    ) -> None:
         """
         Open a document in the viewer.
+
+        Args:
+            path:
+                Path to the PDF document.
         """
 
         if self._service is None:
             return
 
-        self._service.open_document(document)
+        self._service.open_document(path)
+
         self._refresh()
 
     def _refresh(self) -> None:
@@ -118,8 +128,15 @@ class DocumentViewerPage(QWidget):
 
         if self._service is None or not self._service.is_open:
             self.canvas.clear()
-            self.page_label.setText("Page 0 / 0")
-            self.status_label.setText("No document loaded")
+
+            self.page_label.setText(
+                "Page 0 / 0",
+            )
+
+            self.status_label.setText(
+                "No document loaded",
+            )
+
             return
 
         image = self._service.render_current_page()
@@ -127,10 +144,12 @@ class DocumentViewerPage(QWidget):
         self.canvas.set_image(image)
 
         self.page_label.setText(
-            f"Page {self._service.current_page + 1} / {self._service.page_count}"
+            f"Page {self._service.current_page + 1} / " f"{self._service.page_count}",
         )
 
-        self.status_label.setText("Ready")
+        self.status_label.setText(
+            "Ready",
+        )
 
     def next_page(self) -> None:
         """Move to the next page."""

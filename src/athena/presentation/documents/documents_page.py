@@ -79,7 +79,7 @@ class DocumentsPage(QWidget):
 
         self._document_service = None
 
-        self.table.model.set_documents([])
+        self.table.table_model.set_documents([])
 
         self.status_label.setText(
             "0 documents",
@@ -96,7 +96,7 @@ class DocumentsPage(QWidget):
 
         documents = self._document_service.list_documents()
 
-        self.table.model.set_documents(
+        self.table.table_model.set_documents(
             documents,
         )
 

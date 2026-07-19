@@ -7,9 +7,10 @@ low-level PdfRenderer.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from PySide6.QtGui import QImage
 
-from athena.documents.models import Document
 from athena.infrastructure.viewer import PdfRenderer
 
 
@@ -28,15 +29,15 @@ class DocumentViewerService:
 
         self._renderer = renderer or PdfRenderer()
 
-        self._document: Document | None = None
+        self._document_path: Path | None = None
 
         self._current_page = 0
 
     @property
-    def document(self) -> Document | None:
-        """Return the currently opened document."""
+    def document_path(self) -> Path | None:
+        """Return the currently opened document path."""
 
-        return self._document
+        return self._document_path
 
     @property
     def current_page(self) -> int:
@@ -58,19 +59,19 @@ class DocumentViewerService:
 
     def open_document(
         self,
-        document: Document,
+        path: Path,
     ) -> None:
         """
         Open a document.
 
         Args:
-            document:
-                Athena document model.
+            path:
+                Path to the PDF document.
         """
 
-        self._renderer.open(document.path)
+        self._renderer.open(path)
 
-        self._document = document
+        self._document_path = path
 
         self._current_page = 0
 
@@ -79,7 +80,7 @@ class DocumentViewerService:
 
         self._renderer.close()
 
-        self._document = None
+        self._document_path = None
 
         self._current_page = 0
 

@@ -56,7 +56,7 @@ class DocumentsTable(QTableView):
         )
 
     @property
-    def model(
+    def table_model(
         self,
     ) -> DocumentsTableModel:
         """Return the table model."""

@@ -102,7 +102,7 @@ def test_open_document(
 
     page.set_viewer_service(viewer_service)
 
-    page.open_document(document)
+    page.open_document(document.path)
 
     assert page.canvas.has_image
     assert page.page_label.text() == "Page 1 / 1"
@@ -120,7 +120,7 @@ def test_navigation_single_page(
 
     page.set_viewer_service(viewer_service)
 
-    page.open_document(document)
+    page.open_document(document.path)
 
     page.next_page()
     page.previous_page()

@@ -65,10 +65,11 @@ class AskAthenaPage(QWidget):
 
         shortcut = QShortcut(
             QKeySequence(
-                Qt.CTRL | Qt.Key_Return,
+                Qt.KeyboardModifier.ControlModifier | Qt.Key.Key_Return,
             ),
             self,
         )
+
         shortcut.activated.connect(
             self.ask_question,
         )

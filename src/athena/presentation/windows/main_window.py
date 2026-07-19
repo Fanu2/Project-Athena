@@ -181,8 +181,6 @@ class MainWindow(QMainWindow):
             self.documents,
         )
 
-        
-
         self.page_stack.addWidget(
             self.search,
         )
@@ -367,7 +365,7 @@ class MainWindow(QMainWindow):
         )
 
         self._update_action_states()
-    
+
     def _clear_current_workspace(self) -> None:
         """Clear the active workspace."""
 

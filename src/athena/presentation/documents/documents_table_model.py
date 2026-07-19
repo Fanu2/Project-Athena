@@ -9,6 +9,7 @@ from datetime import datetime
 from PySide6.QtCore import (
     QAbstractTableModel,
     QModelIndex,
+    QPersistentModelIndex,
     Qt,
 )
 
@@ -37,40 +38,48 @@ class DocumentsTableModel(QAbstractTableModel):
         """Replace the model contents."""
 
         self.beginResetModel()
+
         self._documents = sorted(
             documents,
             key=lambda document: document.path.name.lower(),
         )
+
         self.endResetModel()
 
     def rowCount(
         self,
-        parent: QModelIndex = QModelIndex(),
+        parent: QModelIndex | QPersistentModelIndex = QModelIndex(),
     ) -> int:
+        if parent.isValid():
+            return 0
+
         return len(self._documents)
 
     def columnCount(
         self,
-        parent: QModelIndex = QModelIndex(),
+        parent: QModelIndex | QPersistentModelIndex = QModelIndex(),
     ) -> int:
+        if parent.isValid():
+            return 0
+
         return len(self.HEADERS)
 
     def headerData(
         self,
         section: int,
         orientation: Qt.Orientation,
-        role: int,
-    ):
-        if role == Qt.ItemDataRole.DisplayRole and orientation == Qt.Orientation.Horizontal:
+        role: int = Qt.ItemDataRole.DisplayRole,
+    ) -> object | None:
+        if orientation == Qt.Orientation.Horizontal and role == Qt.ItemDataRole.DisplayRole:
             return self.HEADERS[section]
 
         return None
 
     def data(
         self,
-        index: QModelIndex,
-        role: int,
-    ):
+        index: QModelIndex | QPersistentModelIndex,
+        role: int = Qt.ItemDataRole.DisplayRole,
+    ) -> object | None:
         if not index.isValid() or role != Qt.ItemDataRole.DisplayRole:
             return None
 
