@@ -31,7 +31,13 @@ from athena.documents.service import DocumentService
 from athena.indexing.repositories.sqlite import (
     SQLiteChunkRepository,
 )
+from athena.indexing.repositories.sqlite_document import (
+    SQLiteDocumentRepository,
+)
 from athena.indexing.service import IndexingService
+from athena.indexing.services.indexed_document_service import (
+    IndexedDocumentService,
+)
 from athena.notes.service import NoteService
 from athena.presentation.actions.workspace_actions import (
     WorkspaceActions,
@@ -51,6 +57,8 @@ class ApplicationContext:
         self.workspace_actions = WorkspaceActions()
 
         self.indexing_service: IndexingService | None = None
+
+        self.indexed_document_service: IndexedDocumentService | None = None
 
         self.search_service: SearchService | None = None
 
@@ -79,6 +87,10 @@ class ApplicationContext:
             athena_directory / "index.db",
         )
 
+        document_repository = SQLiteDocumentRepository(
+            athena_directory / "index.db",
+        )
+
         embedding_repository = EmbeddingRepository(
             athena_directory / "embeddings.db",
         )
@@ -87,8 +99,13 @@ class ApplicationContext:
 
         self.indexing_service = IndexingService(
             repository=chunk_repository,
+            document_repository=document_repository,
             embedding_service=embedding_service,
             embedding_repository=embedding_repository,
+        )
+
+        self.indexed_document_service = IndexedDocumentService(
+            document_repository,
         )
 
         self.search_service = SearchService(
@@ -135,6 +152,8 @@ class ApplicationContext:
         self.document_service = None
 
         self.indexing_service = None
+
+        self.indexed_document_service = None
 
         self.search_service = None
 

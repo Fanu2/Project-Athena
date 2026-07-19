@@ -46,6 +46,9 @@ from athena.presentation.pages.bookmark_page import (
 from athena.presentation.ai.ask_athena_page import (
     AskAthenaPage,
 )
+from athena.presentation.pages.indexed_documents_page import (
+    IndexedDocumentsPage,
+)
 
 
 class MainWindow(QMainWindow):
@@ -69,6 +72,7 @@ class MainWindow(QMainWindow):
         self.navigation: NavigationWidget
         self.home: HomePage
         self.documents: DocumentLibraryPage
+        self.indexed_documents: IndexedDocumentsPage
         self.search: SearchWorkspace
         self.ask_athena: AskAthenaPage
         self.page_stack: QStackedWidget
@@ -155,6 +159,9 @@ class MainWindow(QMainWindow):
 
         self.home = HomePage()
         self.documents = DocumentLibraryPage()
+        self.indexed_documents = IndexedDocumentsPage(  # NEW
+            self.context.indexed_document_service,  # NEW
+        )  # NEW
         self.search = SearchWorkspace()
         self.bookmarks = BookmarkPage()
         self.ask_athena = AskAthenaPage()
@@ -166,10 +173,15 @@ class MainWindow(QMainWindow):
         self.page_stack.addWidget(
             self.home,
         )
+        self.page_stack.addWidget(
+            self.indexed_documents,
+        )
 
         self.page_stack.addWidget(
             self.documents,
         )
+
+        
 
         self.page_stack.addWidget(
             self.search,
@@ -208,6 +220,10 @@ class MainWindow(QMainWindow):
             self.show_documents,
         )
 
+        self.navigation.indexed_documents_selected.connect(  # NEW
+            self.show_indexed_documents,  # NEW
+        )  # NEW
+
         self.navigation.search_selected.connect(
             self.show_search,
         )
@@ -225,6 +241,13 @@ class MainWindow(QMainWindow):
 
         self.page_stack.setCurrentWidget(
             self.home,
+        )
+
+    def show_indexed_documents(self) -> None:
+        """Display the Indexed Documents page."""
+
+        self.page_stack.setCurrentWidget(
+            self.indexed_documents,
         )
 
     def show_documents(self) -> None:
@@ -299,6 +322,14 @@ class MainWindow(QMainWindow):
                 document_service.document_service,
             )
 
+        # NEW: Connect Indexed Documents page to the newly created service
+        indexed_document_service = self.context.indexed_document_service
+
+        if indexed_document_service is not None:
+            self.indexed_documents.set_document_service(
+                indexed_document_service,
+            )
+
         search_service = self.context.search_service
 
         if search_service is not None:
@@ -336,7 +367,7 @@ class MainWindow(QMainWindow):
         )
 
         self._update_action_states()
-
+    
     def _clear_current_workspace(self) -> None:
         """Clear the active workspace."""
 

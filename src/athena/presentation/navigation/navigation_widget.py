@@ -13,6 +13,7 @@ class NavigationWidget(QListWidget):
 
     home_selected = Signal()
     documents_selected = Signal()
+    indexed_documents_selected = Signal()
     search_selected = Signal()
     bookmarks_selected = Signal()
     ai_selected = Signal()
@@ -27,6 +28,7 @@ class NavigationWidget(QListWidget):
 
         self.addItem("🏠 Home")
         self.addItem("📄 Documents")
+        self.addItem("📚 Indexed Documents")
         self.addItem("🔍 Search")
         self.addItem("⭐ Bookmarks")
         self.addItem("🤖 Ask Athena")
@@ -52,13 +54,16 @@ class NavigationWidget(QListWidget):
                 self.documents_selected.emit()
 
             case 2:
-                self.search_selected.emit()
+                self.indexed_documents_selected.emit()
 
             case 3:
-                self.bookmarks_selected.emit()
+                self.search_selected.emit()
 
             case 4:
-                self.ai_selected.emit()
+                self.bookmarks_selected.emit()
 
             case 5:
+                self.ai_selected.emit()
+
+            case 6:
                 self.settings_selected.emit()
