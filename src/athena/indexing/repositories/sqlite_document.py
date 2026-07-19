@@ -105,6 +105,71 @@ class SQLiteDocumentRepository(DocumentRepository):
             indexed_at=datetime.fromisoformat(row[5]),
         )
 
+    def list_documents(
+        self,
+    ) -> list[IndexedDocument]:
+        """Return all indexed documents."""
+
+        with self._connect() as connection:
+            rows = connection.execute("""
+                SELECT
+                    document_id,
+                    path,
+                    title,
+                    sha256,
+                    page_count,
+                    indexed_at
+                FROM documents
+                ORDER BY title
+                """).fetchall()
+
+        return [
+            IndexedDocument(
+                document_id=row[0],
+                path=Path(row[1]),
+                title=row[2],
+                sha256=row[3],
+                page_count=row[4],
+                indexed_at=datetime.fromisoformat(row[5]),
+            )
+            for row in rows
+        ]
+
+    def find_by_title(
+        self,
+        title: str,
+    ) -> list[IndexedDocument]:
+        """Find documents whose title contains the given text."""
+
+        with self._connect() as connection:
+            rows = connection.execute(
+                """
+                SELECT
+                    document_id,
+                    path,
+                    title,
+                    sha256,
+                    page_count,
+                    indexed_at
+                FROM documents
+                WHERE title LIKE ?
+                ORDER BY title
+                """,
+                (f"%{title}%",),
+            ).fetchall()
+
+        return [
+            IndexedDocument(
+                document_id=row[0],
+                path=Path(row[1]),
+                title=row[2],
+                sha256=row[3],
+                page_count=row[4],
+                indexed_at=datetime.fromisoformat(row[5]),
+            )
+            for row in rows
+        ]
+
     def exists_by_hash(
         self,
         sha256: str,

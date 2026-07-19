@@ -40,3 +40,16 @@ class DocumentRepository(ABC):
         document_id: str,
     ) -> None:
         """Delete document metadata."""
+
+    @abstractmethod
+    def list_documents(
+        self,
+    ) -> list[IndexedDocument]:
+        """Return all indexed documents."""
+
+    @abstractmethod
+    def find_by_title(
+        self,
+        title: str,
+    ) -> list[IndexedDocument]:
+        """Find documents by title."""
