@@ -66,3 +66,38 @@ class OllamaProvider(LLMProvider):
             text=text,
             model_name=request.model_name,
         )
+
+    def list_models(self) -> list[str]:
+        """Return installed Ollama model names."""
+
+        endpoint = self._endpoint.replace(
+            "/api/generate",
+            "/api/tags",
+        )
+
+        response = requests.get(
+            endpoint,
+            timeout=30,
+        )
+
+        response.raise_for_status()
+
+        data: dict[str, Any] = response.json()
+
+        models = data.get(
+            "models",
+            [],
+        )
+
+        result: list[str] = []
+
+        for model in models:
+            name = model.get("name")
+
+            if isinstance(
+                name,
+                str,
+            ):
+                result.append(name)
+
+        return result

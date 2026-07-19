@@ -35,3 +35,15 @@ class LLMProvider(ABC):
             Generated response.
         """
         raise NotImplementedError
+
+    @abstractmethod
+    def list_models(self) -> list[str]:
+        """
+        Return the names of installed language models.
+
+        Returns
+        -------
+        list[str]
+            List of installed model names.
+        """
+        raise NotImplementedError

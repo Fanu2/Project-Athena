@@ -52,6 +52,7 @@ from athena.presentation.pages.indexed_documents_page import (
 from athena.presentation.viewer import (
     DocumentViewerPage,
 )
+from athena.presentation.settings import AISettingsPage
 
 
 class MainWindow(QMainWindow):
@@ -169,7 +170,7 @@ class MainWindow(QMainWindow):
         self.search = SearchWorkspace()
         self.bookmarks = BookmarkPage()
         self.ask_athena = AskAthenaPage()
-
+        self.settings = AISettingsPage()
         self.viewer = DocumentViewerPage()
         self.viewer.set_viewer_service(
             self.context.document_viewer_service,
@@ -200,6 +201,10 @@ class MainWindow(QMainWindow):
 
         self.page_stack.addWidget(
             self.ask_athena,
+        )
+
+        self.page_stack.addWidget(
+            self.settings,
         )
 
         self.page_stack.addWidget(
@@ -255,6 +260,10 @@ class MainWindow(QMainWindow):
             self._open_ai_source,
         )
 
+        self.navigation.settings_selected.connect(
+            self.show_settings,
+        )
+
     def show_home(self) -> None:
         """Display the Home page."""
 
@@ -290,6 +299,13 @@ class MainWindow(QMainWindow):
             self.search,
         )
 
+    def show_settings(self) -> None:
+        """Display the Settings page."""
+
+        self.page_stack.setCurrentWidget(
+            self.settings,
+        )
+    
     def show_ai(self) -> None:
         """Show Ask Athena page."""
 
@@ -368,6 +384,13 @@ class MainWindow(QMainWindow):
         if rag_service is not None:
             self.ask_athena.set_rag_service(
                 rag_service,
+            )
+
+        settings_service = self.context.ai_settings_service
+
+        if settings_service is not None:
+            self.settings.set_settings_service(
+                settings_service,
             )
 
         note_service = self.context.note_service

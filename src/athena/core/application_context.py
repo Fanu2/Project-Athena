@@ -50,6 +50,8 @@ from athena.application.viewer import (
     DocumentViewerService,
 )
 
+from athena.settings import AISettingsService
+
 
 class ApplicationContext:
     """Owns application-wide services."""
@@ -72,6 +74,8 @@ class ApplicationContext:
         self.bookmark_service: BookmarkService | None = None
 
         self.note_service: NoteService | None = None
+
+        self.ai_settings_service: AISettingsService | None = None
 
         self.rag_service: RAGService | None = None
 
@@ -136,11 +140,18 @@ class ApplicationContext:
             document_service=document_service,
         )
 
+        self.ai_settings_service = AISettingsService(
+            athena_directory / "settings" / "ai.json",
+        )
+
+        ai_settings = self.ai_settings_service.load()
+
+
         self.rag_service = RAGService(
             retrieval_service=retrieval_service,
             context_builder=context_builder,
             llm_provider=OllamaProvider(),
-            model_name="mistral",
+            model_name=ai_settings.default_model,
         )
 
         self.bookmark_service = BookmarkService(
@@ -167,3 +178,5 @@ class ApplicationContext:
         self.note_service = None
 
         self.rag_service = None
+
+        self.ai_settings_service = None

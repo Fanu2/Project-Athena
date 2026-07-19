@@ -46,16 +46,53 @@ class OllamaProvider(LLMProvider):
             )
             response.raise_for_status()
         except httpx.HTTPError as exc:
-            raise RuntimeError("Unable to communicate with the Ollama server.") from exc
+            raise RuntimeError(
+                "Unable to communicate with the Ollama server."
+            ) from exc
 
         data = response.json()
 
         result = data.get("response")
 
         if not isinstance(result, str):
-            raise RuntimeError("Invalid response received from Ollama.")
+            raise RuntimeError(
+                "Invalid response received from Ollama."
+            )
 
         return result.strip()
+
+    def list_models(self) -> list[str]:
+        """Return the names of installed Ollama models."""
+
+        try:
+            response = self._client.get("/api/tags")
+            response.raise_for_status()
+        except httpx.HTTPError as exc:
+            raise RuntimeError(
+                "Unable to retrieve installed models from the Ollama server."
+            ) from exc
+
+        data = response.json()
+
+        models = data.get("models")
+
+        if not isinstance(models, list):
+            raise RuntimeError(
+                "Invalid model list received from Ollama."
+            )
+
+        model_names: list[str] = []
+
+        for model in models:
+            if not isinstance(model, dict):
+                continue
+
+            name = model.get("name")
+
+            if isinstance(name, str):
+                model_names.append(name)
+
+        return sorted(model_names)
 
     def close(self) -> None:
         """Close the underlying HTTP client."""
