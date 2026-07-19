@@ -49,6 +49,9 @@ from athena.presentation.ai.ask_athena_page import (
 from athena.presentation.pages.indexed_documents_page import (
     IndexedDocumentsPage,
 )
+from athena.presentation.viewer import (
+    DocumentViewerPage,
+)
 
 
 class MainWindow(QMainWindow):
@@ -79,6 +82,7 @@ class MainWindow(QMainWindow):
         self.status_bar: QStatusBar
         self.toolbar: QToolBar
         self.document_actions: DocumentActions
+        self.viewer: DocumentViewerPage
         self.bookmarks = BookmarkPage()
 
         self._create_actions()
@@ -166,6 +170,11 @@ class MainWindow(QMainWindow):
         self.bookmarks = BookmarkPage()
         self.ask_athena = AskAthenaPage()
 
+        self.viewer = DocumentViewerPage()
+        self.viewer.set_viewer_service(
+            self.context.document_viewer_service,
+        )
+
         self.document_actions = DocumentActions(
             self.documents,
         )
@@ -191,6 +200,10 @@ class MainWindow(QMainWindow):
 
         self.page_stack.addWidget(
             self.ask_athena,
+        )
+
+        self.page_stack.addWidget(
+            self.viewer,
         )
 
         splitter.addWidget(
@@ -232,6 +245,10 @@ class MainWindow(QMainWindow):
 
         self.navigation.ai_selected.connect(
             self.show_ai,
+        )
+
+        self.documents.table.document_activated.connect(
+            self._open_document_viewer,
         )
 
     def show_home(self) -> None:
@@ -455,3 +472,17 @@ class MainWindow(QMainWindow):
             return
 
         self._clear_current_workspace()
+
+    def _open_document_viewer(
+        self,
+        path: Path,
+    ) -> None:
+        """Open a document in the viewer."""
+
+        self.viewer.open_document(
+            path,
+        )
+
+        self.page_stack.setCurrentWidget(
+            self.viewer,
+        )

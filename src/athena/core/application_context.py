@@ -46,6 +46,9 @@ from athena.search.search_service import SearchService
 from athena.services.workspace_document_service import (
     WorkspaceDocumentService,
 )
+from athena.application.viewer import (
+    DocumentViewerService,
+)
 
 
 class ApplicationContext:
@@ -63,6 +66,8 @@ class ApplicationContext:
         self.search_service: SearchService | None = None
 
         self.document_service: WorkspaceDocumentService | None = None
+
+        self.document_viewer_service = DocumentViewerService()
 
         self.bookmark_service: BookmarkService | None = None
 

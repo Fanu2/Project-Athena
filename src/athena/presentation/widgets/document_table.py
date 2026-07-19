@@ -4,7 +4,12 @@ Document table widget.
 
 from __future__ import annotations
 
-from PySide6.QtCore import Qt
+from pathlib import Path
+
+from PySide6.QtCore import (
+    Qt,
+    Signal,
+)
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QHeaderView,
@@ -20,11 +25,16 @@ from athena.documents.models import Document
 class DocumentTable(QWidget):
     """Table widget for displaying workspace documents."""
 
+    document_activated = Signal(Path)
+
     COLUMN_NAME = 0
     COLUMN_SIZE = 1
     COLUMN_MODIFIED = 2
 
-    def __init__(self, parent: QWidget | None = None) -> None:
+    def __init__(
+        self,
+        parent: QWidget | None = None,
+    ) -> None:
         """Initialize the document table."""
 
         super().__init__(parent)
@@ -33,7 +43,9 @@ class DocumentTable(QWidget):
 
         self._setup_ui()
 
-    def _setup_ui(self) -> None:
+    def _setup_ui(
+        self,
+    ) -> None:
         """Configure the user interface."""
 
         self._table.setColumnCount(3)
@@ -43,7 +55,7 @@ class DocumentTable(QWidget):
                 "Name",
                 "Size (KB)",
                 "Modified",
-            ]
+            ],
         )
 
         header = self._table.horizontalHeader()
@@ -63,19 +75,43 @@ class DocumentTable(QWidget):
             QHeaderView.ResizeMode.ResizeToContents,
         )
 
-        self._table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self._table.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows,
+        )
 
-        self._table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self._table.setSelectionMode(
+            QAbstractItemView.SelectionMode.SingleSelection,
+        )
 
-        self._table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self._table.setEditTriggers(
+            QAbstractItemView.EditTrigger.NoEditTriggers,
+        )
 
-        self._table.setAlternatingRowColors(True)
-        self._table.setSortingEnabled(True)
-        self._table.verticalHeader().setVisible(False)
+        self._table.setAlternatingRowColors(
+            True,
+        )
+
+        self._table.setSortingEnabled(
+            True,
+        )
+
+        self._table.verticalHeader().setVisible(
+            False,
+        )
+
+        self._table.itemDoubleClicked.connect(
+            self._on_item_double_clicked,
+        )
 
         layout = QVBoxLayout(self)
-        layout.addWidget(self._table)
-        self.setLayout(layout)
+
+        layout.addWidget(
+            self._table,
+        )
+
+        self.setLayout(
+            layout,
+        )
 
     def set_documents(
         self,
@@ -83,13 +119,20 @@ class DocumentTable(QWidget):
     ) -> None:
         """Populate the table with documents."""
 
-        self._table.setSortingEnabled(False)
+        self._table.setSortingEnabled(
+            False,
+        )
 
         self._table.clearContents()
-        self._table.setRowCount(len(documents))
+
+        self._table.setRowCount(
+            len(documents),
+        )
 
         for row, document in enumerate(documents):
-            name_item = QTableWidgetItem(document.name)
+            name_item = QTableWidgetItem(
+                document.name,
+            )
 
             name_item.setData(
                 Qt.ItemDataRole.UserRole,
@@ -101,9 +144,15 @@ class DocumentTable(QWidget):
                 round(document.size / 1024),
             )
 
-            size_item = QTableWidgetItem(str(size_kb))
+            size_item = QTableWidgetItem(
+                str(size_kb),
+            )
 
-            modified_item = QTableWidgetItem(document.modified.strftime("%Y-%m-%d %H:%M"))
+            modified_item = QTableWidgetItem(
+                document.modified.strftime(
+                    "%Y-%m-%d %H:%M",
+                ),
+            )
 
             self._table.setItem(
                 row,
@@ -123,9 +172,13 @@ class DocumentTable(QWidget):
                 modified_item,
             )
 
-        self._table.setSortingEnabled(True)
+        self._table.setSortingEnabled(
+            True,
+        )
 
-    def selected_document(self) -> Document | None:
+    def selected_document(
+        self,
+    ) -> Document | None:
         """Return the currently selected document."""
 
         row = self._table.currentRow()
@@ -141,21 +194,53 @@ class DocumentTable(QWidget):
         if item is None:
             return None
 
-        document = item.data(Qt.ItemDataRole.UserRole)
+        document = item.data(
+            Qt.ItemDataRole.UserRole,
+        )
 
-        if isinstance(document, Document):
+        if isinstance(
+            document,
+            Document,
+        ):
             return document
 
         return None
 
-    def clear(self) -> None:
+    def _on_item_double_clicked(
+        self,
+        item: QTableWidgetItem,
+    ) -> None:
+        """Emit the activated document."""
+
+        document = item.data(
+            Qt.ItemDataRole.UserRole,
+        )
+
+        if not isinstance(
+            document,
+            Document,
+        ):
+            return
+
+        self.document_activated.emit(
+            document.path,
+        )
+
+    def clear(
+        self,
+    ) -> None:
         """Clear all table contents."""
 
         self._table.clearContents()
-        self._table.setRowCount(0)
+
+        self._table.setRowCount(
+            0,
+        )
 
     @property
-    def table(self) -> QTableWidget:
+    def table(
+        self,
+    ) -> QTableWidget:
         """Return the underlying table widget."""
 
         return self._table
