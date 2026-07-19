@@ -9,12 +9,14 @@ description = "Offline-first AI Research Platform"
 readme = "README.md"
 requires-python = ">=3.14"
 license = "MIT"
+
 authors = [
     { name = "Jasvir Singh Sidhu" }
 ]
 
 dependencies = [
     "PySide6>=6.11",
+    "python-docx>=1.2.0",
 ]
 
 [project.optional-dependencies]

@@ -5,7 +5,6 @@ Plain text document extractor.
 from __future__ import annotations
 
 from pathlib import Path
-from uuid import uuid4
 
 from athena.indexing.extractors.base import BaseExtractor
 from athena.indexing.models import ExtractedDocument
@@ -40,7 +39,7 @@ class TextExtractor(BaseExtractor):
         )
 
         return ExtractedDocument(
-            document_id=str(uuid4()),
+            document_id=document.name,
             path=document,
             title=document.stem,
             text=text,

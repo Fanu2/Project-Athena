@@ -21,6 +21,9 @@ from athena.indexing.extractors.pdf import (
 from athena.indexing.extractors.text import (
     TextExtractor,
 )
+from athena.indexing.extractors.docx import (
+    DOCXExtractor,
+)
 
 
 class ExtractorFactory:
@@ -30,6 +33,7 @@ class ExtractorFactory:
         PDFExtractor(),
         TextExtractor(),
         MarkdownExtractor(),
+        DOCXExtractor(),
     )
 
     @classmethod
