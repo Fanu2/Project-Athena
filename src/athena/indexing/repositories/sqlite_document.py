@@ -5,6 +5,7 @@ SQLite document repository.
 from __future__ import annotations
 
 import sqlite3
+from datetime import datetime
 from pathlib import Path
 
 from athena.indexing.models import IndexedDocument
@@ -28,7 +29,9 @@ class SQLiteDocumentRepository(DocumentRepository):
         self._initialize_database()
 
     def _connect(self) -> sqlite3.Connection:
-        return sqlite3.connect(self._database_path)
+        return sqlite3.connect(
+            self._database_path,
+        )
 
     def _initialize_database(self) -> None:
         with self._connect() as connection:
@@ -74,7 +77,33 @@ class SQLiteDocumentRepository(DocumentRepository):
         self,
         document_id: str,
     ) -> IndexedDocument | None:
-        raise NotImplementedError
+        with self._connect() as connection:
+            row = connection.execute(
+                """
+                SELECT
+                    document_id,
+                    path,
+                    title,
+                    sha256,
+                    page_count,
+                    indexed_at
+                FROM documents
+                WHERE document_id = ?
+                """,
+                (document_id,),
+            ).fetchone()
+
+        if row is None:
+            return None
+
+        return IndexedDocument(
+            document_id=row[0],
+            path=Path(row[1]),
+            title=row[2],
+            sha256=row[3],
+            page_count=row[4],
+            indexed_at=datetime.fromisoformat(row[5]),
+        )
 
     def exists_by_hash(
         self,
