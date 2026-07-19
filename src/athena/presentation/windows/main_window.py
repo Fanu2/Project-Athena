@@ -251,6 +251,10 @@ class MainWindow(QMainWindow):
             self._open_document_viewer,
         )
 
+        self.ask_athena.document_requested.connect(
+            self._open_ai_source,
+        )
+
     def show_home(self) -> None:
         """Display the Home page."""
 
@@ -481,6 +485,23 @@ class MainWindow(QMainWindow):
 
         self.viewer.open_document(
             path,
+            page=None,
+        )
+
+        self.page_stack.setCurrentWidget(
+            self.viewer,
+        )
+
+    def _open_ai_source(
+        self,
+        path: Path,
+        page: int,
+    ) -> None:
+        """Open a cited source from Ask Athena."""
+
+        self.viewer.open_document(
+            path,
+            page=page,
         )
 
         self.page_stack.setCurrentWidget(

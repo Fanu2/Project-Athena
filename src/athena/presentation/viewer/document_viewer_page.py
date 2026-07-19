@@ -31,6 +31,7 @@ class DocumentViewerPage(QWidget):
         self,
         parent: QWidget | None = None,
     ) -> None:
+        """Initialize the document viewer page."""
         super().__init__(parent)
 
         self._service: DocumentViewerService | None = None
@@ -38,11 +39,9 @@ class DocumentViewerPage(QWidget):
         self.canvas = PDFCanvas()
 
         self.previous_button = QPushButton("◀ Previous")
-
         self.next_button = QPushButton("Next ▶")
 
         self.page_label = QLabel("Page 0 / 0")
-
         self.status_label = QLabel("No document loaded")
 
         self._build_ui()
@@ -62,22 +61,32 @@ class DocumentViewerPage(QWidget):
 
         toolbar = QHBoxLayout()
 
-        toolbar.addWidget(self.previous_button)
+        toolbar.addWidget(
+            self.previous_button,
+        )
 
-        toolbar.addWidget(self.page_label)
+        toolbar.addWidget(
+            self.page_label,
+        )
 
         toolbar.addStretch()
 
-        toolbar.addWidget(self.next_button)
+        toolbar.addWidget(
+            self.next_button,
+        )
 
-        layout.addLayout(toolbar)
+        layout.addLayout(
+            toolbar,
+        )
 
         layout.addWidget(
             self.canvas,
             stretch=1,
         )
 
-        layout.addWidget(self.status_label)
+        layout.addWidget(
+            self.status_label,
+        )
 
     def set_viewer_service(
         self,
@@ -96,7 +105,9 @@ class DocumentViewerPage(QWidget):
 
         self.canvas.clear()
 
-        self.page_label.setText("Page 0 / 0")
+        self.page_label.setText(
+            "Page 0 / 0",
+        )
 
         self.status_label.setText(
             "No document loaded",
@@ -105,26 +116,58 @@ class DocumentViewerPage(QWidget):
     def open_document(
         self,
         path: Path,
+        page: int | None = None,
     ) -> None:
         """
-        Open a document in the viewer.
+        Open a document.
 
         Args:
             path:
                 Path to the PDF document.
+
+            page:
+                Optional zero-based page number.
+                If omitted, the first page is shown.
         """
 
         if self._service is None:
             return
 
-        self._service.open_document(path)
+        self._service.open_document(
+            path,
+        )
+
+        if page is not None:
+            self._go_to_page(
+                page,
+            )
 
         self._refresh()
 
+    def _go_to_page(
+        self,
+        page: int,
+    ) -> None:
+        """
+        Navigate to a specific page.
+
+        This is a placeholder until the viewer service
+        supports direct page navigation.
+        """
+
+        if self._service is None:
+            return
+
+        #
+        # Future implementation:
+        #
+        # self._service.go_to_page(page)
+        #
+
+        del page
+
     def _refresh(self) -> None:
-        """
-        Refresh the page display.
-        """
+        """Refresh the page display."""
 
         if self._service is None or not self._service.is_open:
             self.canvas.clear()
@@ -141,10 +184,12 @@ class DocumentViewerPage(QWidget):
 
         image = self._service.render_current_page()
 
-        self.canvas.set_image(image)
+        self.canvas.set_image(
+            image,
+        )
 
         self.page_label.setText(
-            f"Page {self._service.current_page + 1} / " f"{self._service.page_count}",
+            (f"Page {self._service.current_page + 1} / " f"{self._service.page_count}")
         )
 
         self.status_label.setText(

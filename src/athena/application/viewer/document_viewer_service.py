@@ -28,9 +28,7 @@ class DocumentViewerService:
         """Initialize the service."""
 
         self._renderer = renderer or PdfRenderer()
-
         self._document_path: Path | None = None
-
         self._current_page = 0
 
     @property
@@ -70,18 +68,14 @@ class DocumentViewerService:
         """
 
         self._renderer.open(path)
-
         self._document_path = path
-
         self._current_page = 0
 
     def close(self) -> None:
         """Close the current document."""
 
         self._renderer.close()
-
         self._document_path = None
-
         self._current_page = 0
 
     def metadata(self) -> dict[str, str]:
@@ -94,7 +88,7 @@ class DocumentViewerService:
         page: int,
     ) -> None:
         """
-        Navigate to a page.
+        Navigate directly to a page.
 
         Args:
             page:
@@ -102,11 +96,11 @@ class DocumentViewerService:
 
         Raises:
             ValueError:
-                If the page number is outside the document.
+                If the page number is outside the valid range.
         """
 
-        if page < 0 or page >= self.page_count:
-            raise ValueError(f"Invalid page number: {page}")
+        if not 0 <= page < self.page_count:
+            raise ValueError(f"Page {page} is outside the valid range.")
 
         self._current_page = page
 
@@ -122,7 +116,6 @@ class DocumentViewerService:
             return False
 
         self._current_page += 1
-
         return True
 
     def previous_page(self) -> bool:
@@ -137,7 +130,6 @@ class DocumentViewerService:
             return False
 
         self._current_page -= 1
-
         return True
 
     def render_current_page(

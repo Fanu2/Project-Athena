@@ -6,6 +6,8 @@ Builds LLM-ready context from retrieval results.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from athena.ai.rag.models import (
     RAGContext,
     RAGSource,
@@ -41,6 +43,7 @@ class ContextBuilder:
             start=1,
         ):
             document_name = result.document_id
+            document_path = Path()
 
             if self._document_service is not None:
                 document = self._document_service.get_document(
@@ -49,6 +52,7 @@ class ContextBuilder:
 
                 if document is not None:
                     document_name = document.name
+                    document_path = document.path
 
             context_parts.append(
                 (
@@ -64,6 +68,7 @@ class ContextBuilder:
                     chunk_id=result.chunk_id,
                     document_id=result.document_id,
                     document_name=document_name,
+                    document_path=document_path,
                     page_number=result.page_number,
                     score=result.score,
                     text=result.text,

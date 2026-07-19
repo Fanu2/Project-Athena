@@ -5,6 +5,7 @@ RAG models.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 
 
 @dataclass(slots=True)
@@ -16,6 +17,8 @@ class RAGSource:
     document_id: str
 
     document_name: str
+
+    document_path: Path
 
     page_number: int
 
