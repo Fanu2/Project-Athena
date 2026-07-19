@@ -4,7 +4,11 @@ Ask Athena page.
 
 from __future__ import annotations
 
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QKeySequence, QShortcut
 from PySide6.QtWidgets import (
+    QApplication,
+    QHBoxLayout,
     QLabel,
     QPushButton,
     QTextEdit,
@@ -27,26 +31,45 @@ class AskAthenaPage(QWidget):
         self._rag_service: RAGService | None = None
 
         self.question = QTextEdit()
+        self.question.setPlaceholderText("Ask Athena about your indexed documents...")
+        self.question.setMaximumHeight(100)
 
-        self.question.setPlaceholderText("Ask Athena about your documents...")
+        self.ask_button = QPushButton("Ask")
 
-        self.ask_button = QPushButton(
-            "Ask",
-        )
+        self.clear_button = QPushButton("Clear")
+
+        self.copy_button = QPushButton("Copy Answer")
 
         self.answer = QTextEdit()
+        self.answer.setReadOnly(True)
 
-        self.answer.setReadOnly(
-            True,
-        )
+        self.sources = QTextEdit()
+        self.sources.setReadOnly(True)
+        self.sources.setMaximumHeight(140)
 
-        self.status = QLabel(
-            "Ready",
-        )
+        self.status = QLabel("Ready")
 
         self._setup_ui()
 
         self.ask_button.clicked.connect(
+            self.ask_question,
+        )
+
+        self.clear_button.clicked.connect(
+            self.clear_page,
+        )
+
+        self.copy_button.clicked.connect(
+            self.copy_answer,
+        )
+
+        shortcut = QShortcut(
+            QKeySequence(
+                Qt.CTRL | Qt.Key_Return,
+            ),
+            self,
+        )
+        shortcut.activated.connect(
             self.ask_question,
         )
 
@@ -55,21 +78,26 @@ class AskAthenaPage(QWidget):
 
         layout = QVBoxLayout(self)
 
-        layout.addWidget(
-            self.question,
-        )
+        layout.addWidget(QLabel("Question"))
+        layout.addWidget(self.question)
 
-        layout.addWidget(
-            self.ask_button,
-        )
+        button_layout = QHBoxLayout()
 
-        layout.addWidget(
-            self.answer,
-        )
+        button_layout.addWidget(self.ask_button)
+        button_layout.addWidget(self.clear_button)
+        button_layout.addWidget(self.copy_button)
 
-        layout.addWidget(
-            self.status,
-        )
+        button_layout.addStretch()
+
+        layout.addLayout(button_layout)
+
+        layout.addWidget(self.status)
+
+        layout.addWidget(QLabel("Answer"))
+        layout.addWidget(self.answer)
+
+        layout.addWidget(QLabel("Sources"))
+        layout.addWidget(self.sources)
 
     def set_rag_service(
         self,
@@ -79,16 +107,39 @@ class AskAthenaPage(QWidget):
 
         self._rag_service = service
 
+        self.status.setText("Ready")
+
     def clear_rag_service(self) -> None:
-        """Remove RAG service."""
+        """Detach RAG service."""
 
         self._rag_service = None
 
+        self.clear_page()
+
+        self.status.setText("No workspace open")
+
+    def clear_page(self) -> None:
+        """Clear the workspace."""
+
+        self.question.clear()
+
         self.answer.clear()
 
-        self.status.setText(
-            "No workspace open",
+        self.sources.clear()
+
+        if self._rag_service is None:
+            self.status.setText("No workspace open")
+        else:
+            self.status.setText("Ready")
+
+    def copy_answer(self) -> None:
+        """Copy answer to clipboard."""
+
+        QApplication.clipboard().setText(
+            self.answer.toPlainText(),
         )
+
+        self.status.setText("Answer copied to clipboard")
 
     def ask_question(self) -> None:
         """Send question to Athena."""
@@ -107,29 +158,45 @@ class AskAthenaPage(QWidget):
             )
             return
 
-        self.status.setText(
-            "Searching documents...",
-        )
+        self.ask_button.setEnabled(False)
 
-        result = self._rag_service.answer(
-            question,
-        )
+        try:
+            self.status.setText("Searching indexed documents...")
 
-        sources = "\n".join(
-            [
-                (
-                    f"{source.document_name or source.document_id} "
-                    f"(page {source.page_number}, "
-                    f"score {source.score:.2f})"
+            result = self._rag_service.answer(
+                question,
+            )
+
+            self.answer.setPlainText(
+                result.answer,
+            )
+
+            source_lines = []
+
+            for source in result.sources:
+
+                similarity = int(source.score * 100)
+
+                source_lines.append(
+                    (
+                        f"{source.document_name or source.document_id}\n"
+                        f"Page: {source.page_number}\n"
+                        f"Similarity: {similarity}%"
+                    )
                 )
-                for source in result.sources
-            ],
-        )
 
-        self.answer.setText(
-            result.answer + "\n\nSources:\n" + sources,
-        )
+            self.sources.setPlainText("\n\n".join(source_lines))
 
-        self.status.setText(
-            "Completed",
-        )
+            self.status.setText(f"Completed ({len(result.sources)} sources)")
+
+        except Exception as exc:
+
+            self.answer.clear()
+
+            self.sources.clear()
+
+            self.status.setText(f"Error: {exc}")
+
+        finally:
+
+            self.ask_button.setEnabled(True)

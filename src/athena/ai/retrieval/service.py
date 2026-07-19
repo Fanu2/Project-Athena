@@ -29,6 +29,7 @@ class RetrievalService:
         embedding_service: EmbeddingService,
         embedding_repository: EmbeddingRepository,
         chunk_repository: SQLiteChunkRepository,
+        max_chunks_per_document: int = 2,
     ) -> None:
         """Initialize retrieval service."""
 
@@ -39,6 +40,8 @@ class RetrievalService:
         self._chunk_repository = chunk_repository
 
         self._similarity = SimilarityCalculator()
+
+        self._max_chunks_per_document = max_chunks_per_document
 
     def search_similar(
         self,
@@ -51,11 +54,9 @@ class RetrievalService:
             query,
         )
 
-        results: list[SemanticResult] = []
-
         embeddings = self._embedding_repository.list_all()
 
-        scored = []
+        scored: list[tuple] = []
 
         for embedding in embeddings:
             score = self._similarity.cosine_similarity(
@@ -75,12 +76,25 @@ class RetrievalService:
             reverse=True,
         )
 
-        for embedding, score in scored[:limit]:
+        results: list[SemanticResult] = []
+
+        document_counts: dict[str, int] = {}
+
+        for embedding, score in scored:
+
             chunk = self._chunk_repository.get_chunk(
                 embedding.chunk_id,
             )
 
             if chunk is None:
+                continue
+
+            count = document_counts.get(
+                chunk.document_id,
+                0,
+            )
+
+            if count >= self._max_chunks_per_document:
                 continue
 
             results.append(
@@ -92,5 +106,10 @@ class RetrievalService:
                     score=score,
                 )
             )
+
+            document_counts[chunk.document_id] = count + 1
+
+            if len(results) >= limit:
+                break
 
         return results
