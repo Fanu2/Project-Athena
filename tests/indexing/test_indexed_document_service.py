@@ -5,8 +5,8 @@ from athena.indexing.models import IndexedDocument
 from athena.indexing.repositories.sqlite_document import (
     SQLiteDocumentRepository,
 )
-from athena.indexing.services.document_library import (
-    DocumentLibraryService,
+from athena.indexing.services.indexed_document_service import (
+    IndexedDocumentService,
 )
 
 
@@ -26,7 +26,7 @@ def test_list_documents(tmp_path):
         )
     )
 
-    service = DocumentLibraryService(
+    service = IndexedDocumentService(
         repository,
     )
 
@@ -52,7 +52,7 @@ def test_search_by_title(tmp_path):
         )
     )
 
-    service = DocumentLibraryService(
+    service = IndexedDocumentService(
         repository,
     )
 

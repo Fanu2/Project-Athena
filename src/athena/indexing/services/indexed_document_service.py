@@ -1,5 +1,5 @@
 """
-Document library service.
+Indexed document service.
 """
 
 from __future__ import annotations
@@ -8,7 +8,7 @@ from athena.indexing.models import IndexedDocument
 from athena.indexing.repositories.document_base import DocumentRepository
 
 
-class DocumentLibraryService:
+class IndexedDocumentService:
     """Application service for browsing indexed documents."""
 
     def __init__(
