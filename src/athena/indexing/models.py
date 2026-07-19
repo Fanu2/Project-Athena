@@ -5,6 +5,7 @@ Indexing models.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 
 
@@ -36,3 +37,20 @@ class DocumentChunk:
     page_number: int
 
     text: str
+
+
+@dataclass(slots=True, frozen=True)
+class IndexedDocument:
+    """Metadata for an indexed document."""
+
+    document_id: str
+
+    path: Path
+
+    title: str
+
+    sha256: str
+
+    page_count: int
+
+    indexed_at: datetime
