@@ -1,13 +1,9 @@
 """
-Workspace AI settings.
-
-Provides persistence and access to workspace-specific AI configuration.
+Athena application settings.
 """
 
-from .models import AISettings
-from .service import AISettingsService
+from athena.settings.llm_settings import LLMSettings
 
 __all__ = [
-    "AISettings",
-    "AISettingsService",
+    "LLMSettings",
 ]

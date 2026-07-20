@@ -1,5 +1,5 @@
 """
-LLM models.
+LLM data models.
 """
 
 from __future__ import annotations
@@ -9,16 +9,17 @@ from dataclasses import dataclass
 
 @dataclass(slots=True, frozen=True)
 class LLMRequest:
-    """Request sent to a language model."""
+    """Request sent to an LLM."""
 
-    prompt: str
-    model_name: str
-    temperature: float = 0.0
+    system_prompt: str
+
+    user_prompt: str
 
 
 @dataclass(slots=True, frozen=True)
 class LLMResponse:
-    """Response returned by a language model."""
+    """Response returned by an LLM."""
 
     text: str
-    model_name: str
+
+    model: str

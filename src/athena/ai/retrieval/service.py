@@ -4,6 +4,8 @@ Semantic retrieval service.
 
 from __future__ import annotations
 
+from uuid import UUID
+
 from athena.ai.embeddings.repository import (
     EmbeddingRepository,
 )
@@ -19,6 +21,9 @@ from athena.ai.retrieval.similarity import (
 from athena.indexing.repositories.sqlite import (
     SQLiteChunkRepository,
 )
+from athena.repositories.document_repository import (
+    DocumentRepository,
+)
 
 
 class RetrievalService:
@@ -29,6 +34,7 @@ class RetrievalService:
         embedding_service: EmbeddingService,
         embedding_repository: EmbeddingRepository,
         chunk_repository: SQLiteChunkRepository,
+        document_repository: DocumentRepository | None = None,
         max_chunks_per_document: int = 2,
     ) -> None:
         """Initialize retrieval service."""
@@ -39,9 +45,13 @@ class RetrievalService:
 
         self._chunk_repository = chunk_repository
 
+        self._document_repository = document_repository
+
         self._similarity = SimilarityCalculator()
 
-        self._max_chunks_per_document = max_chunks_per_document
+        self._max_chunks_per_document = (
+            max_chunks_per_document
+        )
 
     def search_similar(
         self,
@@ -54,7 +64,9 @@ class RetrievalService:
             query,
         )
 
-        embeddings = self._embedding_repository.list_all()
+        embeddings = (
+            self._embedding_repository.list_all()
+        )
 
         scored: list[tuple] = []
 
@@ -98,10 +110,31 @@ class RetrievalService:
             if count >= self._max_chunks_per_document:
                 continue
 
+            document_title = chunk.document_id
+
+            if self._document_repository is not None:
+
+                try:
+                    document = (
+                        self._document_repository.get(
+                            UUID(chunk.document_id),
+                        )
+                    )
+
+                    if document is not None:
+                        document_title = (
+                            document.title
+                            or document.filename
+                        )
+
+                except ValueError:
+                    pass
+
             results.append(
                 SemanticResult(
                     chunk_id=chunk.chunk_id,
                     document_id=chunk.document_id,
+                    document_title=document_title,
                     page_number=chunk.page_number,
                     start_offset=chunk.start_offset,
                     end_offset=chunk.end_offset,
@@ -110,7 +143,9 @@ class RetrievalService:
                 )
             )
 
-            document_counts[chunk.document_id] = count + 1
+            document_counts[chunk.document_id] = (
+                count + 1
+            )
 
             if len(results) >= limit:
                 break
