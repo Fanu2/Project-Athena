@@ -49,6 +49,11 @@ class DocumentChunk:
 
     page_number: int
 
+    # Character offsets within the page.
+    start_offset: int
+
+    end_offset: int
+
     text: str
 
 

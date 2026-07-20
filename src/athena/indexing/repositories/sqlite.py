@@ -38,21 +38,27 @@ class SQLiteChunkRepository(ChunkRepository):
         """Create database schema."""
 
         with self._connect() as connection:
-            connection.execute("""
+            connection.execute(
+                """
                 CREATE TABLE IF NOT EXISTS chunks (
                     chunk_id TEXT PRIMARY KEY,
                     document_id TEXT NOT NULL,
                     chunk_index INTEGER NOT NULL,
                     page_number INTEGER NOT NULL,
+                    start_offset INTEGER NOT NULL,
+                    end_offset INTEGER NOT NULL,
                     text TEXT NOT NULL
                 )
-                """)
+                """
+            )
 
-            connection.execute("""
+            connection.execute(
+                """
                 CREATE INDEX IF NOT EXISTS
                 idx_chunks_document
                 ON chunks(document_id)
-                """)
+                """
+            )
 
     def save_chunks(
         self,
@@ -78,9 +84,11 @@ class SQLiteChunkRepository(ChunkRepository):
                     document_id,
                     chunk_index,
                     page_number,
+                    start_offset,
+                    end_offset,
                     text
                 )
-                VALUES (?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,
                 [
                     (
@@ -88,6 +96,8 @@ class SQLiteChunkRepository(ChunkRepository):
                         chunk.document_id,
                         chunk.chunk_index,
                         chunk.page_number,
+                        chunk.start_offset,
+                        chunk.end_offset,
                         chunk.text,
                     )
                     for chunk in chunks
@@ -108,6 +118,8 @@ class SQLiteChunkRepository(ChunkRepository):
                     document_id,
                     chunk_index,
                     page_number,
+                    start_offset,
+                    end_offset,
                     text
                 FROM chunks
                 WHERE document_id = ?
@@ -124,7 +136,9 @@ class SQLiteChunkRepository(ChunkRepository):
                 document_id=row[1],
                 chunk_index=row[2],
                 page_number=row[3],
-                text=row[4],
+                start_offset=row[4],
+                end_offset=row[5],
+                text=row[6],
             )
             for row in rows
         ]
@@ -143,6 +157,8 @@ class SQLiteChunkRepository(ChunkRepository):
                     document_id,
                     chunk_index,
                     page_number,
+                    start_offset,
+                    end_offset,
                     text
                 FROM chunks
                 WHERE chunk_id = ?
@@ -160,7 +176,9 @@ class SQLiteChunkRepository(ChunkRepository):
             document_id=row[1],
             chunk_index=row[2],
             page_number=row[3],
-            text=row[4],
+            start_offset=row[4],
+            end_offset=row[5],
+            text=row[6],
         )
 
     def delete_chunks(
@@ -185,19 +203,6 @@ class SQLiteChunkRepository(ChunkRepository):
     ) -> list[DocumentChunk]:
         """
         Search indexed document chunks.
-
-        Parameters
-        ----------
-        query:
-            Search text.
-
-        limit:
-            Maximum number of results.
-
-        Returns
-        -------
-        list[DocumentChunk]
-            Matching document chunks.
         """
 
         with self._connect() as connection:
@@ -208,6 +213,8 @@ class SQLiteChunkRepository(ChunkRepository):
                     document_id,
                     chunk_index,
                     page_number,
+                    start_offset,
+                    end_offset,
                     text
                 FROM chunks
                 WHERE text LIKE ?
@@ -225,7 +232,9 @@ class SQLiteChunkRepository(ChunkRepository):
                 document_id=row[1],
                 chunk_index=row[2],
                 page_number=row[3],
-                text=row[4],
+                start_offset=row[4],
+                end_offset=row[5],
+                text=row[6],
             )
             for row in rows
         ]

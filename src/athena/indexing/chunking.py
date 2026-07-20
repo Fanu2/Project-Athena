@@ -72,6 +72,8 @@ class ChunkingService:
                         document_id=document.document_id,
                         chunk_index=chunk_index,
                         page_number=page.page_number,
+                        start_offset=start,
+                        end_offset=end,
                         text=chunk_text,
                     )
                 )

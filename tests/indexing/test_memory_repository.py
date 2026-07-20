@@ -16,12 +16,16 @@ def make_chunk(
 ) -> DocumentChunk:
     """Create a test chunk."""
 
+    text = f"Chunk {index}"
+
     return DocumentChunk(
         chunk_id=f"{document_id}:{index}",
         document_id=document_id,
         chunk_index=index,
         page_number=1,
-        text=f"Chunk {index}",
+        start_offset=0,
+        end_offset=len(text),
+        text=text,
     )
 
 
