@@ -84,7 +84,6 @@ class MainWindow(QMainWindow):
         self.toolbar: QToolBar
         self.document_actions: DocumentActions
         self.viewer: DocumentViewerPage
-        self.bookmarks = BookmarkPage()
 
         self._create_actions()
         self._create_menu()
@@ -376,6 +375,10 @@ class MainWindow(QMainWindow):
 
         if bookmark_service is not None:
             self.bookmarks.set_bookmark_service(
+                bookmark_service,
+            )
+
+            self.documents.set_bookmark_service(
                 bookmark_service,
             )
 

@@ -4,6 +4,7 @@ Bookmark page.
 
 from __future__ import annotations
 
+from PySide6.QtGui import QShowEvent
 from PySide6.QtWidgets import (
     QListWidget,
     QPushButton,
@@ -60,6 +61,18 @@ class BookmarkPage(QWidget):
 
         self.refresh()
 
+    def showEvent(
+        self,
+        event: QShowEvent,
+    ) -> None:
+        """Refresh bookmarks whenever page becomes visible."""
+
+        self.refresh()
+
+        super().showEvent(
+            event,
+        )
+
     def refresh(self) -> None:
         """Reload bookmarks."""
 
@@ -69,6 +82,7 @@ class BookmarkPage(QWidget):
             return
 
         for bookmark in self._bookmark_service.list_bookmarks():
+
             self.list_widget.addItem(
                 f"★ {bookmark.document_id}",
             )
