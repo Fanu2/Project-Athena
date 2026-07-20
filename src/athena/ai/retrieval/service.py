@@ -59,6 +59,7 @@ class RetrievalService:
         scored: list[tuple] = []
 
         for embedding in embeddings:
+
             score = self._similarity.cosine_similarity(
                 query_vector,
                 embedding.vector,
@@ -102,6 +103,8 @@ class RetrievalService:
                     chunk_id=chunk.chunk_id,
                     document_id=chunk.document_id,
                     page_number=chunk.page_number,
+                    start_offset=chunk.start_offset,
+                    end_offset=chunk.end_offset,
                     text=chunk.text,
                     score=score,
                 )
