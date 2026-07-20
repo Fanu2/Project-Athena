@@ -14,8 +14,8 @@ from PySide6.QtWidgets import (
 )
 
 from athena.bookmarks.service import BookmarkService
-from athena.notes.service import NoteService
 from athena.documents.models import Document
+from athena.notes.service import NoteService
 from athena.presentation.widgets.document_details import (
     DocumentDetails,
 )
@@ -37,12 +37,9 @@ class DocumentLibraryPage(QWidget):
         self,
         parent: QWidget | None = None,
     ) -> None:
-        """Initialize the document library page."""
-
         super().__init__(parent)
 
         self._document_service: WorkspaceDocumentService | None = None
-
         self._bookmark_service: BookmarkService | None = None
         self._note_service: NoteService | None = None
 
@@ -64,39 +61,18 @@ class DocumentLibraryPage(QWidget):
 
         layout = QVBoxLayout(self)
 
-        layout.addWidget(
-            self.toolbar,
-        )
+        layout.addWidget(self.toolbar)
 
         splitter = QSplitter()
 
-        splitter.addWidget(
-            self.table,
-        )
+        splitter.addWidget(self.table)
+        splitter.addWidget(self.details)
 
-        splitter.addWidget(
-            self.details,
-        )
+        splitter.setStretchFactor(0, 2)
+        splitter.setStretchFactor(1, 1)
 
-        splitter.setStretchFactor(
-            0,
-            2,
-        )
-
-        splitter.setStretchFactor(
-            1,
-            1,
-        )
-
-        layout.addWidget(
-            splitter,
-        )
-
-        layout.addWidget(
-            self.status_label,
-        )
-
-        self.setLayout(layout)
+        layout.addWidget(splitter)
+        layout.addWidget(self.status_label)
 
     def set_document_service(
         self,
@@ -105,7 +81,6 @@ class DocumentLibraryPage(QWidget):
         """Attach a document service to the page."""
 
         self._document_service = service
-
         self.refresh()
 
     def set_bookmark_service(
@@ -115,10 +90,7 @@ class DocumentLibraryPage(QWidget):
         """Attach bookmark service."""
 
         self._bookmark_service = service
-
-        self.details.set_bookmark_service(
-            service,
-        )
+        self.details.set_bookmark_service(service)
 
     def set_note_service(
         self,
@@ -127,10 +99,7 @@ class DocumentLibraryPage(QWidget):
         """Attach note service."""
 
         self._note_service = service
-
-        self.details.set_note_service(
-            service,
-        )
+        self.details.set_note_service(service)
 
     def clear_document_service(self) -> None:
         """Detach the current document service."""
@@ -140,12 +109,9 @@ class DocumentLibraryPage(QWidget):
         self._note_service = None
 
         self.table.clear()
-
         self.details.clear()
 
-        self.status_label.setText(
-            "No workspace open",
-        )
+        self.status_label.setText("No workspace open")
 
     @property
     def documents_directory(self) -> Path | None:
@@ -162,25 +128,28 @@ class DocumentLibraryPage(QWidget):
         if self._document_service is None:
             self.table.clear()
             self.details.clear()
-
-            self.status_label.setText(
-                "No workspace open",
-            )
-
+            self.status_label.setText("No workspace open")
             return
 
         documents = self._document_service.list_documents()
 
-        self.table.set_documents(
-            documents,
+        self.table.set_documents(documents)
+        self.status_label.setText(
+            f"{len(documents)} document(s)"
         )
 
-        self.status_label.setText(
-            f"{len(documents)} document(s)",
-        )
+    def refresh_documents(self) -> None:
+        """
+        Public API used by background import workflows.
+
+        This method is intended to be called after asynchronous
+        document imports complete.
+        """
+
+        self.refresh()
 
     def _on_document_selected(self) -> None:
-        """Display selected document details."""
+        """Display the selected document."""
 
         document = self.selected_document()
 
@@ -188,9 +157,7 @@ class DocumentLibraryPage(QWidget):
             self.details.clear()
             return
 
-        self.details.show_document(
-            document,
-        )
+        self.details.show_document(document)
 
     def selected_document(self) -> Document | None:
         """Return the selected document."""
@@ -201,35 +168,27 @@ class DocumentLibraryPage(QWidget):
         self,
         source: Path,
     ) -> None:
-        """Import a document into the active workspace."""
+        """Import a single document."""
 
         if self._document_service is None:
             return
 
-        self._document_service.import_document(
-            source,
-        )
-
+        self._document_service.import_document(source)
         self.refresh()
 
     def import_folder(
         self,
         folder: Path,
     ) -> None:
-        """Import all supported documents from a folder."""
+        """Import all supported documents in a folder."""
 
         if self._document_service is None:
             return
 
-        self._document_service.import_folder(
-            folder,
-        )
-
+        self._document_service.import_folder(folder)
         self.refresh()
 
-    def delete_selected_document(
-        self,
-    ) -> None:
+    def delete_selected_document(self) -> None:
         """Delete the selected document."""
 
         if self._document_service is None:
@@ -247,17 +206,12 @@ class DocumentLibraryPage(QWidget):
         self.refresh()
 
     def clear(self) -> None:
-        """Clear the document table."""
+        """Clear the page."""
 
         self.table.clear()
-
         self.details.clear()
 
         if self._document_service is None:
-            self.status_label.setText(
-                "No workspace open",
-            )
+            self.status_label.setText("No workspace open")
         else:
-            self.status_label.setText(
-                "0 document(s)",
-            )
+            self.status_label.setText("0 document(s)")

@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (
     QMessageBox,
 )
 
+from athena.presentation.importing import ImportManager
 from athena.presentation.pages.document_library_page import (
     DocumentLibraryPage,
 )
@@ -26,58 +27,78 @@ class DocumentActions:
         self,
         page: DocumentLibraryPage,
     ) -> None:
-        """Initialize the document actions."""
+        """Initialize document actions."""
 
         self._page = page
+        self._import_manager = ImportManager()
 
         self._connect_signals()
 
     def _connect_signals(self) -> None:
-        """Connect toolbar signals."""
+        """Connect toolbar actions."""
 
-        self._page.toolbar.import_button.clicked.connect(
+        toolbar = self._page.toolbar
+
+        toolbar.import_button.clicked.connect(
             self.import_document,
         )
 
-        self._page.toolbar.import_folder_button.clicked.connect(
+        toolbar.import_folder_button.clicked.connect(
             self.import_folder,
         )
 
-        self._page.toolbar.delete_button.clicked.connect(
+        toolbar.delete_button.clicked.connect(
             self.delete_document,
         )
 
-        self._page.toolbar.refresh_button.clicked.connect(
-            self._page.refresh,
+        toolbar.refresh_button.clicked.connect(
+            self._page.refresh_documents,
         )
 
-        self._page.toolbar.open_folder_button.clicked.connect(
+        toolbar.open_folder_button.clicked.connect(
             self.open_documents_folder,
         )
 
     def import_document(self) -> None:
-        """Import a document."""
+        """Import a single document."""
+
+        service = self._page.document_service
+
+        if service is None:
+            QMessageBox.information(
+                self._page,
+                "No Workspace",
+                "Open a workspace first.",
+            )
+            return
 
         filename, _ = QFileDialog.getOpenFileName(
             self._page,
             "Import Document",
             "",
-            "Documents (*.pdf *.txt *.md);;All Files (*)",
+            (
+                "Documents "
+                "(*.pdf *.docx *.txt *.md);;"
+                "All Files (*)"
+            ),
         )
 
         if not filename:
             return
 
         try:
-            self._page.import_document(
-                Path(filename),
+            self._import_manager.import_documents(
+                parent=self._page,
+                document_service=service,
+                page=self._page,
+                documents=[
+                    Path(filename),
+                ],
             )
 
         except Exception as exc:
-            # Print the complete traceback to the terminal
             traceback.print_exc()
 
-            # Show exception type and message
             QMessageBox.critical(
                 self._page,
                 "Import Failed",
@@ -87,6 +108,16 @@ class DocumentActions:
     def import_folder(self) -> None:
         """Import all supported documents from a folder."""
 
+        service = self._page.document_service
+
+        if service is None:
+            QMessageBox.information(
+                self._page,
+                "No Workspace",
+                "Open a workspace first.",
+            )
+            return
+
         folder = QFileDialog.getExistingDirectory(
             self._page,
             "Import Folder",
@@ -95,9 +126,32 @@ class DocumentActions:
         if not folder:
             return
 
+        documents: list[Path] = []
+
+        for pattern in (
+            "*.pdf",
+            "*.docx",
+            "*.txt",
+            "*.md",
+        ):
+            documents.extend(
+                Path(folder).glob(pattern),
+            )
+
+        if not documents:
+            QMessageBox.information(
+                self._page,
+                "Import Folder",
+                "No supported documents were found.",
+            )
+            return
+
         try:
-            self._page.import_folder(
-                Path(folder),
+            self._import_manager.import_documents(
+                parent=self._page,
+                document_service=service,
+                page=self._page,
+                documents=documents,
             )
 
         except Exception as exc:
