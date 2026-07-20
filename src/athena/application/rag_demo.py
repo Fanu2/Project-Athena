@@ -32,6 +32,12 @@ from athena.application.index_document import (
 from athena.indexing.repositories.sqlite import (
     SQLiteChunkRepository,
 )
+from athena.infrastructure.database.repositories.sqlite_document_repository import (
+    SqliteDocumentRepository,
+)
+from athena.infrastructure.database.session import (
+    SessionFactory,
+)
 
 
 def run_demo(
@@ -77,20 +83,29 @@ def run_demo(
         embedding_database,
     )
 
-    retrieval = RetrievalService(
-        EmbeddingService(),
-        embedding_repository,
-        chunk_repository,
-    )
+    with SessionFactory() as session:
 
-    print()
-    print(
-        f"Question: {question}"
-    )
+        document_repository = (
+            SqliteDocumentRepository(
+                session,
+            )
+        )
 
-    results = retrieval.search_similar(
-        question,
-    )
+        retrieval = RetrievalService(
+            EmbeddingService(),
+            embedding_repository,
+            chunk_repository,
+            document_repository,
+        )
+
+        print()
+        print(
+            f"Question: {question}"
+        )
+
+        results = retrieval.search_similar(
+            question,
+        )
 
     if not results:
         print(
@@ -138,6 +153,6 @@ def run_demo(
 if __name__ == "__main__":
 
     run_demo(
-        Path("sample.pdf"),
+        Path("Athena_Test_Document.pdf"),
         "What is this document about?",
     )

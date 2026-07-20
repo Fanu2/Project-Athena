@@ -71,6 +71,27 @@ class SqliteDocumentRepository(DocumentRepository):
             is not None
         )
 
+    def get_by_path(
+        self,
+        file_path: str,
+    ) -> Document | None:
+        """Find document by file path."""
+
+        model = (
+            self._session.query(DocumentModel)
+            .filter(
+                DocumentModel.file_path == file_path
+            )
+            .first()
+        )
+
+        if model is None:
+            return None
+
+        return self._to_domain(
+            model,
+        )
+    
     def update(
         self,
         document: Document,
