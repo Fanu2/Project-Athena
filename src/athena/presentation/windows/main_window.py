@@ -382,11 +382,11 @@ class MainWindow(QMainWindow):
                 bookmark_service,
             )
 
-        rag_service = self.context.rag_service
+        query_service = self.context.athena_query_service
 
-        if rag_service is not None:
-            self.ask_athena.set_rag_service(
-                rag_service,
+        if query_service is not None:
+            self.ask_athena.set_query_service(
+                query_service,
             )
 
         settings_service = self.context.ai_settings_service
@@ -428,7 +428,7 @@ class MainWindow(QMainWindow):
 
         self.bookmarks.clear()
 
-        self.ask_athena.clear_rag_service()
+        self.ask_athena.clear_query_service()
 
         self.status_bar.showMessage(
             "Ready",

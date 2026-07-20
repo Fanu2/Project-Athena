@@ -20,7 +20,9 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from athena.ai.rag.service import RAGService
+from athena.services.athena_query_service import (
+    AthenaQueryService,
+)
 
 
 class AskAthenaPage(QWidget):
@@ -35,7 +37,7 @@ class AskAthenaPage(QWidget):
         """Initialize Ask Athena page."""
         super().__init__(parent)
 
-        self._rag_service: RAGService | None = None
+        self._query_service: AthenaQueryService | None = None
 
         self.question = QTextEdit()
         self.question.setPlaceholderText("Ask Athena about your indexed documents...")
@@ -115,35 +117,43 @@ class AskAthenaPage(QWidget):
         layout.addWidget(QLabel("Sources"))
         layout.addWidget(self.sources)
 
-    def set_rag_service(
+    def set_query_service(
         self,
-        service: RAGService,
+        service: AthenaQueryService,
     ) -> None:
-        """Attach RAG service."""
+        """Attach Athena query service."""
 
-        self._rag_service = service
+        self._query_service = service
         self.status.setText("Ready")
 
-    def clear_rag_service(self) -> None:
-        """Detach RAG service."""
+    def clear_query_service(self) -> None:
+        """Detach Athena query service."""
 
-        self._rag_service = None
+        self._query_service = None
 
         self.clear_page()
 
-        self.status.setText("No workspace open")
-
+        self.status.setText(
+            "No workspace open",
+        )
+    
     def clear_page(self) -> None:
         """Clear question, answer and sources."""
 
         self.question.clear()
+
         self.answer.clear()
+
         self.sources.clear()
 
-        if self._rag_service is None:
-            self.status.setText("No workspace open")
+        if self._query_service is None:
+            self.status.setText(
+                "No workspace open",
+            )
         else:
-            self.status.setText("Ready")
+            self.status.setText(
+                "Ready",
+            )
 
     def copy_answer(self) -> None:
         """Copy answer to the clipboard."""
@@ -157,7 +167,7 @@ class AskAthenaPage(QWidget):
     def ask_question(self) -> None:
         """Ask Athena a question."""
 
-        if self._rag_service is None:
+        if self._query_service is None:
             self.status.setText(
                 "No AI service available",
             )
@@ -175,22 +185,42 @@ class AskAthenaPage(QWidget):
 
         try:
             self.status.setText(
-                "Searching indexed documents...",
+                "Searching Athena knowledge...",
             )
 
-            result = self._rag_service.answer(
+            result = self._query_service.answer(
                 question,
-            )
-
-            self.answer.setPlainText(
-                result.answer,
             )
 
             self.sources.clear()
 
+            #
+            # Workspace intelligence response
+            #
+            if isinstance(result, str):
+
+                self.answer.setPlainText(
+                    result,
+                )
+
+                self.status.setText(
+                    "Completed (workspace information)",
+                )
+
+                return
+
+            #
+            # RAG response with citations
+            #
+            self.answer.setPlainText(
+                result.answer,
+            )
+
             for source in result.sources:
 
-                similarity = int(source.score * 100)
+                similarity = int(
+                    source.score * 100,
+                )
 
                 item = QTreeWidgetItem(
                     [
@@ -228,6 +258,7 @@ class AskAthenaPage(QWidget):
         except Exception as exc:
 
             self.answer.clear()
+
             self.sources.clear()
 
             self.status.setText(

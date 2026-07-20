@@ -62,6 +62,14 @@ from athena.services.workspace_document_service import (
     WorkspaceDocumentService,
 )
 
+from athena.services.workspace_query_service import (
+    WorkspaceQueryService,
+)
+
+from athena.services.athena_query_service import (
+    AthenaQueryService,
+)
+
 from athena.application.viewer import (
     DocumentViewerService,
 )
@@ -101,6 +109,8 @@ class ApplicationContext:
         self.llm_settings: LLMSettings | None = None
 
         self.rag_service: RAGService | None = None
+
+        self.athena_query_service: AthenaQueryService | None = None
 
 
     def open_workspace(
@@ -219,6 +229,13 @@ class ApplicationContext:
             context_builder=context_builder,
             llm_provider=OllamaProvider(),
             model_name=self.llm_settings.model,
+        )
+
+        self.athena_query_service = AthenaQueryService(
+            rag_service=self.rag_service,
+            workspace_service=WorkspaceQueryService(
+                self.indexed_document_service,
+            ),
         )
 
 
