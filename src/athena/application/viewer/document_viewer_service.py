@@ -89,18 +89,12 @@ class DocumentViewerService:
     ) -> None:
         """
         Navigate directly to a page.
-
-        Args:
-            page:
-                Zero-based page index.
-
-        Raises:
-            ValueError:
-                If the page number is outside the valid range.
         """
 
         if not 0 <= page < self.page_count:
-            raise ValueError(f"Page {page} is outside the valid range.")
+            raise ValueError(
+                f"Page {page} is outside the valid range."
+            )
 
         self._current_page = page
 

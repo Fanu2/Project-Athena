@@ -150,21 +150,14 @@ class DocumentViewerPage(QWidget):
     ) -> None:
         """
         Navigate to a specific page.
-
-        This is a placeholder until the viewer service
-        supports direct page navigation.
         """
 
         if self._service is None:
             return
 
-        #
-        # Future implementation:
-        #
-        # self._service.go_to_page(page)
-        #
-
-        del page
+        self._service.go_to_page(
+            page,
+        )
 
     def _refresh(self) -> None:
         """Refresh the page display."""
