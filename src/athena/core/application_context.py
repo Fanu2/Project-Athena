@@ -26,31 +26,50 @@ from athena.ai.rag.service import (
 from athena.ai.retrieval.service import (
     RetrievalService,
 )
+
 from athena.bookmarks.service import BookmarkService
 from athena.documents.service import DocumentService
+
 from athena.indexing.repositories.sqlite import (
     SQLiteChunkRepository,
 )
+
 from athena.indexing.repositories.sqlite_document import (
     SQLiteDocumentRepository,
 )
-from athena.indexing.service import IndexingService
+
+from athena.indexing.service import (
+    IndexingService,
+)
+
 from athena.indexing.services.indexed_document_service import (
     IndexedDocumentService,
 )
-from athena.notes.service import NoteService
+
+from athena.notes.service import (
+    NoteService,
+)
+
 from athena.presentation.actions.workspace_actions import (
     WorkspaceActions,
 )
-from athena.search.search_service import SearchService
+
+from athena.search.search_service import (
+    SearchService,
+)
+
 from athena.services.workspace_document_service import (
     WorkspaceDocumentService,
 )
+
 from athena.application.viewer import (
     DocumentViewerService,
 )
 
-from athena.settings import AISettingsService
+from athena.settings import (
+    AISettingsService,
+    LLMSettings,
+)
 
 
 class ApplicationContext:
@@ -75,9 +94,14 @@ class ApplicationContext:
 
         self.note_service: NoteService | None = None
 
+        # Compatibility with GUI
         self.ai_settings_service: AISettingsService | None = None
 
+        # New settings model
+        self.llm_settings: LLMSettings | None = None
+
         self.rag_service: RAGService | None = None
+
 
     def open_workspace(
         self,
@@ -92,6 +116,11 @@ class ApplicationContext:
             exist_ok=True,
         )
 
+
+        #
+        # Storage
+        #
+
         chunk_repository = SQLiteChunkRepository(
             athena_directory / "index.db",
         )
@@ -104,41 +133,10 @@ class ApplicationContext:
             athena_directory / "embeddings.db",
         )
 
-        embedding_service = EmbeddingService()
 
-        self.indexing_service = IndexingService(
-            repository=chunk_repository,
-            document_repository=document_repository,
-            embedding_service=embedding_service,
-            embedding_repository=embedding_repository,
-        )
-
-        self.indexed_document_service = IndexedDocumentService(
-            document_repository,
-        )
-
-        self.search_service = SearchService(
-            chunk_repository,
-        )
-
-        document_service = DocumentService(
-            workspace_path / "documents",
-        )
-
-        self.document_service = WorkspaceDocumentService(
-            document_service=document_service,
-            indexing_service=self.indexing_service,
-        )
-
-        retrieval_service = RetrievalService(
-            embedding_service=embedding_service,
-            embedding_repository=embedding_repository,
-            chunk_repository=chunk_repository,
-        )
-
-        context_builder = ContextBuilder(
-            document_service=document_service,
-        )
+        #
+        # AI settings
+        #
 
         self.ai_settings_service = AISettingsService(
             athena_directory / "settings" / "ai.json",
@@ -146,13 +144,87 @@ class ApplicationContext:
 
         ai_settings = self.ai_settings_service.load()
 
+        self.llm_settings = LLMSettings(
+            model=ai_settings.default_model,
+        )
+
+
+        #
+        # AI services
+        #
+
+        embedding_service = EmbeddingService()
+
+
+        #
+        # Indexing
+        #
+
+        self.indexing_service = IndexingService(
+            repository=chunk_repository,
+            index_repository=document_repository,
+            document_library_repository=None,
+            embedding_service=embedding_service,
+            embedding_repository=embedding_repository,
+        )
+
+
+        self.indexed_document_service = IndexedDocumentService(
+            document_repository,
+        )
+
+
+        #
+        # Search
+        #
+
+        self.search_service = SearchService(
+            chunk_repository,
+        )
+
+
+        #
+        # Documents
+        #
+
+        document_service = DocumentService(
+            workspace_path / "documents",
+        )
+
+
+        self.document_service = WorkspaceDocumentService(
+            document_service=document_service,
+            indexing_service=self.indexing_service,
+        )
+
+
+        #
+        # RAG
+        #
+
+        retrieval_service = RetrievalService(
+            embedding_service=embedding_service,
+            embedding_repository=embedding_repository,
+            chunk_repository=chunk_repository,
+        )
+
+
+        context_builder = ContextBuilder(
+            document_service=document_service,
+        )
+
 
         self.rag_service = RAGService(
             retrieval_service=retrieval_service,
             context_builder=context_builder,
             llm_provider=OllamaProvider(),
-            model_name=ai_settings.default_model,
+            model_name=self.llm_settings.model,
         )
+
+
+        #
+        # User data
+        #
 
         self.bookmark_service = BookmarkService(
             athena_directory / "bookmarks.json",
@@ -161,6 +233,7 @@ class ApplicationContext:
         self.note_service = NoteService(
             athena_directory / "notes.json",
         )
+
 
     def close_workspace(self) -> None:
         """Release workspace-specific services."""
@@ -180,3 +253,5 @@ class ApplicationContext:
         self.rag_service = None
 
         self.ai_settings_service = None
+
+        self.llm_settings = None

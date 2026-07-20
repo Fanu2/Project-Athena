@@ -30,3 +30,6 @@ class ImportSignals(QObject):
 
     finished = Signal(object)
     """Import summary object."""
+
+    cancelled = Signal()
+    """Import cancelled by user."""

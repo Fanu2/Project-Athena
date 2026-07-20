@@ -37,13 +37,19 @@ class ImportManager:
         self,
         *,
         parent: QWidget,
+        page: QWidget | None = None,
         document_service: WorkspaceDocumentService,
         documents: list[Path],
-        refresh_callback: Callable[[], None],
+        refresh_callback: Callable[[], None] | None = None,
     ) -> None:
         """
         Import documents asynchronously.
         """
+
+        del page
+
+        if refresh_callback is None:
+            refresh_callback = lambda: None
 
         if not documents:
             return

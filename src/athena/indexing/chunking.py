@@ -39,12 +39,29 @@ class ChunkingService:
     def chunk_document(
         self,
         document: ExtractedDocument,
+        document_id: str | None = None,
     ) -> list[DocumentChunk]:
         """
         Split an extracted document into searchable chunks.
+
+        Parameters
+        ----------
+        document:
+            Extracted document.
+
+        document_id:
+            Optional external document identifier.
+            When provided, chunks will use this ID instead
+            of the extractor-generated ID.
         """
 
         chunks: list[DocumentChunk] = []
+
+        chunk_document_id = (
+            document_id
+            if document_id is not None
+            else document.document_id
+        )
 
         chunk_index = 0
 
@@ -68,8 +85,8 @@ class ChunkingService:
 
                 chunks.append(
                     DocumentChunk(
-                        chunk_id=f"{document.document_id}:{chunk_index}",
-                        document_id=document.document_id,
+                        chunk_id=f"{chunk_document_id}:{chunk_index}",
+                        document_id=chunk_document_id,
                         chunk_index=chunk_index,
                         page_number=page.page_number,
                         start_offset=start,

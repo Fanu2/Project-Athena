@@ -36,8 +36,8 @@ class OllamaProvider(LLMProvider):
 
         payload: dict[str, Any] = {
             "model": request.model_name,
-            "prompt": request.prompt,
-            "temperature": request.temperature,
+            "system": request.system_prompt,
+            "prompt": request.user_prompt,
             "stream": False,
         }
 
@@ -64,7 +64,10 @@ class OllamaProvider(LLMProvider):
 
         return LLMResponse(
             text=text,
-            model_name=request.model_name,
+            model=data.get(
+                "model",
+                request.model_name,
+            ),
         )
 
     def list_models(self) -> list[str]:

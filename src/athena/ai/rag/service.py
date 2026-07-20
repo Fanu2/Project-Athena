@@ -53,27 +53,57 @@ class RAGService:
         self,
         question: str,
     ) -> RAGAnswer:
-        """Generate an answer using retrieved context."""
+        """
+        Generate an answer using retrieved document context.
+        """
+
+        #
+        # Retrieve relevant chunks
+        #
 
         results = self._retrieval.search_similar(
             question,
             limit=self._retrieval_limit,
         )
 
+        #
+        # Build context from retrieved sources
+        #
+
         context = self._context_builder.build(
             question,
             results,
         )
+
+        #
+        # Build final user prompt
+        #
 
         prompt = self._prompt_builder.build(
             question,
             context.context,
         )
 
+        #
+        # Create LLM request
+        #
+        # LLMRequest uses system_prompt/user_prompt.
+        # Keep this contract consistent with rag_demo.py.
+        #
+
         request = LLMRequest(
-            prompt=prompt,
-            model_name=self._model_name,
+            system_prompt=(
+                "You are Athena, an offline AI research assistant. "
+                "Answer the user's question using only the provided "
+                "document context. If the answer is not present in "
+                "the context, say that the information is not available."
+            ),
+            user_prompt=prompt,
         )
+
+        #
+        # Generate response
+        #
 
         response = self._llm.generate(
             request,

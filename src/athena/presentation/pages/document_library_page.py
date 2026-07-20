@@ -83,6 +83,21 @@ class DocumentLibraryPage(QWidget):
         self._document_service = service
         self.refresh()
 
+    def set_document_service(
+        self,
+        service: WorkspaceDocumentService,
+    ) -> None:
+        """Attach a document service to the page."""
+
+        self._document_service = service
+        self.refresh()
+
+    @property
+    def document_service(self) -> WorkspaceDocumentService | None:
+        """Return the current document service."""
+
+        return self._document_service
+
     def set_bookmark_service(
         self,
         service: BookmarkService,

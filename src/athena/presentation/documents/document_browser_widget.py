@@ -71,6 +71,9 @@ class DocumentBrowserWidget(QWidget):
 
         self._service = service
 
+        # Refresh after workspace/service becomes available.
+        self.refresh()
+
     def refresh(
         self,
     ) -> None:
@@ -85,8 +88,10 @@ class DocumentBrowserWidget(QWidget):
             self._model.set_documents([])
             return
 
+        documents = self._service.list_documents()
+
         self._model.set_documents(
-            self._service.list_documents(),
+            documents,
         )
 
     def _on_search_changed(
