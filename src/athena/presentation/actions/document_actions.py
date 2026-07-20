@@ -4,6 +4,7 @@ Document actions.
 
 from __future__ import annotations
 
+import traceback
 from pathlib import Path
 
 from PySide6.QtCore import QUrl
@@ -73,10 +74,14 @@ class DocumentActions:
             )
 
         except Exception as exc:
+            # Print the complete traceback to the terminal
+            traceback.print_exc()
+
+            # Show exception type and message
             QMessageBox.critical(
                 self._page,
                 "Import Failed",
-                str(exc),
+                f"{type(exc).__name__}\n\n{exc}",
             )
 
     def import_folder(self) -> None:
@@ -96,10 +101,12 @@ class DocumentActions:
             )
 
         except Exception as exc:
+            traceback.print_exc()
+
             QMessageBox.critical(
                 self._page,
                 "Import Folder Failed",
-                str(exc),
+                f"{type(exc).__name__}\n\n{exc}",
             )
 
     def delete_document(self) -> None:
@@ -119,7 +126,8 @@ class DocumentActions:
             self._page,
             "Delete Document",
             f"Delete '{document.name}'?",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.Yes
+            | QMessageBox.StandardButton.No,
             QMessageBox.StandardButton.No,
         )
 

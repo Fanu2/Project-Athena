@@ -10,6 +10,15 @@ from pathlib import Path
 
 
 @dataclass(slots=True, frozen=True)
+class ExtractedPage:
+    """Text extracted from a single document page."""
+
+    page_number: int
+
+    text: str
+
+
+@dataclass(slots=True, frozen=True)
 class ExtractedDocument:
     """Document after text extraction."""
 
@@ -19,7 +28,11 @@ class ExtractedDocument:
 
     title: str
 
+    # Complete extracted document text.
     text: str
+
+    # Page-by-page extracted content.
+    pages: tuple[ExtractedPage, ...]
 
     page_count: int
 

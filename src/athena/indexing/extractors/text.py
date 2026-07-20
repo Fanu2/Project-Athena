@@ -7,7 +7,10 @@ from __future__ import annotations
 from pathlib import Path
 
 from athena.indexing.extractors.base import BaseExtractor
-from athena.indexing.models import ExtractedDocument
+from athena.indexing.models import (
+    ExtractedDocument,
+    ExtractedPage,
+)
 
 
 class TextExtractor(BaseExtractor):
@@ -43,5 +46,11 @@ class TextExtractor(BaseExtractor):
             path=document,
             title=document.stem,
             text=text,
+            pages=(
+                ExtractedPage(
+                    page_number=1,
+                    text=text,
+                ),
+            ),
             page_count=1,
         )

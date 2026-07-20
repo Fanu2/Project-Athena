@@ -9,7 +9,10 @@ from pathlib import Path
 from docx import Document
 
 from athena.indexing.extractors.base import BaseExtractor
-from athena.indexing.models import ExtractedDocument
+from athena.indexing.models import (
+    ExtractedDocument,
+    ExtractedPage,
+)
 
 
 class DOCXExtractor(BaseExtractor):
@@ -37,12 +40,22 @@ class DOCXExtractor(BaseExtractor):
 
         doc = Document(str(document))
 
-        text = "\n".join(paragraph.text for paragraph in doc.paragraphs if paragraph.text.strip())
+        text = "\n".join(
+            paragraph.text
+            for paragraph in doc.paragraphs
+            if paragraph.text.strip()
+        )
 
         return ExtractedDocument(
             document_id=document.name,
             path=document,
             title=document.stem,
             text=text,
+            pages=(
+                ExtractedPage(
+                    page_number=1,
+                    text=text,
+                ),
+            ),
             page_count=1,
         )

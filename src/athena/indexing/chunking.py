@@ -41,42 +41,46 @@ class ChunkingService:
         document: ExtractedDocument,
     ) -> list[DocumentChunk]:
         """
-        Split an extracted document into chunks.
+        Split an extracted document into searchable chunks.
         """
-
-        text = document.text
-
-        if not text.strip():
-            return []
 
         chunks: list[DocumentChunk] = []
 
-        start = 0
-        index = 0
+        chunk_index = 0
 
-        while start < len(text):
+        for page in document.pages:
 
-            end = min(
-                start + self._chunk_size,
-                len(text),
-            )
+            text = page.text
 
-            chunk_text = text[start:end]
+            if not text.strip():
+                continue
 
-            chunks.append(
-                DocumentChunk(
-                    chunk_id=f"{document.document_id}:{index}",
-                    document_id=document.document_id,
-                    chunk_index=index,
-                    page_number=1,
-                    text=chunk_text,
+            start = 0
+
+            while start < len(text):
+
+                end = min(
+                    start + self._chunk_size,
+                    len(text),
                 )
-            )
 
-            if end == len(text):
-                break
+                chunk_text = text[start:end]
 
-            start = end - self._overlap
-            index += 1
+                chunks.append(
+                    DocumentChunk(
+                        chunk_id=f"{document.document_id}:{chunk_index}",
+                        document_id=document.document_id,
+                        chunk_index=chunk_index,
+                        page_number=page.page_number,
+                        text=chunk_text,
+                    )
+                )
+
+                chunk_index += 1
+
+                if end == len(text):
+                    break
+
+                start = end - self._overlap
 
         return chunks
