@@ -389,6 +389,10 @@ class MainWindow(QMainWindow):
                 query_service,
             )
 
+        self.ask_athena.set_conversation_service(
+            self.context.conversation_service,
+        )
+
         settings_service = self.context.ai_settings_service
 
         if settings_service is not None:
@@ -429,6 +433,8 @@ class MainWindow(QMainWindow):
         self.bookmarks.clear()
 
         self.ask_athena.clear_query_service()
+
+        self.context.conversation_service.clear()
 
         self.status_bar.showMessage(
             "Ready",

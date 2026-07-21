@@ -78,6 +78,9 @@ from athena.settings import (
     AISettingsService,
     LLMSettings,
 )
+from athena.conversation.service import (
+    ConversationService,
+)
 
 
 class ApplicationContext:
@@ -111,6 +114,8 @@ class ApplicationContext:
         self.rag_service: RAGService | None = None
 
         self.athena_query_service: AthenaQueryService | None = None
+
+        self.conversation_service = ConversationService()
 
 
     def open_workspace(

@@ -1,13 +1,15 @@
-"""
-Ask Athena page.
-"""
+from pathlib import (
+    Path,
+)
 
-from __future__ import annotations
-
-from pathlib import Path
-
-from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QKeySequence, QShortcut
+from PySide6.QtCore import (
+    Qt,
+    Signal,
+)
+from PySide6.QtGui import (
+    QKeySequence,
+    QShortcut,
+)
 from PySide6.QtWidgets import (
     QApplication,
     QHBoxLayout,
@@ -20,6 +22,15 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from athena.conversation.service import (
+    ConversationService,
+)
+from athena.presentation.ai.conversation_model import (
+    ConversationModel,
+)
+from athena.presentation.ai.conversation_widget import (
+    ConversationWidget,
+)
 from athena.services.athena_query_service import (
     AthenaQueryService,
 )
@@ -37,18 +48,40 @@ class AskAthenaPage(QWidget):
         """Initialize Ask Athena page."""
         super().__init__(parent)
 
+        #
+        # Services
+        #
+
         self._query_service: AthenaQueryService | None = None
+        self._conversation_service: ConversationService | None = None
+
+        #
+        # Question input
+        #
 
         self.question = QTextEdit()
-        self.question.setPlaceholderText("Ask Athena about your indexed documents...")
+        self.question.setPlaceholderText(
+            "Ask Athena about your indexed documents..."
+        )
         self.question.setMaximumHeight(100)
+
+        #
+        # Buttons
+        #
 
         self.ask_button = QPushButton("Ask")
         self.clear_button = QPushButton("Clear")
         self.copy_button = QPushButton("Copy Answer")
 
-        self.answer = QTextEdit()
-        self.answer.setReadOnly(True)
+        #
+        # Conversation
+        #
+
+        self.conversation = ConversationWidget()
+
+        #
+        # Sources
+        #
 
         self.sources = QTreeWidget()
         self.sources.setHeaderLabels(
@@ -65,9 +98,21 @@ class AskAthenaPage(QWidget):
             self._open_source,
         )
 
+        #
+        # Status
+        #
+
         self.status = QLabel("Ready")
 
+        #
+        # Build UI
+        #
+
         self._setup_ui()
+
+        #
+        # Signals
+        #
 
         self.ask_button.clicked.connect(
             self.ask_question,
@@ -83,7 +128,8 @@ class AskAthenaPage(QWidget):
 
         shortcut = QShortcut(
             QKeySequence(
-                Qt.KeyboardModifier.ControlModifier | Qt.Key.Key_Return,
+                Qt.KeyboardModifier.ControlModifier
+                | Qt.Key.Key_Return,
             ),
             self,
         )
@@ -92,30 +138,53 @@ class AskAthenaPage(QWidget):
             self.ask_question,
         )
 
+
     def _setup_ui(self) -> None:
-        """Create page layout."""
+        """Create the page layout."""
 
         layout = QVBoxLayout(self)
 
-        layout.addWidget(QLabel("Question"))
-        layout.addWidget(self.question)
+        layout.addWidget(
+            QLabel("Question"),
+        )
+        layout.addWidget(
+            self.question,
+        )
 
         button_layout = QHBoxLayout()
 
-        button_layout.addWidget(self.ask_button)
-        button_layout.addWidget(self.clear_button)
-        button_layout.addWidget(self.copy_button)
+        button_layout.addWidget(
+            self.ask_button,
+        )
+        button_layout.addWidget(
+            self.clear_button,
+        )
+        button_layout.addWidget(
+            self.copy_button,
+        )
         button_layout.addStretch()
 
-        layout.addLayout(button_layout)
+        layout.addLayout(
+            button_layout,
+        )
 
-        layout.addWidget(self.status)
+        layout.addWidget(
+            self.status,
+        )
 
-        layout.addWidget(QLabel("Answer"))
-        layout.addWidget(self.answer)
+        layout.addWidget(
+            QLabel("Conversation"),
+        )
+        layout.addWidget(
+            self.conversation,
+        )
 
-        layout.addWidget(QLabel("Sources"))
-        layout.addWidget(self.sources)
+        layout.addWidget(
+            QLabel("Sources"),
+        )
+        layout.addWidget(
+            self.sources,
+        )
 
     def set_query_service(
         self,
@@ -137,14 +206,19 @@ class AskAthenaPage(QWidget):
             "No workspace open",
         )
     
-    def clear_page(self) -> None:
-        """Clear question, answer and sources."""
+    def clear_page(
+        self,
+    ) -> None:
+        """Clear the current conversation."""
 
         self.question.clear()
 
-        self.answer.clear()
-
         self.sources.clear()
+
+        if self._conversation_service is not None:
+            self._conversation_service.clear()
+
+        self.conversation.refresh()
 
         if self._query_service is None:
             self.status.setText(
@@ -155,16 +229,32 @@ class AskAthenaPage(QWidget):
                 "Ready",
             )
 
-    def copy_answer(self) -> None:
-        """Copy answer to the clipboard."""
+    def copy_answer(
+        self,
+    ) -> None:
+        """Copy the most recent response."""
+
+        model = self.conversation.model()
+
+        if model is None:
+            return
+
+        message = model.last_message()
+
+        if message is None:
+            return
 
         QApplication.clipboard().setText(
-            self.answer.toPlainText(),
+            message.text,
         )
 
-        self.status.setText("Answer copied to clipboard")
+        self.status.setText(
+            "Latest response copied",
+        )
 
-    def ask_question(self) -> None:
+    def ask_question(
+        self,
+    ) -> None:
         """Ask Athena a question."""
 
         if self._query_service is None:
@@ -188,6 +278,13 @@ class AskAthenaPage(QWidget):
                 "Searching Athena knowledge...",
             )
 
+            if self._conversation_service is not None:
+                self._conversation_service.add_user_message(
+                    question,
+                )
+
+                self.conversation.refresh()
+
             result = self._query_service.answer(
                 question,
             )
@@ -197,11 +294,16 @@ class AskAthenaPage(QWidget):
             #
             # Workspace intelligence response
             #
-            if isinstance(result, str):
+            if isinstance(
+                result,
+                str,
+            ):
+                if self._conversation_service is not None:
+                    self._conversation_service.add_assistant_message(
+                        result,
+                    )
 
-                self.answer.setPlainText(
-                    result,
-                )
+                    self.conversation.refresh()
 
                 self.status.setText(
                     "Completed (workspace information)",
@@ -212,9 +314,12 @@ class AskAthenaPage(QWidget):
             #
             # RAG response with citations
             #
-            self.answer.setPlainText(
-                result.answer,
-            )
+            if self._conversation_service is not None:
+                self._conversation_service.add_assistant_message(
+                    result.answer,
+                )
+
+                self.conversation.refresh()
 
             for source in result.sources:
 
@@ -224,13 +329,16 @@ class AskAthenaPage(QWidget):
 
                 item = QTreeWidgetItem(
                     [
-                        source.document_name or str(source.document_id),
+                        source.document_name
+                        or str(source.document_id),
                         str(source.page_number),
                         f"{similarity}%",
                     ]
                 )
 
-                # Store metadata for future navigation.
+                #
+                # Store metadata for navigation.
+                #
                 if hasattr(
                     source,
                     "document_path",
@@ -257,9 +365,14 @@ class AskAthenaPage(QWidget):
 
         except Exception as exc:
 
-            self.answer.clear()
-
             self.sources.clear()
+
+            if self._conversation_service is not None:
+                self._conversation_service.add_system_message(
+                    f"Error: {exc}",
+                )
+
+                self.conversation.refresh()
 
             self.status.setText(
                 f"Error: {exc}",
@@ -267,8 +380,9 @@ class AskAthenaPage(QWidget):
 
         finally:
 
-            self.ask_button.setEnabled(True)
-
+            self.ask_button.setEnabled(
+                True,
+            )
     def _open_source(
         self,
         item: QTreeWidgetItem,
@@ -294,4 +408,20 @@ class AskAthenaPage(QWidget):
         self.document_requested.emit(
             Path(path),
             int(page),
+        )
+
+    def set_conversation_service(
+        self,
+        service: ConversationService,
+    ) -> None:
+        """Attach conversation service."""
+
+        self._conversation_service = service
+
+        model = ConversationModel(
+            service,
+        )
+
+        self.conversation.set_model(
+            model,
         )
