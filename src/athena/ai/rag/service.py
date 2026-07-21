@@ -87,9 +87,6 @@ class RAGService:
         #
         # Create LLM request
         #
-        # LLMRequest uses system_prompt/user_prompt.
-        # Keep this contract consistent with rag_demo.py.
-        #
 
         request = LLMRequest(
             system_prompt=(
@@ -99,6 +96,7 @@ class RAGService:
                 "the context, say that the information is not available."
             ),
             user_prompt=prompt,
+            model_name=self._model_name,
         )
 
         #
@@ -109,7 +107,12 @@ class RAGService:
             request,
         )
 
+        #
+        # Return structured RAG answer
+        #
+
         return RAGAnswer(
             answer=response.text,
+            model=response.model,
             sources=context.sources,
         )

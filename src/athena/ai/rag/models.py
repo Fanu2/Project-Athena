@@ -40,8 +40,10 @@ class RAGContext:
 
 @dataclass(slots=True)
 class RAGAnswer:
-    """Generated answer with structured sources."""
+    """Generated answer with structured metadata and sources."""
 
     answer: str
+
+    model: str
 
     sources: list[RAGSource]

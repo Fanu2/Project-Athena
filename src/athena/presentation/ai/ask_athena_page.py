@@ -101,7 +101,13 @@ class AskAthenaPage(QWidget):
         #
 
         self.status = QLabel("Ready")
+        
+        #
+        # Current model
+        #
 
+        self.model_label = QLabel("Model: -")
+       
         #
         # Build UI
         #
@@ -169,6 +175,10 @@ class AskAthenaPage(QWidget):
         )
 
         layout.addWidget(
+            self.model_label,
+        )
+
+        layout.addWidget(
             QLabel("Conversation"),
         )
         layout.addWidget(
@@ -189,7 +199,14 @@ class AskAthenaPage(QWidget):
         """Attach Athena query service."""
 
         self._query_service = service
-        self.status.setText("Ready")
+
+        self.status.setText(
+            "Ready",
+        )
+
+        self.model_label.setText(
+            "Model: -",
+        )
 
     def clear_query_service(self) -> None:
         """Detach Athena query service."""
@@ -201,6 +218,11 @@ class AskAthenaPage(QWidget):
         self.status.setText(
             "No workspace open",
         )
+
+        self.model_label.setText(
+            "Model: -",
+        )
+
 
     def clear_page(
         self,
@@ -215,6 +237,10 @@ class AskAthenaPage(QWidget):
             self._conversation_service.clear()
 
         self.conversation.refresh()
+
+        self.model_label.setText(
+            "Model: -",
+        )
 
         if self._query_service is None:
             self.status.setText(
@@ -290,6 +316,7 @@ class AskAthenaPage(QWidget):
             #
             # Workspace intelligence response
             #
+
             if isinstance(
                 result,
                 str,
@@ -301,6 +328,10 @@ class AskAthenaPage(QWidget):
 
                     self.conversation.refresh()
 
+                self.model_label.setText(
+                    "Model: Built-in",
+                )
+
                 self.status.setText(
                     "Completed (workspace information)",
                 )
@@ -310,12 +341,17 @@ class AskAthenaPage(QWidget):
             #
             # RAG response with citations
             #
+
             if self._conversation_service is not None:
                 self._conversation_service.add_assistant_message(
                     result.answer,
                 )
 
                 self.conversation.refresh()
+
+            self.model_label.setText(
+                f"Model: {result.model}",
+            )
 
             for source in result.sources:
 
@@ -334,6 +370,7 @@ class AskAthenaPage(QWidget):
                 #
                 # Store metadata for navigation.
                 #
+
                 if hasattr(
                     source,
                     "document_path",
@@ -368,6 +405,10 @@ class AskAthenaPage(QWidget):
                 )
 
                 self.conversation.refresh()
+
+            self.model_label.setText(
+                "Model: -",
+            )
 
             self.status.setText(
                 f"Error: {exc}",

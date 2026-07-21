@@ -434,7 +434,9 @@ class MainWindow(QMainWindow):
 
         self.ask_athena.clear_query_service()
 
-        self.context.conversation_service.clear()
+        self.ask_athena.set_conversation_service(
+            None,
+        )
 
         self.status_bar.showMessage(
             "Ready",
