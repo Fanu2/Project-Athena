@@ -54,17 +54,9 @@ class ConversationModel(QAbstractListModel):
     ) -> str | ConversationMessage | None:
         """Return data for a conversation message."""
 
-        messages = (
-            self._conversation_service
-            .conversation
-            .messages
-        )
+        messages = self._conversation_service.conversation.messages
 
-        if (
-            not index.isValid()
-            or index.row() < 0
-            or index.row() >= len(messages)
-        ):
+        if not index.isValid() or index.row() < 0 or index.row() >= len(messages):
             return None
 
         message = messages[index.row()]
@@ -80,10 +72,7 @@ class ConversationModel(QAbstractListModel):
             else:
                 prefix = "System"
 
-            return (
-                f"{prefix}:\n"
-                f"{message.text}"
-            )
+            return f"{prefix}:\n" f"{message.text}"
 
         if role == Qt.ItemDataRole.UserRole:
             return message
@@ -108,11 +97,7 @@ class ConversationModel(QAbstractListModel):
     ) -> ConversationMessage | None:
         """Return the most recent conversation message."""
 
-        messages = (
-            self._conversation_service
-            .conversation
-            .messages
-        )
+        messages = self._conversation_service.conversation.messages
 
         if not messages:
             return None

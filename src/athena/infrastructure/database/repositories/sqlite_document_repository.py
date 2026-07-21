@@ -52,11 +52,7 @@ class SqliteDocumentRepository(DocumentRepository):
     def get_all(
         self,
     ) -> list[Document]:
-        models = (
-            self._session.query(DocumentModel)
-            .order_by(DocumentModel.filename)
-            .all()
-        )
+        models = self._session.query(DocumentModel).order_by(DocumentModel.filename).all()
 
         return [self._to_domain(model) for model in models]
 
@@ -65,9 +61,7 @@ class SqliteDocumentRepository(DocumentRepository):
         file_path: str,
     ) -> bool:
         return (
-            self._session.query(DocumentModel)
-            .filter(DocumentModel.file_path == file_path)
-            .first()
+            self._session.query(DocumentModel).filter(DocumentModel.file_path == file_path).first()
             is not None
         )
 
@@ -78,11 +72,7 @@ class SqliteDocumentRepository(DocumentRepository):
         """Find document by file path."""
 
         model = (
-            self._session.query(DocumentModel)
-            .filter(
-                DocumentModel.file_path == file_path
-            )
-            .first()
+            self._session.query(DocumentModel).filter(DocumentModel.file_path == file_path).first()
         )
 
         if model is None:
@@ -91,7 +81,7 @@ class SqliteDocumentRepository(DocumentRepository):
         return self._to_domain(
             model,
         )
-    
+
     def update(
         self,
         document: Document,

@@ -58,7 +58,4 @@ class AthenaQueryService:
             "my files",
         ]
 
-        return any(
-            keyword in text
-            for keyword in keywords
-        )
+        return any(keyword in text for keyword in keywords)

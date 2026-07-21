@@ -40,11 +40,7 @@ class DOCXExtractor(BaseExtractor):
 
         doc = Document(str(document))
 
-        text = "\n".join(
-            paragraph.text
-            for paragraph in doc.paragraphs
-            if paragraph.text.strip()
-        )
+        text = "\n".join(paragraph.text for paragraph in doc.paragraphs if paragraph.text.strip())
 
         return ExtractedDocument(
             document_id=document.name,

@@ -32,10 +32,7 @@ class WorkspaceQueryService:
 
         return {
             "documents": len(documents),
-            "pages": sum(
-                document.page_count
-                for document in documents
-            ),
+            "pages": sum(document.page_count for document in documents),
         }
 
     def describe_library(self) -> str:

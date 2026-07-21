@@ -38,8 +38,7 @@ class SQLiteChunkRepository(ChunkRepository):
         """Create database schema."""
 
         with self._connect() as connection:
-            connection.execute(
-                """
+            connection.execute("""
                 CREATE TABLE IF NOT EXISTS chunks (
                     chunk_id TEXT PRIMARY KEY,
                     document_id TEXT NOT NULL,
@@ -49,16 +48,13 @@ class SQLiteChunkRepository(ChunkRepository):
                     end_offset INTEGER NOT NULL,
                     text TEXT NOT NULL
                 )
-                """
-            )
+                """)
 
-            connection.execute(
-                """
+            connection.execute("""
                 CREATE INDEX IF NOT EXISTS
                 idx_chunks_document
                 ON chunks(document_id)
-                """
-            )
+                """)
 
     def save_chunks(
         self,

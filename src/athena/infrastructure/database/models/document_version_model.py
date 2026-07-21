@@ -5,6 +5,7 @@ SQLAlchemy model for document versions.
 from __future__ import annotations
 
 from datetime import datetime
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from sqlalchemy import DateTime
@@ -18,6 +19,11 @@ from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 
 from athena.infrastructure.database.base import Base
+
+if TYPE_CHECKING:
+    from athena.infrastructure.database.models.document_model import (
+        DocumentModel,
+    )
 
 
 class DocumentVersionModel(Base):

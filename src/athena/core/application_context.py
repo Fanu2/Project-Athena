@@ -117,7 +117,6 @@ class ApplicationContext:
 
         self.conversation_service = ConversationService()
 
-
     def open_workspace(
         self,
         workspace_path: Path,
@@ -130,7 +129,6 @@ class ApplicationContext:
             parents=True,
             exist_ok=True,
         )
-
 
         #
         # Storage
@@ -148,7 +146,6 @@ class ApplicationContext:
             athena_directory / "embeddings.db",
         )
 
-
         #
         # AI settings
         #
@@ -163,13 +160,11 @@ class ApplicationContext:
             model=ai_settings.default_model,
         )
 
-
         #
         # AI services
         #
 
         embedding_service = EmbeddingService()
-
 
         #
         # Indexing
@@ -183,11 +178,9 @@ class ApplicationContext:
             embedding_repository=embedding_repository,
         )
 
-
         self.indexed_document_service = IndexedDocumentService(
             document_repository,
         )
-
 
         #
         # Search
@@ -197,7 +190,6 @@ class ApplicationContext:
             chunk_repository,
         )
 
-
         #
         # Documents
         #
@@ -206,12 +198,10 @@ class ApplicationContext:
             workspace_path / "documents",
         )
 
-
         self.document_service = WorkspaceDocumentService(
             document_service=document_service,
             indexing_service=self.indexing_service,
         )
-
 
         #
         # RAG
@@ -223,11 +213,9 @@ class ApplicationContext:
             chunk_repository=chunk_repository,
         )
 
-
         context_builder = ContextBuilder(
             document_service=document_service,
         )
-
 
         self.rag_service = RAGService(
             retrieval_service=retrieval_service,
@@ -243,7 +231,6 @@ class ApplicationContext:
             ),
         )
 
-
         #
         # User data
         #
@@ -255,7 +242,6 @@ class ApplicationContext:
         self.note_service = NoteService(
             athena_directory / "notes.json",
         )
-
 
     def close_workspace(self) -> None:
         """Release workspace-specific services."""

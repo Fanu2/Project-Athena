@@ -49,21 +49,11 @@ def run_demo(
     print("Athena RAG Demo")
     print("-" * 40)
 
-    chunk_database = (
-        Path.home()
-        / ".athena"
-        / "chunks.db"
-    )
+    chunk_database = Path.home() / ".athena" / "chunks.db"
 
-    embedding_database = (
-        Path.home()
-        / ".athena"
-        / "embeddings.db"
-    )
+    embedding_database = Path.home() / ".athena" / "embeddings.db"
 
-    print(
-        "Indexing document..."
-    )
+    print("Indexing document...")
 
     count = index_document(
         file_path,
@@ -71,9 +61,7 @@ def run_demo(
         embedding_database,
     )
 
-    print(
-        f"Created {count} chunks"
-    )
+    print(f"Created {count} chunks")
 
     chunk_repository = SQLiteChunkRepository(
         chunk_database,
@@ -85,10 +73,8 @@ def run_demo(
 
     with SessionFactory() as session:
 
-        document_repository = (
-            SqliteDocumentRepository(
-                session,
-            )
+        document_repository = SqliteDocumentRepository(
+            session,
         )
 
         retrieval = RetrievalService(
@@ -99,18 +85,14 @@ def run_demo(
         )
 
         print()
-        print(
-            f"Question: {question}"
-        )
+        print(f"Question: {question}")
 
         results = retrieval.search_similar(
             question,
         )
 
     if not results:
-        print(
-            "No relevant information found."
-        )
+        print("No relevant information found.")
         return
 
     prompt = PromptBuilder.build(

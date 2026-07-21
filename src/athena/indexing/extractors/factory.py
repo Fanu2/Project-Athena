@@ -76,6 +76,4 @@ class ExtractorFactory:
             if extension in extractor.supported_extensions:
                 return extractor
 
-        raise UnsupportedDocumentError(
-            f"Unsupported document type: {extension}"
-        )
+        raise UnsupportedDocumentError(f"Unsupported document type: {extension}")

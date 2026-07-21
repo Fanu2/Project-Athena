@@ -49,9 +49,7 @@ class RetrievalService:
 
         self._similarity = SimilarityCalculator()
 
-        self._max_chunks_per_document = (
-            max_chunks_per_document
-        )
+        self._max_chunks_per_document = max_chunks_per_document
 
     def search_similar(
         self,
@@ -64,9 +62,7 @@ class RetrievalService:
             query,
         )
 
-        embeddings = (
-            self._embedding_repository.list_all()
-        )
+        embeddings = self._embedding_repository.list_all()
 
         scored: list[tuple] = []
 
@@ -115,17 +111,12 @@ class RetrievalService:
             if self._document_repository is not None:
 
                 try:
-                    document = (
-                        self._document_repository.get(
-                            UUID(chunk.document_id),
-                        )
+                    document = self._document_repository.get(
+                        UUID(chunk.document_id),
                     )
 
                     if document is not None:
-                        document_title = (
-                            document.title
-                            or document.filename
-                        )
+                        document_title = document.title or document.filename
 
                 except ValueError:
                     pass
@@ -143,9 +134,7 @@ class RetrievalService:
                 )
             )
 
-            document_counts[chunk.document_id] = (
-                count + 1
-            )
+            document_counts[chunk.document_id] = count + 1
 
             if len(results) >= limit:
                 break

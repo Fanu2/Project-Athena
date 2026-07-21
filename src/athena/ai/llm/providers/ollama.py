@@ -29,11 +29,7 @@ class OllamaProvider(LLMProvider):
     ) -> None:
         """Initialize Ollama provider."""
 
-        self._settings = (
-            settings
-            if settings is not None
-            else LLMSettings()
-        )
+        self._settings = settings if settings is not None else LLMSettings()
 
     def generate(
         self,
@@ -56,22 +52,16 @@ class OllamaProvider(LLMProvider):
             )
 
         except requests.RequestException as exc:
-            raise ProviderUnavailableError(
-                "Ollama server is unavailable."
-            ) from exc
+            raise ProviderUnavailableError("Ollama server is unavailable.") from exc
 
         if response.status_code != 200:
-            raise GenerationError(
-                f"Ollama request failed: {response.text}"
-            )
+            raise GenerationError(f"Ollama request failed: {response.text}")
 
         try:
             data = response.json()
 
         except ValueError as exc:
-            raise GenerationError(
-                "Invalid JSON returned by Ollama."
-            ) from exc
+            raise GenerationError("Invalid JSON returned by Ollama.") from exc
 
         return LLMResponse(
             text=data.get(

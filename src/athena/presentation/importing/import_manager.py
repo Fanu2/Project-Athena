@@ -25,6 +25,11 @@ from athena.services.workspace_document_service import (
 )
 
 
+def _noop() -> None:
+    """Default callback used when no refresh callback is supplied."""
+    pass
+
+
 class ImportManager:
     """Coordinates asynchronous document imports."""
 
@@ -49,7 +54,7 @@ class ImportManager:
         del page
 
         if refresh_callback is None:
-            refresh_callback = lambda: None
+            refresh_callback = _noop
 
         if not documents:
             return

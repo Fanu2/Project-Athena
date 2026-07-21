@@ -57,11 +57,7 @@ class ChunkingService:
 
         chunks: list[DocumentChunk] = []
 
-        chunk_document_id = (
-            document_id
-            if document_id is not None
-            else document.document_id
-        )
+        chunk_document_id = document_id if document_id is not None else document.document_id
 
         chunk_index = 0
 

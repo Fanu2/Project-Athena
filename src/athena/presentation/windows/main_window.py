@@ -304,7 +304,7 @@ class MainWindow(QMainWindow):
         self.page_stack.setCurrentWidget(
             self.settings,
         )
-    
+
     def show_ai(self) -> None:
         """Show Ask Athena page."""
 

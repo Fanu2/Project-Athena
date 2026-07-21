@@ -16,8 +16,6 @@ def test_default_llm_settings() -> None:
 
     assert settings.model == "gemma3:4b"
 
-    assert settings.base_url == (
-        "http://localhost:11434"
-    )
+    assert settings.base_url == ("http://localhost:11434")
 
     assert settings.timeout == 120

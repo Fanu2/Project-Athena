@@ -60,9 +60,7 @@ class AskAthenaPage(QWidget):
         #
 
         self.question = QTextEdit()
-        self.question.setPlaceholderText(
-            "Ask Athena about your indexed documents..."
-        )
+        self.question.setPlaceholderText("Ask Athena about your indexed documents...")
         self.question.setMaximumHeight(100)
 
         #
@@ -128,8 +126,7 @@ class AskAthenaPage(QWidget):
 
         shortcut = QShortcut(
             QKeySequence(
-                Qt.KeyboardModifier.ControlModifier
-                | Qt.Key.Key_Return,
+                Qt.KeyboardModifier.ControlModifier | Qt.Key.Key_Return,
             ),
             self,
         )
@@ -137,7 +134,6 @@ class AskAthenaPage(QWidget):
         shortcut.activated.connect(
             self.ask_question,
         )
-
 
     def _setup_ui(self) -> None:
         """Create the page layout."""
@@ -205,7 +201,7 @@ class AskAthenaPage(QWidget):
         self.status.setText(
             "No workspace open",
         )
-    
+
     def clear_page(
         self,
     ) -> None:
@@ -329,8 +325,7 @@ class AskAthenaPage(QWidget):
 
                 item = QTreeWidgetItem(
                     [
-                        source.document_name
-                        or str(source.document_id),
+                        source.document_name or str(source.document_id),
                         str(source.page_number),
                         f"{similarity}%",
                     ]
@@ -383,6 +378,7 @@ class AskAthenaPage(QWidget):
             self.ask_button.setEnabled(
                 True,
             )
+
     def _open_source(
         self,
         item: QTreeWidgetItem,

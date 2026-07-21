@@ -32,10 +32,7 @@ class HybridRanker:
 
             existing = merged.get(result.chunk_id)
 
-            if (
-                existing is None
-                or result.score > existing.score
-            ):
+            if existing is None or result.score > existing.score:
                 merged[result.chunk_id] = result
 
         ranked = sorted(

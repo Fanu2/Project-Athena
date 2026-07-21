@@ -60,9 +60,7 @@ class ImportWorker(QObject):
             start=1,
         ):
             if self._cancel_requested:
-                self.signals.status.emit(
-                    "Cancelling import..."
-                )
+                self.signals.status.emit("Cancelling import...")
 
                 self.signals.cancelled.emit()
                 return
@@ -71,9 +69,7 @@ class ImportWorker(QObject):
                 document.name,
             )
 
-            self.signals.status.emit(
-                "Importing document..."
-            )
+            self.signals.status.emit("Importing document...")
 
             try:
                 self._document_service.import_document(

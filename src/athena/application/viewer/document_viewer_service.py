@@ -92,9 +92,7 @@ class DocumentViewerService:
         """
 
         if not 0 <= page < self.page_count:
-            raise ValueError(
-                f"Page {page} is outside the valid range."
-            )
+            raise ValueError(f"Page {page} is outside the valid range.")
 
         self._current_page = page
 

@@ -46,18 +46,14 @@ class OllamaProvider(LLMProvider):
             )
             response.raise_for_status()
         except httpx.HTTPError as exc:
-            raise RuntimeError(
-                "Unable to communicate with the Ollama server."
-            ) from exc
+            raise RuntimeError("Unable to communicate with the Ollama server.") from exc
 
         data = response.json()
 
         result = data.get("response")
 
         if not isinstance(result, str):
-            raise RuntimeError(
-                "Invalid response received from Ollama."
-            )
+            raise RuntimeError("Invalid response received from Ollama.")
 
         return result.strip()
 
@@ -77,9 +73,7 @@ class OllamaProvider(LLMProvider):
         models = data.get("models")
 
         if not isinstance(models, list):
-            raise RuntimeError(
-                "Invalid model list received from Ollama."
-            )
+            raise RuntimeError("Invalid model list received from Ollama.")
 
         model_names: list[str] = []
 

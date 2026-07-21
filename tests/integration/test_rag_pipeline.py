@@ -120,9 +120,7 @@ def test_complete_rag_pipeline(
         embedding_database,
     )
 
-    document_id = UUID(
-        "11111111-1111-1111-1111-111111111111"
-    )
+    document_id = UUID("11111111-1111-1111-1111-111111111111")
 
     document = Document(
         id=document_id,
@@ -146,9 +144,7 @@ def test_complete_rag_pipeline(
         page_number=1,
         start_offset=0,
         end_offset=50,
-        text=(
-            "Athena is an offline AI research assistant."
-        ),
+        text=("Athena is an offline AI research assistant."),
     )
 
     chunk_repository.save_chunks(
@@ -177,10 +173,7 @@ def test_complete_rag_pipeline(
 
     assert len(results) > 0
 
-    assert (
-        results[0].document_title
-        == "Athena Research Guide"
-    )
+    assert results[0].document_title == "Athena Research Guide"
 
     prompt = PromptBuilder.build(
         PromptRequest(
@@ -203,7 +196,4 @@ def test_complete_rag_pipeline(
         )
     )
 
-    assert (
-        answer.text
-        == "Athena is an offline AI research assistant."
-    )
+    assert answer.text == "Athena is an offline AI research assistant."

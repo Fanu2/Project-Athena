@@ -76,11 +76,7 @@ class DocumentActions:
             self._page,
             "Import Document",
             "",
-            (
-                "Documents "
-                "(*.pdf *.docx *.txt *.md);;"
-                "All Files (*)"
-            ),
+            ("Documents " "(*.pdf *.docx *.txt *.md);;" "All Files (*)"),
         )
 
         if not filename:
@@ -180,8 +176,7 @@ class DocumentActions:
             self._page,
             "Delete Document",
             f"Delete '{document.name}'?",
-            QMessageBox.StandardButton.Yes
-            | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             QMessageBox.StandardButton.No,
         )
 

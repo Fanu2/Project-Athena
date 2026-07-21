@@ -75,7 +75,7 @@ class ConversationWidget(QWidget):
         layout.addWidget(
             self.list_view,
         )
-    
+
     def set_model(
         self,
         model: ConversationModel,

@@ -74,11 +74,7 @@ class IndexingService:
 
         self._embedding_repository = embedding_repository
 
-        self._chunking = (
-            chunking_service
-            if chunking_service is not None
-            else ChunkingService()
-        )
+        self._chunking = chunking_service if chunking_service is not None else ChunkingService()
 
     def extract_document(
         self,
@@ -120,11 +116,8 @@ class IndexingService:
         # Duplicate protection
         #
 
-        if (
-            self._index_repository is not None
-            and self._index_repository.exists_by_hash(
-                document_hash,
-            )
+        if self._index_repository is not None and self._index_repository.exists_by_hash(
+            document_hash,
         ):
             return []
 
@@ -143,10 +136,8 @@ class IndexingService:
         registered_document = None
 
         if self._document_adapter is not None:
-            registered_document = (
-                self._document_adapter.register(
-                    document,
-                )
+            registered_document = self._document_adapter.register(
+                document,
             )
 
         document_id = (
@@ -197,10 +188,7 @@ class IndexingService:
         # Generate embeddings
         #
 
-        if (
-            self._embedding_service is not None
-            and self._embedding_repository is not None
-        ):
+        if self._embedding_service is not None and self._embedding_repository is not None:
 
             for chunk in chunks:
 
