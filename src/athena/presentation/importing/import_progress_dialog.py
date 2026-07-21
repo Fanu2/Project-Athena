@@ -219,8 +219,16 @@ class ImportProgressDialog(QDialog):
     def set_progress(
         self,
         current: int,
+        total: int,
     ) -> None:
         """Update the progress bar."""
+
+        self.progress_bar.setMaximum(
+            max(
+                total,
+                1,
+            ),
+        )
 
         self.progress_bar.setValue(
             current,

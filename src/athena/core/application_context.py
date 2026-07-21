@@ -82,6 +82,9 @@ from athena.conversation.service import (
     ConversationService,
 )
 
+from athena.workspace.models import Workspace
+from athena.workspace.service import WorkspaceService
+
 
 class ApplicationContext:
     """Owns application-wide services."""
@@ -105,6 +108,9 @@ class ApplicationContext:
 
         self.note_service: NoteService | None = None
 
+        self.workspace_service = WorkspaceService()
+        self.current_workspace: Workspace | None = None
+
         # Compatibility with GUI
         self.ai_settings_service: AISettingsService | None = None
 
@@ -122,6 +128,18 @@ class ApplicationContext:
         workspace_path: Path,
     ) -> None:
         """Initialize workspace-specific services."""
+
+        #
+        # Load workspace metadata
+        #
+
+        workspace = self.workspace_service.open_workspace(
+            workspace_path,
+        )
+
+        self.current_workspace = workspace
+
+        workspace_path = workspace.path
 
         athena_directory = workspace_path / ".athena"
 
@@ -195,7 +213,7 @@ class ApplicationContext:
         #
 
         document_service = DocumentService(
-            workspace_path / "documents",
+            workspace.path / "documents",
         )
 
         self.document_service = WorkspaceDocumentService(
@@ -260,6 +278,16 @@ class ApplicationContext:
 
         self.rag_service = None
 
+        self.athena_query_service = None
+
         self.ai_settings_service = None
 
         self.llm_settings = None
+
+        self.current_workspace = None
+
+    @property
+    def workspace(self) -> Workspace:
+        if self.current_workspace is None:
+            raise RuntimeError("No workspace is currently open.")
+        return self.current_workspace
