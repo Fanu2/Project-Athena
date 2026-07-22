@@ -11,7 +11,14 @@ from athena.ai.embeddings.models import EmbeddingRecord
 from athena.ai.embeddings.repository import EmbeddingRepository
 from athena.ai.embeddings.service import EmbeddingService
 
-from athena.indexing.chunking import ChunkingService
+from athena.indexing.chunking_engine.adapter import (
+    ChunkingAdapter,
+)
+
+from athena.indexing.chunking_engine.legacy_adapter import (
+    LegacyChunkingAdapter,
+)
+
 from athena.indexing.extractors.factory import ExtractorFactory
 from athena.indexing.hashing import sha256_file
 
@@ -46,7 +53,7 @@ class IndexingService:
         document_library_repository: SqliteDocumentRepository | None = None,
         embedding_service: EmbeddingService | None = None,
         embedding_repository: EmbeddingRepository | None = None,
-        chunking_service: ChunkingService | None = None,
+        chunking_adapter: ChunkingAdapter | None = None,
     ) -> None:
         """Initialize indexing service."""
 
@@ -74,7 +81,18 @@ class IndexingService:
 
         self._embedding_repository = embedding_repository
 
-        self._chunking = chunking_service if chunking_service is not None else ChunkingService()
+        #
+        # Chunking implementation
+        #
+        # Default remains legacy chunking.
+        # Structure-aware chunking can be injected later.
+        #
+
+        self._chunking = (
+            chunking_adapter
+            if chunking_adapter is not None
+            else LegacyChunkingAdapter()
+        )
 
     def extract_document(
         self,
@@ -112,26 +130,17 @@ class IndexingService:
             document,
         )
 
-        #
-        # Duplicate protection
-        #
-
-        if self._index_repository is not None and self._index_repository.exists_by_hash(
-            document_hash,
+        if (
+            self._index_repository is not None
+            and self._index_repository.exists_by_hash(
+                document_hash,
+            )
         ):
             return []
-
-        #
-        # Extract
-        #
 
         extracted = self.extract_document(
             document,
         )
-
-        #
-        # Register in Athena document library
-        #
 
         registered_document = None
 
@@ -146,18 +155,10 @@ class IndexingService:
             else extracted.document_id
         )
 
-        #
-        # Chunk
-        #
-
         chunks = self.chunk_document(
             extracted,
             document_id=document_id,
         )
-
-        #
-        # Store chunks
-        #
 
         self._repository.delete_chunks(
             document_id,
@@ -166,10 +167,6 @@ class IndexingService:
         self._repository.save_chunks(
             chunks,
         )
-
-        #
-        # Save legacy indexing metadata
-        #
 
         if self._index_repository is not None:
             self._index_repository.save_document(
@@ -183,11 +180,10 @@ class IndexingService:
                 )
             )
 
-        #
-        # Generate embeddings
-        #
-
-        if self._embedding_service is not None and self._embedding_repository is not None:
+        if (
+            self._embedding_service is not None
+            and self._embedding_repository is not None
+        ):
             for chunk in chunks:
                 vector = self._embedding_service.embed(
                     chunk.text,
