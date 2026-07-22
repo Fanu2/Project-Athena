@@ -8,10 +8,9 @@ from __future__ import annotations
 
 import uuid
 
-from athena.indexing.chunking.models import (
-    ChunkCandidate,
-    DocumentChunk,
-)
+from athena.indexing.models import DocumentChunk
+
+from athena.indexing.chunking.models import ChunkCandidate
 
 
 class MetadataBuilder:

@@ -12,10 +12,11 @@ from athena.indexing.chunking.detectors import (
     ListDetector,
     TableDetector,
 )
+from athena.indexing.models import ExtractedDocument
+
 from athena.indexing.chunking.models import (
     BlockType,
     DocumentBlock,
-    ExtractedDocument,
 )
 
 

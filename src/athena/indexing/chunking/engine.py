@@ -6,12 +6,13 @@ Coordinates the complete chunking pipeline.
 
 from __future__ import annotations
 
-from athena.indexing.chunking.builder import ChunkBuilder
-from athena.indexing.chunking.metadata import MetadataBuilder
-from athena.indexing.chunking.models import (
+from athena.indexing.models import (
     DocumentChunk,
     ExtractedDocument,
 )
+
+from athena.indexing.chunking.builder import ChunkBuilder
+from athena.indexing.chunking.metadata import MetadataBuilder
 from athena.indexing.chunking.parser import DocumentParser
 from athena.indexing.chunking.splitter import ChunkSplitter
 
