@@ -15,8 +15,12 @@ from athena.indexing.chunking_engine.adapter import (
     ChunkingAdapter,
 )
 
-from athena.indexing.chunking_engine.legacy_adapter import (
-    LegacyChunkingAdapter,
+from athena.indexing.chunking_engine.factory import (
+    ChunkingAdapterFactory,
+)
+
+from athena.indexing.chunking_engine.settings import (
+    ChunkingSettings,
 )
 
 from athena.indexing.extractors.factory import ExtractorFactory
@@ -42,7 +46,6 @@ from athena.services.document_indexing_adapter import (
     DocumentIndexingAdapter,
 )
 
-
 class IndexingService:
     """High-level document indexing service."""
 
@@ -54,6 +57,7 @@ class IndexingService:
         embedding_service: EmbeddingService | None = None,
         embedding_repository: EmbeddingRepository | None = None,
         chunking_adapter: ChunkingAdapter | None = None,
+        chunking_settings: ChunkingSettings | None = None,
     ) -> None:
         """Initialize indexing service."""
 
@@ -91,7 +95,9 @@ class IndexingService:
         self._chunking = (
             chunking_adapter
             if chunking_adapter is not None
-            else LegacyChunkingAdapter()
+            else ChunkingAdapterFactory.create(
+                chunking_settings,
+            )
         )
 
     def extract_document(
