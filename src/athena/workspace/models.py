@@ -1,16 +1,12 @@
-"""
-Workspace models.
-"""
-
-from __future__ import annotations
-
 from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
 
 
 @dataclass(slots=True)
-class ActiveDocument:
-    """Currently selected document."""
-
-    document_id: str
-    filename: str
-    path: str
+class Workspace:
+    name: str
+    path: Path
+    version: str
+    created: datetime
+    modified: datetime

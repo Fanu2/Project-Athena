@@ -54,6 +54,8 @@ from athena.presentation.viewer import (
 )
 from athena.presentation.settings import AISettingsPage
 
+from athena.presentation.events import events
+
 
 class MainWindow(QMainWindow):
     """Main application window."""
@@ -177,6 +179,14 @@ class MainWindow(QMainWindow):
 
         self.document_actions = DocumentActions(
             self.documents,
+        )
+
+        events.documents_imported.connect(
+            self.documents.refresh_documents,
+        )
+
+        events.documents_imported.connect(
+            self.indexed_documents.browser.refresh,
         )
 
         self.page_stack.addWidget(

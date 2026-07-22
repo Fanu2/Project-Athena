@@ -24,6 +24,8 @@ from athena.services.workspace_document_service import (
     WorkspaceDocumentService,
 )
 
+from athena.presentation.events import events
+
 
 def _noop() -> None:
     """Default callback used when no refresh callback is supplied."""
@@ -86,6 +88,14 @@ class ImportManager:
 
         self._worker.signals.finished.connect(
             refresh_callback,
+        )
+
+        self._worker.signals.finished.connect(
+            events.documents_imported.emit,
+        )
+
+        self._worker.signals.finished.connect(
+            self._thread.quit,
         )
 
         self._worker.signals.finished.connect(
