@@ -133,4 +133,5 @@ class RAGService:
             answer=response.text,
             model=response.model,
             sources=context.sources,
+            retrieval_results=results,
         )

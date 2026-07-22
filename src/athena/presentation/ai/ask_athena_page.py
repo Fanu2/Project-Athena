@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (
     QApplication,
     QHBoxLayout,
     QLabel,
+    QPlainTextEdit,
     QPushButton,
     QTextEdit,
     QTreeWidget,
@@ -81,19 +82,47 @@ class AskAthenaPage(QWidget):
         # Sources
         #
 
+        #
+        # Retrieved Evidence
+        #
+
         self.sources = QTreeWidget()
+
         self.sources.setHeaderLabels(
             [
                 "Document",
                 "Page",
                 "Similarity",
+                "Preview",
             ]
         )
+
         self.sources.setRootIsDecorated(False)
+
         self.sources.setAlternatingRowColors(True)
+
         self.sources.setMaximumHeight(180)
+
         self.sources.itemDoubleClicked.connect(
             self._open_source,
+        )
+
+        #
+        # Retrieved Passage
+        #
+
+        self.passage = QPlainTextEdit()
+
+        self.passage.setReadOnly(True)
+
+        self.passage.setPlaceholderText(
+            "Select an evidence row to view the complete retrieved passage..."
+        )
+
+        self.passage.setMaximumHeight(180)
+
+        self.sources.itemSelectionChanged.connect(
+            self._show_selected_passage,
         )
 
         #
@@ -146,29 +175,45 @@ class AskAthenaPage(QWidget):
 
         layout = QVBoxLayout(self)
 
+        #
+        # Question
+        #
+
         layout.addWidget(
             QLabel("Question"),
         )
+
         layout.addWidget(
             self.question,
         )
+
+        #
+        # Buttons
+        #
 
         button_layout = QHBoxLayout()
 
         button_layout.addWidget(
             self.ask_button,
         )
+
         button_layout.addWidget(
             self.clear_button,
         )
+
         button_layout.addWidget(
             self.copy_button,
         )
+
         button_layout.addStretch()
 
         layout.addLayout(
             button_layout,
         )
+
+        #
+        # Status
+        #
 
         layout.addWidget(
             self.status,
@@ -178,20 +223,41 @@ class AskAthenaPage(QWidget):
             self.model_label,
         )
 
+        #
+        # Conversation
+        #
+
         layout.addWidget(
             QLabel("Conversation"),
         )
+
         layout.addWidget(
             self.conversation,
         )
 
+        #
+        # Retrieved Evidence
+        #
+
         layout.addWidget(
-            QLabel("Sources"),
+            QLabel("Retrieved Evidence"),
         )
+
         layout.addWidget(
             self.sources,
         )
 
+        #
+        # Retrieved Passage
+        #
+
+        layout.addWidget(
+            QLabel("Retrieved Passage"),
+        )
+
+        layout.addWidget(
+            self.passage,
+        )
     def set_query_service(
         self,
         service: AthenaQueryService,
@@ -312,6 +378,8 @@ class AskAthenaPage(QWidget):
 
             self.sources.clear()
 
+            self.passage.clear()
+
             #
             # Workspace intelligence response
             #
@@ -352,17 +420,41 @@ class AskAthenaPage(QWidget):
                 f"Model: {result.model}",
             )
 
-            for source in result.sources:
+            for source, retrieval in zip(
+                result.sources,
+                result.retrieval_results,
+                strict=False,
+            ):
                 similarity = int(
                     source.score * 100,
                 )
+
+                preview = retrieval.text.replace(
+                    "\n",
+                    " ",
+                ).strip()
+
+                if len(preview) > 80:
+                    preview = preview[:80] + "..."
 
                 item = QTreeWidgetItem(
                     [
                         source.document_name or str(source.document_id),
                         str(source.page_number),
                         f"{similarity}%",
+                        preview,
                     ]
+                )
+
+                item.setToolTip(
+                    3,
+                    retrieval.text,
+                )
+
+                item.setData(
+                    3,
+                    Qt.ItemDataRole.UserRole,
+                    retrieval.text,
                 )
 
                 #
@@ -396,6 +488,8 @@ class AskAthenaPage(QWidget):
         except Exception as exc:
             self.sources.clear()
 
+            self.passage.clear()
+
             if self._conversation_service is not None:
                 self._conversation_service.add_system_message(
                     f"Error: {exc}",
@@ -415,6 +509,26 @@ class AskAthenaPage(QWidget):
             self.ask_button.setEnabled(
                 True,
             )
+
+    def _show_selected_passage(
+        self,
+    ) -> None:
+        """Display the selected retrieved passage."""
+
+        items = self.sources.selectedItems()
+
+        if not items:
+            self.passage.clear()
+            return
+
+        passage = items[0].data(
+            3,
+            Qt.ItemDataRole.UserRole,
+        )
+
+        self.passage.setPlainText(
+            passage or "",
+        )
 
     def _open_source(
         self,

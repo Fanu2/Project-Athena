@@ -4,8 +4,10 @@ RAG models.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
+
+from athena.ai.retrieval.models import SemanticResult
 
 
 @dataclass(slots=True)
@@ -40,10 +42,20 @@ class RAGContext:
 
 @dataclass(slots=True)
 class RAGAnswer:
-    """Generated answer with structured metadata and sources."""
+    """
+    Generated answer together with the retrieval evidence.
+
+    This object is the primary output of the RAG pipeline and is
+    intended to power both the chat interface and the Retrieval
+    Inspector.
+    """
 
     answer: str
 
     model: str
 
     sources: list[RAGSource]
+
+    retrieval_results: list[SemanticResult] = field(
+        default_factory=list,
+    )
