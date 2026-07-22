@@ -23,6 +23,7 @@ from athena.ai.rag.prompt_builder import (
 from athena.ai.retrieval.service import (
     RetrievalService,
 )
+from athena.ai.metadata.service import MetadataService
 
 
 class RAGService:
@@ -34,6 +35,7 @@ class RAGService:
         context_builder: ContextBuilder,
         llm_provider: LLMProvider,
         intent_service: IntentService,
+        metadata_service: MetadataService,
         model_name: str,
         retrieval_limit: int = 5,
     ) -> None:
@@ -46,6 +48,8 @@ class RAGService:
         self._llm = llm_provider
 
         self._intent_service = intent_service
+
+        self._metadata_service = metadata_service
 
         self._model_name = model_name
 
@@ -67,6 +71,8 @@ class RAGService:
 
         intent = self._intent_service.detect(question)
 
+        metadata = self._metadata_service.detect(question)
+
         #
         # Retrieve relevant chunks
         #
@@ -74,6 +80,7 @@ class RAGService:
         results = self._retrieval.search_similar(
             question,
             limit=self._retrieval_limit,
+            metadata=metadata,
         )
 
         #

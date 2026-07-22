@@ -24,6 +24,9 @@ from athena.indexing.repositories.sqlite import (
 from athena.repositories.document_repository import (
     DocumentRepository,
 )
+from athena.ai.metadata.models import (
+    MetadataResult,
+)
 
 
 class RetrievalService:
@@ -55,6 +58,7 @@ class RetrievalService:
         self,
         query: str,
         limit: int = 5,
+        metadata: MetadataResult | None = None,
     ) -> list[SemanticResult]:
         """Find semantically similar chunks."""
 

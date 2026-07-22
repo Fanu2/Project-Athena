@@ -9,6 +9,7 @@ from pathlib import Path
 
 from athena.indexing.models import DocumentChunk
 from athena.indexing.repositories.base import ChunkRepository
+from athena.indexing.migrations import MigrationManager
 
 
 class SQLiteChunkRepository(ChunkRepository):
@@ -35,26 +36,12 @@ class SQLiteChunkRepository(ChunkRepository):
         return sqlite3.connect(self._database_path)
 
     def _initialize_database(self) -> None:
-        """Create database schema."""
+        """Initialize or upgrade the database schema."""
 
         with self._connect() as connection:
-            connection.execute("""
-                CREATE TABLE IF NOT EXISTS chunks (
-                    chunk_id TEXT PRIMARY KEY,
-                    document_id TEXT NOT NULL,
-                    chunk_index INTEGER NOT NULL,
-                    page_number INTEGER NOT NULL,
-                    start_offset INTEGER NOT NULL,
-                    end_offset INTEGER NOT NULL,
-                    text TEXT NOT NULL
-                )
-                """)
-
-            connection.execute("""
-                CREATE INDEX IF NOT EXISTS
-                idx_chunks_document
-                ON chunks(document_id)
-                """)
+            MigrationManager(
+                connection,
+            ).upgrade()
 
     def save_chunks(
         self,

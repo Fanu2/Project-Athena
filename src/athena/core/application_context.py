@@ -88,6 +88,10 @@ from athena.conversation.service import (
 from athena.workspace.models import Workspace
 from athena.workspace.service import WorkspaceService
 
+from athena.ai.metadata.service import (
+    MetadataService,
+)
+
 
 class ApplicationContext:
     """Owns application-wide services."""
@@ -122,6 +126,8 @@ class ApplicationContext:
         self.llm_settings: LLMSettings | None = None
 
         self.rag_service: RAGService | None = None
+
+        self.metadata_service: MetadataService | None = None
 
         self.athena_query_service: AthenaQueryService | None = None
 
@@ -200,6 +206,10 @@ class ApplicationContext:
 
         intent_service = IntentService()
 
+        self.metadata_service = MetadataService(
+            document_titles=(),
+        )
+
         #
         # Indexing
         #
@@ -256,6 +266,7 @@ class ApplicationContext:
             context_builder=context_builder,
             llm_provider=OllamaProvider(),
             intent_service=intent_service,
+            metadata_service=self.metadata_service,
             model_name=self.llm_settings.model,
         )
 
