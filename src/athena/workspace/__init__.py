@@ -1,9 +1,11 @@
-"""Workspace management package."""
+"""
+Workspace services.
+"""
 
-from .models import Workspace
-from .service import WorkspaceService
+from athena.workspace.models import ActiveDocument
+from athena.workspace.service import ActiveDocumentService
 
 __all__ = [
-    "Workspace",
-    "WorkspaceService",
+    "ActiveDocument",
+    "ActiveDocumentService",
 ]
