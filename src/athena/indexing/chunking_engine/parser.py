@@ -9,7 +9,8 @@ Responsibilities
 * Split extracted text into logical paragraphs.
 * Detect the structural type of each paragraph.
 * Preserve reading order.
-* Track page numbers and character offsets.
+* Preserve page numbers.
+* Track document-wide character offsets.
 
 The parser deliberately does NOT perform chunking. Chunk construction
 is handled later by ChunkBuilder.
@@ -32,7 +33,8 @@ from athena.indexing.models import ExtractedDocument
 
 class DocumentParser:
     """
-    Converts an ExtractedDocument into DocumentBlocks.
+    Converts an ExtractedDocument into an ordered sequence of
+    DocumentBlock objects.
     """
 
     def __init__(
@@ -46,32 +48,39 @@ class DocumentParser:
         document: ExtractedDocument,
     ) -> list[DocumentBlock]:
         """
-        Parse an extracted document into structural blocks.
+        Parse an extracted document into structural blocks while
+        preserving page numbers and document-wide offsets.
         """
 
         blocks: list[DocumentBlock] = []
 
-        offset = 0
+        document_offset = 0
 
-        for paragraph in self._split_paragraphs(document.text):
+        for page in document.pages:
+            page_offset = 0
 
-            block_type = self._detect_block_type(paragraph)
+            for paragraph in self._split_paragraphs(page.text):
+                block_type = self._detect_block_type(paragraph)
 
-            start = document.text.find(paragraph, offset)
+                relative_start = page.text.find(paragraph, page_offset)
+                relative_end = relative_start + len(paragraph)
 
-            end = start + len(paragraph)
+                start_offset = document_offset + relative_start
+                end_offset = document_offset + relative_end
 
-            blocks.append(
-                DocumentBlock(
-                    block_type=block_type,
-                    text=paragraph,
-                    page_number=1,
-                    start_offset=start,
-                    end_offset=end,
+                blocks.append(
+                    DocumentBlock(
+                        block_type=block_type,
+                        text=paragraph,
+                        page_number=page.page_number,
+                        start_offset=start_offset,
+                        end_offset=end_offset,
+                    )
                 )
-            )
 
-            offset = end
+                page_offset = relative_end
+
+            document_offset += len(page.text)
 
         return blocks
 
@@ -94,7 +103,7 @@ class DocumentParser:
         text: str,
     ) -> BlockType:
         """
-        Determine the logical type of a paragraph.
+        Determine the logical block type.
         """
 
         for detector in self._detectors:
