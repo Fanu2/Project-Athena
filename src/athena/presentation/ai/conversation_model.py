@@ -27,9 +27,10 @@ class ConversationModel(QAbstractListModel):
 
     def __init__(
         self,
-        conversation_service: ConversationService,
+        conversation_service: ConversationService | None = None,
     ) -> None:
         """Initialize the conversation model."""
+
         super().__init__()
 
         self._conversation_service = conversation_service
@@ -43,6 +44,9 @@ class ConversationModel(QAbstractListModel):
         if parent.isValid():
             return 0
 
+        if self._conversation_service is None:
+            return 0
+
         return len(
             self._conversation_service.conversation.messages,
         )
@@ -54,14 +58,22 @@ class ConversationModel(QAbstractListModel):
     ) -> str | ConversationMessage | None:
         """Return data for a conversation message."""
 
+        if self._conversation_service is None:
+            return None
+
         messages = self._conversation_service.conversation.messages
 
-        if not index.isValid() or index.row() < 0 or index.row() >= len(messages):
+        if (
+            not index.isValid()
+            or index.row() < 0
+            or index.row() >= len(messages)
+        ):
             return None
 
         message = messages[index.row()]
 
         if role == Qt.ItemDataRole.DisplayRole:
+
             if message.role == MessageRole.USER:
                 prefix = "You"
 
@@ -77,6 +89,7 @@ class ConversationModel(QAbstractListModel):
             return message
 
         if role == self.SpeakerRole:
+
             if message.role == MessageRole.USER:
                 return "You"
 
@@ -94,6 +107,9 @@ class ConversationModel(QAbstractListModel):
         self,
     ) -> ConversationMessage | None:
         """Return the most recent conversation message."""
+
+        if self._conversation_service is None:
+            return None
 
         messages = self._conversation_service.conversation.messages
 

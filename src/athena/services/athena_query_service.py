@@ -29,7 +29,12 @@ class AthenaQueryService:
         self,
         question: str,
     ):
-        """Answer a user question."""
+        """
+        Answer a user question.
+
+        Workspace questions are handled separately.
+        Document-related questions always go through RAG.
+        """
 
         if self._is_workspace_question(
             question,
@@ -44,18 +49,34 @@ class AthenaQueryService:
         self,
         question: str,
     ) -> bool:
-        """Detect workspace questions."""
+        """
+        Detect workspace information questions.
 
-        text = question.lower()
+        Avoid matching generic document questions such as:
+        - summarize documents
+        - explain documents
+        - compare documents
 
-        keywords = [
-            "documents",
+        Those belong to RAG.
+        """
+
+        text = question.lower().strip()
+
+        workspace_patterns = [
             "document list",
-            "indexed",
-            "library",
-            "how many pages",
-            "how many documents",
+            "list documents",
+            "show documents",
+            "show my documents",
+            "indexed documents",
+            "document library",
             "my files",
+            "how many documents",
+            "how many pages",
+            "what is indexed",
+            "what have i indexed",
         ]
 
-        return any(keyword in text for keyword in keywords)
+        return any(
+            pattern in text
+            for pattern in workspace_patterns
+        )
