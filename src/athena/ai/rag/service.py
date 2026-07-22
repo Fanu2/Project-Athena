@@ -4,6 +4,7 @@ RAG orchestration service.
 
 from __future__ import annotations
 
+from athena.ai.intent.service import IntentService
 from athena.ai.llm.models import (
     LLMRequest,
 )
@@ -25,23 +26,26 @@ from athena.ai.retrieval.service import (
 
 
 class RAGService:
-    """Coordinate retrieval and generation."""
+    """Coordinate retrieval, intent detection, and response generation."""
 
     def __init__(
         self,
         retrieval_service: RetrievalService,
         context_builder: ContextBuilder,
         llm_provider: LLMProvider,
+        intent_service: IntentService,
         model_name: str,
         retrieval_limit: int = 5,
     ) -> None:
-        """Initialize RAG service."""
+        """Initialize the RAG service."""
 
         self._retrieval = retrieval_service
 
         self._context_builder = context_builder
 
         self._llm = llm_provider
+
+        self._intent_service = intent_service
 
         self._model_name = model_name
 
@@ -56,6 +60,12 @@ class RAGService:
         """
         Generate an answer using retrieved document context.
         """
+
+        #
+        # Detect user intent
+        #
+
+        intent = self._intent_service.detect(question)
 
         #
         # Retrieve relevant chunks
@@ -80,8 +90,9 @@ class RAGService:
         #
 
         prompt = self._prompt_builder.build(
-            question,
-            context.context,
+            question=question,
+            context=context.context,
+            intent=intent,
         )
 
         #

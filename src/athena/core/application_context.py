@@ -14,6 +14,9 @@ from athena.ai.embeddings.repository import (
 from athena.ai.embeddings.service import (
     EmbeddingService,
 )
+from athena.ai.intent.service import (
+    IntentService,
+)
 from athena.ai.llm.ollama import (
     OllamaProvider,
 )
@@ -195,6 +198,8 @@ class ApplicationContext:
 
         embedding_service = EmbeddingService()
 
+        intent_service = IntentService()
+
         #
         # Indexing
         #
@@ -250,6 +255,7 @@ class ApplicationContext:
             retrieval_service=retrieval_service,
             context_builder=context_builder,
             llm_provider=OllamaProvider(),
+            intent_service=intent_service,
             model_name=self.llm_settings.model,
         )
 

@@ -4,47 +4,67 @@ RAG prompt builder.
 
 from __future__ import annotations
 
+from athena.ai.intent.models import IntentResult, IntentType
+
+from athena.ai.rag.prompts import (
+    AnalyzePrompt,
+    ComparePrompt,
+    DefaultPrompt,
+    ExplainPrompt,
+    ExtractPrompt,
+    PromptStrategy,
+    SummaryPrompt,
+)
+
 
 class PromptBuilder:
-    """Build prompts for document-based answers."""
+    """Select the appropriate prompt strategy based on user intent."""
+
+    _STRATEGIES: dict[IntentType, PromptStrategy] = {
+        IntentType.SUMMARIZE: SummaryPrompt(),
+        IntentType.COMPARE: ComparePrompt(),
+        IntentType.EXPLAIN: ExplainPrompt(),
+        IntentType.EXTRACT: ExtractPrompt(),
+        IntentType.ANALYZE: AnalyzePrompt(),
+        IntentType.QUESTION: DefaultPrompt(),
+        IntentType.SEARCH: DefaultPrompt(),
+        IntentType.TRANSFORM: DefaultPrompt(),
+        IntentType.CREATIVE: DefaultPrompt(),
+        IntentType.UNKNOWN: DefaultPrompt(),
+    }
 
     def build(
         self,
         question: str,
         context: str,
+        intent: IntentResult,
     ) -> str:
-        """Create an instruction prompt."""
+        """
+        Build a prompt using the strategy associated with the detected intent.
 
-        return f"""
-You are Athena, an offline document research assistant.
+        Parameters
+        ----------
+        question
+            User's original question.
 
-Your knowledge for this response is LIMITED to the supplied context.
+        context
+            Retrieved document context.
 
-Instructions:
+        intent
+            Detected user intent.
 
-1. Answer ONLY using the supplied context.
-2. Never invent facts or use outside knowledge.
-3. If the context does not contain enough information, clearly state:
-   "The supplied documents do not contain enough information to answer this question."
-4. Combine information from multiple documents when appropriate.
-5. Do not repeat or quote large portions of the context unless necessary.
-6. Be concise, accurate, and objective.
-7. When evidence is incomplete or conflicting, explain the uncertainty.
-8. At the end of your answer, list the documents that support your conclusions.
+        Returns
+        -------
+        str
+            Prompt presented to the language model.
+        """
 
-======================
-DOCUMENT CONTEXT
-======================
+        strategy = self._STRATEGIES.get(
+            intent.intent,
+            DefaultPrompt(),
+        )
 
-{context}
-
-======================
-QUESTION
-======================
-
-{question}
-
-======================
-ANSWER
-======================
-""".strip()
+        return strategy.build(
+            question=question,
+            context=context,
+        )
