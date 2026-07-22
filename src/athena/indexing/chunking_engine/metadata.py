@@ -1,18 +1,16 @@
 ﻿"""
 Metadata builder.
 
-Converts ChunkCandidate objects into DocumentChunk instances ready
-for indexing. This stage enriches chunks with stable identifiers and
-document-level metadata but does not generate embeddings.
+Converts ChunkCandidate objects into immutable DocumentChunk instances
+ready for indexing. This stage enriches chunks with stable identifiers
+and document metadata but does not generate embeddings.
 """
 
 from __future__ import annotations
 
 from uuid import uuid4
 
-from athena.indexing.chunking_engine.models import (
-    ChunkCandidate,
-)
+from athena.indexing.chunking_engine.models import ChunkCandidate
 from athena.indexing.models import (
     DocumentChunk,
     ExtractedDocument,
@@ -21,7 +19,7 @@ from athena.indexing.models import (
 
 class MetadataBuilder:
     """
-    Converts ChunkCandidates into DocumentChunks.
+    Builds immutable DocumentChunk objects from ChunkCandidates.
     """
 
     def build(
@@ -30,15 +28,12 @@ class MetadataBuilder:
         candidates: list[ChunkCandidate],
     ) -> list[DocumentChunk]:
         """
-        Build DocumentChunk objects ready for indexing.
+        Convert chunk candidates into final searchable chunks.
         """
 
         chunks: list[DocumentChunk] = []
 
-        total_chunks = len(candidates)
-
         for index, candidate in enumerate(candidates):
-
             start_offset = (
                 candidate.blocks[0].start_offset
                 if candidate.blocks
@@ -55,15 +50,14 @@ class MetadataBuilder:
                 DocumentChunk(
                     chunk_id=str(uuid4()),
                     document_id=document.document_id,
-                    text=candidate.text,
+                    chunk_index=index,
                     page_number=candidate.page_number,
                     start_offset=start_offset,
                     end_offset=end_offset,
+                    text=candidate.text,
                     heading=candidate.heading,
                     heading_path=candidate.heading_path,
                     chunk_type=candidate.chunk_type,
-                    chunk_index=index,
-                    chunk_count=total_chunks,
                 )
             )
 
