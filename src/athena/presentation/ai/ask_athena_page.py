@@ -101,13 +101,13 @@ class AskAthenaPage(QWidget):
         #
 
         self.status = QLabel("Ready")
-        
+
         #
         # Current model
         #
 
         self.model_label = QLabel("Model: -")
-       
+
         #
         # Build UI
         #
@@ -222,7 +222,6 @@ class AskAthenaPage(QWidget):
         self.model_label.setText(
             "Model: -",
         )
-
 
     def clear_page(
         self,
@@ -354,7 +353,6 @@ class AskAthenaPage(QWidget):
             )
 
             for source in result.sources:
-
                 similarity = int(
                     source.score * 100,
                 )
@@ -396,7 +394,6 @@ class AskAthenaPage(QWidget):
             )
 
         except Exception as exc:
-
             self.sources.clear()
 
             if self._conversation_service is not None:
@@ -415,7 +412,6 @@ class AskAthenaPage(QWidget):
             )
 
         finally:
-
             self.ask_button.setEnabled(
                 True,
             )

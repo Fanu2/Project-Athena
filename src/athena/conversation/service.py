@@ -39,7 +39,7 @@ class ConversationService:
         """Return the current conversation."""
 
         return self._conversation
-    
+
     def save(
         self,
         path: Path,
@@ -62,7 +62,6 @@ class ConversationService:
                 ensure_ascii=False,
             )
 
-
     def load(
         self,
         path: Path,
@@ -83,7 +82,6 @@ class ConversationService:
             data,
         )
 
-
     def _to_dict(
         self,
     ) -> dict:
@@ -103,7 +101,6 @@ class ConversationService:
                 for message in self._conversation.messages
             ],
         }
-
 
     def _from_dict(
         self,

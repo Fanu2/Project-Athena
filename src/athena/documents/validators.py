@@ -42,6 +42,6 @@ def validate_document(path: Path) -> Path:
     if suffix not in SUPPORTED_DOCUMENT_TYPES:
         supported = ", ".join(SUPPORTED_DOCUMENT_TYPES)
 
-        raise InvalidDocumentError(f"Unsupported document type. " f"Supported types: {supported}")
+        raise InvalidDocumentError(f"Unsupported document type. Supported types: {supported}")
 
     return path

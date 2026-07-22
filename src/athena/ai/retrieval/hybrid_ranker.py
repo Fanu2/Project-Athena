@@ -29,7 +29,6 @@ class HybridRanker:
             merged[result.chunk_id] = result
 
         for result in keyword_results:
-
             existing = merged.get(result.chunk_id)
 
             if existing is None or result.score > existing.score:

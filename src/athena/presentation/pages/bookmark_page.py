@@ -82,7 +82,6 @@ class BookmarkPage(QWidget):
             return
 
         for bookmark in self._bookmark_service.list_bookmarks():
-
             self.list_widget.addItem(
                 f"★ {bookmark.document_id}",
             )

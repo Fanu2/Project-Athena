@@ -272,7 +272,6 @@ class ApplicationContext:
             athena_directory / "notes.json",
         )
 
-
     def close_workspace(self) -> None:
         """Release workspace-specific services."""
 
@@ -280,14 +279,9 @@ class ApplicationContext:
         # Save conversation
         #
 
-        if (
-            self.current_workspace is not None
-            and self.conversation_service is not None
-        ):
+        if self.current_workspace is not None and self.conversation_service is not None:
             self.conversation_service.save(
-                self.current_workspace.path
-                / ".athena"
-                / "conversation.json",
+                self.current_workspace.path / ".athena" / "conversation.json",
             )
 
         self.document_service = None
@@ -313,7 +307,6 @@ class ApplicationContext:
         self.conversation_service = None
 
         self.current_workspace = None
-
 
     @property
     def workspace(self) -> Workspace:

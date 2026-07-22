@@ -62,7 +62,6 @@ class ChunkingService:
         chunk_index = 0
 
         for page in document.pages:
-
             text = page.text
 
             if not text.strip():
@@ -71,7 +70,6 @@ class ChunkingService:
             start = 0
 
             while start < len(text):
-
                 end = min(
                     start + self._chunk_size,
                     len(text),

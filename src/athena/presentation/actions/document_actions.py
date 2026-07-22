@@ -76,7 +76,7 @@ class DocumentActions:
             self._page,
             "Import Document",
             "",
-            ("Documents " "(*.pdf *.docx *.txt *.md);;" "All Files (*)"),
+            ("Documents (*.pdf *.docx *.txt *.md);;All Files (*)"),
         )
 
         if not filename:

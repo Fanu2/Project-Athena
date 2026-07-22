@@ -62,7 +62,6 @@ class ConversationModel(QAbstractListModel):
         message = messages[index.row()]
 
         if role == Qt.ItemDataRole.DisplayRole:
-
             if message.role == MessageRole.USER:
                 prefix = "You"
 
@@ -72,13 +71,12 @@ class ConversationModel(QAbstractListModel):
             else:
                 prefix = "System"
 
-            return f"{prefix}:\n" f"{message.text}"
+            return f"{prefix}:\n{message.text}"
 
         if role == Qt.ItemDataRole.UserRole:
             return message
 
         if role == self.SpeakerRole:
-
             if message.role == MessageRole.USER:
                 return "You"
 

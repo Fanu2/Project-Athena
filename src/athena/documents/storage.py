@@ -60,7 +60,6 @@ class DocumentStorage:
         documents: list[Document] = []
 
         for path in sorted(documents_dir.iterdir()):
-
             if not path.is_file():
                 continue
 

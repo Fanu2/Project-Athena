@@ -34,7 +34,6 @@ def test_ollama_provider_generates_response() -> None:
         "athena.ai.llm.providers.ollama.requests.post",
         return_value=fake_response,
     ):
-
         result = provider.generate(
             LLMRequest(
                 system_prompt="You are Athena.",

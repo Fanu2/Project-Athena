@@ -51,11 +51,7 @@ class WorkspaceQueryService:
 
         for document in documents:
             lines.append(
-                (
-                    f"{document.title}\n"
-                    f"Pages: {document.page_count}\n"
-                    f"Indexed: {document.indexed_at}"
-                )
+                (f"{document.title}\nPages: {document.page_count}\nIndexed: {document.indexed_at}")
             )
 
         return "\n\n".join(lines)

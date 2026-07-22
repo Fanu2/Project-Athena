@@ -72,7 +72,6 @@ def run_demo(
     )
 
     with SessionFactory() as session:
-
         document_repository = SqliteDocumentRepository(
             session,
         )
@@ -124,16 +123,10 @@ def run_demo(
     print("=" * 40)
 
     for result in results:
-
-        print(
-            f"{result.document_title}"
-            f" | Page {result.page_number}"
-            f" | Score {result.score:.3f}"
-        )
+        print(f"{result.document_title} | Page {result.page_number} | Score {result.score:.3f}")
 
 
 if __name__ == "__main__":
-
     run_demo(
         Path("Athena_Test_Document.pdf"),
         "What is this document about?",

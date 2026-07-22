@@ -84,7 +84,6 @@ def index_document(
     #
 
     with SessionFactory() as session:
-
         repository = SqliteDocumentRepository(
             session,
         )
@@ -94,7 +93,6 @@ def index_document(
         )
 
         if document is None:
-
             document = Document(
                 id=uuid4(),
                 filename=file_path.name,

@@ -172,7 +172,6 @@ class IndexingService:
         #
 
         if self._index_repository is not None:
-
             self._index_repository.save_document(
                 IndexedDocument(
                     document_id=document_id,
@@ -189,9 +188,7 @@ class IndexingService:
         #
 
         if self._embedding_service is not None and self._embedding_repository is not None:
-
             for chunk in chunks:
-
                 vector = self._embedding_service.embed(
                     chunk.text,
                 )

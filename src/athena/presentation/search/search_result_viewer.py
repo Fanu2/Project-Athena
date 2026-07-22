@@ -92,7 +92,7 @@ class SearchResultViewer(QWidget):
         self._current_chunk = chunk
 
         self.title_label.setText(
-            f"Document: {chunk.document_id} | " f"Page: {chunk.page_number}",
+            f"Document: {chunk.document_id} | Page: {chunk.page_number}",
         )
 
         self.content.setText(

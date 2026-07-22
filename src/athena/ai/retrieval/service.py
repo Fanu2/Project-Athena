@@ -67,7 +67,6 @@ class RetrievalService:
         scored: list[tuple] = []
 
         for embedding in embeddings:
-
             score = self._similarity.cosine_similarity(
                 query_vector,
                 embedding.vector,
@@ -90,7 +89,6 @@ class RetrievalService:
         document_counts: dict[str, int] = {}
 
         for embedding, score in scored:
-
             chunk = self._chunk_repository.get_chunk(
                 embedding.chunk_id,
             )
@@ -109,7 +107,6 @@ class RetrievalService:
             document_title = chunk.document_id
 
             if self._document_repository is not None:
-
                 try:
                     document = self._document_repository.get(
                         UUID(chunk.document_id),

@@ -1,20 +1,38 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-from PyInstaller.utils.hooks import collect_submodules
+from PyInstaller.utils.hooks import (
+    collect_data_files,
+    collect_submodules,
+)
 
 block_cipher = None
 
 hiddenimports = (
     collect_submodules("PySide6")
+    + collect_submodules("fitz")
+    + collect_submodules("pymupdf")
+    + collect_submodules("rapidocr_onnxruntime")
+    + collect_submodules("docling")
+    + collect_submodules("tiktoken")
+)
+
+datas = [
+    ("assets", "assets"),
+]
+
+datas += collect_data_files(
+    "docling",
+)
+
+datas += collect_data_files(
+    "rapidocr_onnxruntime",
 )
 
 a = Analysis(
     ["src/athena/main.py"],
     pathex=["src"],
     binaries=[],
-    datas=[
-        ("assets", "assets"),
-    ],
+    datas=datas,
     hiddenimports=hiddenimports,
     hookspath=[],
     hooksconfig={},

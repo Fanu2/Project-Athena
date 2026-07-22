@@ -182,7 +182,7 @@ class DocumentViewerPage(QWidget):
         )
 
         self.page_label.setText(
-            (f"Page {self._service.current_page + 1} / " f"{self._service.page_count}")
+            (f"Page {self._service.current_page + 1} / {self._service.page_count}")
         )
 
         self.status_label.setText(

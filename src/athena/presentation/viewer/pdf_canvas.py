@@ -65,7 +65,6 @@ class PDFCanvas(QWidget):
         )
 
         if self._image is None:
-
             painter.setPen(Qt.GlobalColor.darkGray)
 
             painter.drawText(

@@ -74,7 +74,7 @@ class SearchResultsModel(QAbstractListModel):
                 chunk.text,
             )
 
-            return f"Page {chunk.page_number}\n" f"{preview}"
+            return f"Page {chunk.page_number}\n{preview}"
 
         return None
 
