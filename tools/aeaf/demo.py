@@ -22,7 +22,9 @@ def main() -> None:
 
     pipeline = AnalysisPipeline(config)
 
-    repository = pipeline.run(config.project_root)
+    repository = pipeline.run(
+        config.project_root,
+    )
 
     print("Statistics")
     print("-" * 60)
@@ -37,6 +39,49 @@ def main() -> None:
     print(f"{'Methods':20} {stats.methods}")
     print(f"{'Imports':20} {stats.imports}")
     print(f"{'Findings':20} {stats.findings}")
+
+    print()
+    print("Dependency Graph")
+    print("-" * 60)
+
+    graph = repository.dependency_graph
+
+    print(
+        f"{'Edges':20} {len(graph.edges)}"
+    )
+
+    print()
+    print("Complexity")
+    print("-" * 60)
+
+    complexity = repository.complexity
+
+    print(
+        f"{'Elements analyzed':20} {len(complexity)}"
+    )
+
+    if complexity:
+
+        print()
+        print("Top Complexity Hotspots")
+        print("-" * 60)
+
+        hotspots = sorted(
+            complexity,
+            key=lambda item: item.score,
+            reverse=True,
+        )[:10]
+
+        for index, item in enumerate(
+            hotspots,
+            start=1,
+        ):
+
+            print(
+                f"{index:2}. "
+                f"{item.name:30} "
+                f"{item.score}"
+            )
 
 
 if __name__ == "__main__":

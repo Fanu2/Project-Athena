@@ -12,6 +12,8 @@ from __future__ import annotations
 from pathlib import Path
 
 from ..analyzers.inventory import InventoryAnalyzer
+from ..analyzers.dependency_graph import DependencyGraphAnalyzer
+from ..analyzers.complexity import ComplexityAnalyzer
 from ..config import AEAFConfig
 from ..models import RepositoryModel
 from ..parser import Parser
@@ -44,10 +46,15 @@ class AnalysisPipeline:
         #
         # Ordered list of repository analyzers.
         #
-        # Future analyzers can simply be appended here.
+        # The order is important:
+        #
+        # 1. Inventory collects basic repository statistics.
+        # 2. DependencyGraph builds relationships between modules.
         #
         self.analyzers = [
             InventoryAnalyzer(),
+            DependencyGraphAnalyzer(),
+            ComplexityAnalyzer(),
         ]
 
     def run(

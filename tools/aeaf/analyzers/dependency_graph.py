@@ -6,7 +6,10 @@ Builds module dependency information from the parsed repository model.
 
 from __future__ import annotations
 
-from athena.aeaf.models import RepositoryModel
+from ..models import (
+    DependencyEdge,
+    RepositoryModel,
+)
 
 
 class DependencyGraphAnalyzer:
@@ -20,16 +23,6 @@ class DependencyGraphAnalyzer:
     ) -> RepositoryModel:
         """
         Build dependency relationships.
-
-        Parameters
-        ----------
-        repository
-            Parsed repository model.
-
-        Returns
-        -------
-        RepositoryModel
-            Repository enriched with dependency information.
         """
 
         self._build_dependency_graph(
@@ -37,27 +30,34 @@ class DependencyGraphAnalyzer:
         )
 
         return repository
+
+
     def _build_dependency_graph(
         self,
         repository: RepositoryModel,
     ) -> None:
         """
         Build the repository dependency graph.
-
-        Parameters
-        ----------
-        repository
-            Parsed repository model.
         """
+
+        repository.dependency_graph.edges.clear()
 
         for module in repository.modules:
 
-            if not hasattr(module, "dependencies"):
-                module.dependencies = []
+            module.dependencies.clear()
 
             self._collect_outgoing_dependencies(
                 module,
             )
+
+            for dependency in module.dependencies:
+
+                repository.dependency_graph.edges.append(
+                    DependencyEdge(
+                        source=module.name,
+                        target=dependency,
+                    )
+                )
 
         self._calculate_incoming_dependencies(
             repository,
@@ -70,20 +70,27 @@ class DependencyGraphAnalyzer:
     ) -> None:
         """
         Collect outgoing dependencies for a module.
-
-        Parameters
-        ----------
-        module
-            Parsed module model.
         """
 
-        module.dependencies = []
+        dependencies = []
 
-        for imported_module in getattr(module, "imports", []):
+        for imported_module in module.imports:
 
-            module.dependencies.append(
-                imported_module,
+            dependency = self._normalize_import(
+                imported_module.module,
             )
+
+            if (
+                dependency
+                and dependency not in dependencies
+            ):
+                dependencies.append(
+                    dependency,
+                )
+
+        module.dependencies.extend(
+            dependencies,
+        )
 
 
     def _normalize_import(
@@ -92,35 +99,22 @@ class DependencyGraphAnalyzer:
     ) -> str:
         """
         Normalize an import name.
-
-        Parameters
-        ----------
-        import_name
-            Imported module name.
-
-        Returns
-        -------
-        str
-            Normalized module name.
         """
 
         return import_name.strip()
+
 
     def _calculate_incoming_dependencies(
         self,
         repository: RepositoryModel,
     ) -> None:
         """
-        Calculate incoming dependencies for every module.
-
-        Parameters
-        ----------
-        repository
-            Parsed repository model.
+        Calculate incoming dependencies.
         """
 
         for module in repository.modules:
-            module.dependents = []
+
+            module.dependents.clear()
 
         module_lookup = {
             module.name: module
@@ -129,78 +123,19 @@ class DependencyGraphAnalyzer:
 
         for module in repository.modules:
 
-            for dependency in getattr(module, "dependencies", []):
+            for dependency in module.dependencies:
 
-                dependency = self._normalize_import(
-                    dependency,
-                )
+                normalized = dependency.split(".")[-1]
 
                 target = module_lookup.get(
-                    dependency,
+                    normalized,
                 )
 
                 if target is None:
                     continue
 
                 if module.name not in target.dependents:
+
                     target.dependents.append(
                         module.name,
                     )
-
-
-    def _find_module(
-        self,
-        repository: RepositoryModel,
-        module_name: str,
-    ):
-        """
-        Find a module by name.
-
-        Parameters
-        ----------
-        repository
-            Parsed repository model.
-
-        module_name
-            Name of the module.
-
-        Returns
-        -------
-        ModuleModel | None
-            Matching module if found.
-        """
-
-        for module in repository.modules:
-
-            if module.name == module_name:
-                return module
-
-        return None
-
-    def _collect_outgoing_dependencies(
-        self,
-        module,
-    ) -> None:
-        """
-        Collect outgoing dependencies for a module.
-
-        Parameters
-        ----------
-        module
-            Parsed module model.
-        """
-
-        dependencies = []
-
-        for imported_module in getattr(module, "imports", []):
-
-            dependency = self._normalize_import(
-                imported_module,
-            )
-
-            if dependency and dependency not in dependencies:
-                dependencies.append(
-                    dependency,
-                )
-
-        module.dependencies = dependencies

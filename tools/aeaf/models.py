@@ -70,6 +70,23 @@ class ProjectStatistics:
     findings: int = 0
 
 
+@dataclass(slots=True)
+class ComplexityInfo:
+    """
+    Complexity information for a code element.
+    """
+
+    name: str
+
+    kind: str
+
+    score: int = 0
+
+    details: dict[str, Any] = field(
+        default_factory=dict,
+    )
+
+
 # ============================================================================
 # Source Code Models
 # ============================================================================
@@ -109,12 +126,30 @@ class ClassInfo:
 
 @dataclass(slots=True)
 class ModuleInfo:
+    """
+    Parsed Python module information.
+    """
+
     name: str
     path: Path
 
     imports: list[ImportInfo] = field(default_factory=list)
-    classes: list[ClassInfo] = field(default_factory=list)
-    functions: list[FunctionInfo] = field(default_factory=list)
+
+    classes: list[ClassInfo] = field(
+        default_factory=list,
+    )
+
+    functions: list[FunctionInfo] = field(
+        default_factory=list,
+    )
+
+    dependencies: list[str] = field(
+        default_factory=list,
+    )
+
+    dependents: list[str] = field(
+        default_factory=list,
+    )
 
 
 @dataclass(slots=True)
@@ -181,6 +216,10 @@ class RepositoryModel:
     modules: list[ModuleInfo] = field(default_factory=list)
 
     dependency_graph: DependencyGraph = field(default_factory=DependencyGraph)
+
+    complexity: list[ComplexityInfo] = field(
+        default_factory=list,
+    )
 
     findings: list[Finding] = field(default_factory=list)
     recommendations: list[Recommendation] = field(default_factory=list)
