@@ -1,0 +1,97 @@
+{
+    "repository": {
+        "name": "Project-Athena",
+        "path": "C:\\Users\\singh\\Documents\\Project-Athena"
+    },
+    "statistics": {
+        "source_files": 392,
+        "packages": 0,
+        "modules": 385,
+        "classes": 241,
+        "functions": 197,
+        "methods": 580,
+        "imports": 1266
+    },
+    "dependency_graph": {
+        "edges": 1032
+    },
+    "complexity": [
+        {
+            "name": "ask_question",
+            "kind": "function",
+            "score": 171
+        },
+        {
+            "name": "open_workspace",
+            "kind": "function",
+            "score": 157
+        },
+        {
+            "name": "generate",
+            "kind": "function",
+            "score": 156
+        },
+        {
+            "name": "import_documents",
+            "kind": "function",
+            "score": 141
+        },
+        {
+            "name": "_build_summary",
+            "kind": "function",
+            "score": 136
+        },
+        {
+            "name": "main",
+            "kind": "function",
+            "score": 129
+        },
+        {
+            "name": "__init__",
+            "kind": "function",
+            "score": 129
+        },
+        {
+            "name": "index_document",
+            "kind": "function",
+            "score": 126
+        },
+        {
+            "name": "_create_ui",
+            "kind": "function",
+            "score": 119
+        },
+        {
+            "name": "_build_ui",
+            "kind": "function",
+            "score": 110
+        }
+    ],
+    "documentation": {
+        "modules": {
+            "documented": 252,
+            "total": 385,
+            "coverage": 65.45
+        },
+        "classes": {
+            "documented": 227,
+            "total": 241,
+            "coverage": 94.19
+        },
+        "functions": {
+            "documented": 104,
+            "total": 197,
+            "coverage": 52.79
+        },
+        "methods": {
+            "documented": 486,
+            "total": 580,
+            "coverage": 83.79
+        },
+        "overall": {
+            "documented": 1069,
+            "total": 1403,
+            "coverage": 76.19
+        }
+    }
+}

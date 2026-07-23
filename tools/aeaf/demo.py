@@ -8,6 +8,8 @@ from pathlib import Path
 
 from tools.aeaf.config import AEAFConfig
 from tools.aeaf.engine.pipeline import AnalysisPipeline
+from tools.aeaf.reports.json_report import JSONReportGenerator
+from tools.aeaf.reports.markdown import MarkdownReportGenerator
 
 
 def main() -> None:
@@ -99,6 +101,46 @@ def main() -> None:
                 f"{data.get('total', 0)} "
                 f"({data.get('coverage', 0)}%)"
             )
+
+    print()
+    print("Report")
+    print("-" * 60)
+
+    report_directory = Path("reports")
+
+    report_directory.mkdir(
+        exist_ok=True,
+    )
+
+    json_report_path = (
+        report_directory / "aeaf_report.json"
+    )
+
+    json_generator = JSONReportGenerator()
+
+    json_generator.save(
+        repository,
+        json_report_path,
+    )
+
+    markdown_report_path = (
+        report_directory / "aeaf_report.md"
+    )
+
+    markdown_generator = MarkdownReportGenerator()
+
+    markdown_generator.save(
+        repository,
+        markdown_report_path,
+    )
+
+    print(
+        f"JSON report written: {json_report_path}"
+    )
+
+    print(
+        f"Markdown report written: {markdown_report_path}"
+    )
 
 
 if __name__ == "__main__":
