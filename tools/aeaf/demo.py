@@ -10,6 +10,7 @@ from tools.aeaf.config import AEAFConfig
 from tools.aeaf.engine.pipeline import AnalysisPipeline
 from tools.aeaf.reports.json_report import JSONReportGenerator
 from tools.aeaf.reports.markdown import MarkdownReportGenerator
+from tools.aeaf.reports.dashboard import DashboardBuilder
 
 
 def main() -> None:
@@ -123,6 +124,7 @@ def main() -> None:
         json_report_path,
     )
 
+
     markdown_report_path = (
         report_directory / "aeaf_report.md"
     )
@@ -134,12 +136,29 @@ def main() -> None:
         markdown_report_path,
     )
 
+
+    html_report_path = (
+        report_directory / "aeaf_dashboard.html"
+    )
+
+    dashboard = DashboardBuilder()
+
+    dashboard.build(
+        repository,
+        html_report_path,
+    )
+
+
     print(
         f"JSON report written: {json_report_path}"
     )
 
     print(
         f"Markdown report written: {markdown_report_path}"
+    )
+
+    print(
+        f"HTML dashboard written: {html_report_path}"
     )
 
 

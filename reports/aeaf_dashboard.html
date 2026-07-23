@@ -1,0 +1,365 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="utf-8">
+
+<title>
+AEAF Repository Audit Dashboard
+</title>
+
+
+<style>
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+    background: #f5f5f5;
+}
+
+
+h1 {
+    margin-bottom: 5px;
+}
+
+
+.card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 15px 0;
+}
+
+
+.cards {
+    display: grid;
+    grid-template-columns:
+    repeat(auto-fit,minmax(180px,1fr));
+    gap: 15px;
+}
+
+
+.metric {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+
+.metric h2 {
+    margin: 0;
+}
+
+
+table {
+    width:100%;
+    border-collapse: collapse;
+}
+
+
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+
+.progress {
+    background:#eee;
+    height:20px;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+
+.bar {
+    height:100%;
+    background:#4caf50;
+}
+
+
+footer {
+    margin-top:30px;
+    color:#666;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<h1>
+AEAF Repository Audit Dashboard
+</h1>
+
+<p>
+Generated:
+2026-07-23 16:41:05
+</p>
+
+
+<div class="card">
+
+<h2>
+Repository
+</h2>
+
+<p>
+Haryana-Partition-Manager
+</p>
+
+</div>
+
+
+
+<div class="cards">
+
+
+<div class="metric">
+<h2>118</h2>
+<p>Source Files</p>
+</div>
+
+
+<div class="metric">
+<h2>118</h2>
+<p>Modules</p>
+</div>
+
+
+<div class="metric">
+<h2>82</h2>
+<p>Classes</p>
+</div>
+
+
+<div class="metric">
+<h2>14</h2>
+<p>Functions</p>
+</div>
+
+
+<div class="metric">
+<h2>347</h2>
+<p>Methods</p>
+</div>
+
+
+<div class="metric">
+<h2>559</h2>
+<p>Imports</p>
+</div>
+
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+Dependency Graph
+</h2>
+
+<p>
+Edges:
+<strong>
+286
+</strong>
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+Complexity Hotspots
+</h2>
+
+
+<table>
+
+<tr>
+<th>#</th>
+<th>Name</th>
+<th>Kind</th>
+<th>Score</th>
+</tr>
+
+
+            <tr>
+                <td>1</td>
+                <td>__init__</td>
+                <td>function</td>
+                <td>308</td>
+            </tr>
+            
+            <tr>
+                <td>2</td>
+                <td>build_ui</td>
+                <td>function</td>
+                <td>234</td>
+            </tr>
+            
+            <tr>
+                <td>3</td>
+                <td>allocate_khasra</td>
+                <td>function</td>
+                <td>208</td>
+            </tr>
+            
+            <tr>
+                <td>4</td>
+                <td>build_ui</td>
+                <td>function</td>
+                <td>186</td>
+            </tr>
+            
+            <tr>
+                <td>5</td>
+                <td>partition</td>
+                <td>function</td>
+                <td>168</td>
+            </tr>
+            
+            <tr>
+                <td>6</td>
+                <td>__init__</td>
+                <td>function</td>
+                <td>164</td>
+            </tr>
+            
+            <tr>
+                <td>7</td>
+                <td>__init__</td>
+                <td>function</td>
+                <td>159</td>
+            </tr>
+            
+            <tr>
+                <td>8</td>
+                <td>create_menu</td>
+                <td>function</td>
+                <td>158</td>
+            </tr>
+            
+            <tr>
+                <td>9</td>
+                <td>__init__</td>
+                <td>function</td>
+                <td>158</td>
+            </tr>
+            
+            <tr>
+                <td>10</td>
+                <td>build_ui</td>
+                <td>function</td>
+                <td>154</td>
+            </tr>
+            
+
+</table>
+
+</div>
+
+
+
+
+<div class="card">
+
+<h2>
+Documentation Coverage
+</h2>
+
+
+<table>
+
+<tr>
+<th>Area</th>
+<th>Coverage</th>
+</tr>
+
+
+            <tr>
+                <td>modules</td>
+                <td>
+                    <div class="progress">
+                        <div class="bar"
+                             style="width:28.81%">
+                        </div>
+                    </div>
+                    28.81%
+                </td>
+            </tr>
+            
+            <tr>
+                <td>classes</td>
+                <td>
+                    <div class="progress">
+                        <div class="bar"
+                             style="width:36.59%">
+                        </div>
+                    </div>
+                    36.59%
+                </td>
+            </tr>
+            
+            <tr>
+                <td>functions</td>
+                <td>
+                    <div class="progress">
+                        <div class="bar"
+                             style="width:71.43%">
+                        </div>
+                    </div>
+                    71.43%
+                </td>
+            </tr>
+            
+            <tr>
+                <td>methods</td>
+                <td>
+                    <div class="progress">
+                        <div class="bar"
+                             style="width:22.77%">
+                        </div>
+                    </div>
+                    22.77%
+                </td>
+            </tr>
+            
+            <tr>
+                <td>overall</td>
+                <td>
+                    <div class="progress">
+                        <div class="bar"
+                             style="width:27.27%">
+                        </div>
+                    </div>
+                    27.27%
+                </td>
+            </tr>
+            
+
+</table>
+
+</div>
+
+
+
+<footer>
+
+Generated by Athena Engineering Audit Framework (AEAF)
+
+</footer>
+
+
+</body>
+
+</html>

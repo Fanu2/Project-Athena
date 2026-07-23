@@ -1,97 +1,97 @@
 {
     "repository": {
-        "name": "Project-Athena",
-        "path": "C:\\Users\\singh\\Documents\\Project-Athena"
+        "name": "Haryana-Partition-Manager",
+        "path": "C:\\Users\\singh\\Desktop\\Khasra\\Haryana-Partition-Manager"
     },
     "statistics": {
-        "source_files": 392,
+        "source_files": 118,
         "packages": 0,
-        "modules": 385,
-        "classes": 241,
-        "functions": 197,
-        "methods": 580,
-        "imports": 1266
+        "modules": 118,
+        "classes": 82,
+        "functions": 14,
+        "methods": 347,
+        "imports": 559
     },
     "dependency_graph": {
-        "edges": 1032
+        "edges": 286
     },
     "complexity": [
         {
-            "name": "ask_question",
+            "name": "__init__",
             "kind": "function",
-            "score": 171
+            "score": 308
         },
         {
-            "name": "open_workspace",
+            "name": "build_ui",
             "kind": "function",
-            "score": 157
+            "score": 234
         },
         {
-            "name": "generate",
+            "name": "allocate_khasra",
             "kind": "function",
-            "score": 156
+            "score": 208
         },
         {
-            "name": "import_documents",
+            "name": "build_ui",
             "kind": "function",
-            "score": 141
+            "score": 186
         },
         {
-            "name": "_build_summary",
+            "name": "partition",
             "kind": "function",
-            "score": 136
-        },
-        {
-            "name": "main",
-            "kind": "function",
-            "score": 129
+            "score": 168
         },
         {
             "name": "__init__",
             "kind": "function",
-            "score": 129
+            "score": 164
         },
         {
-            "name": "index_document",
+            "name": "__init__",
             "kind": "function",
-            "score": 126
+            "score": 159
         },
         {
-            "name": "_create_ui",
+            "name": "create_menu",
             "kind": "function",
-            "score": 119
+            "score": 158
         },
         {
-            "name": "_build_ui",
+            "name": "__init__",
             "kind": "function",
-            "score": 110
+            "score": 158
+        },
+        {
+            "name": "build_ui",
+            "kind": "function",
+            "score": 154
         }
     ],
     "documentation": {
         "modules": {
-            "documented": 252,
-            "total": 385,
-            "coverage": 65.45
+            "documented": 34,
+            "total": 118,
+            "coverage": 28.81
         },
         "classes": {
-            "documented": 227,
-            "total": 241,
-            "coverage": 94.19
+            "documented": 30,
+            "total": 82,
+            "coverage": 36.59
         },
         "functions": {
-            "documented": 104,
-            "total": 197,
-            "coverage": 52.79
+            "documented": 10,
+            "total": 14,
+            "coverage": 71.43
         },
         "methods": {
-            "documented": 486,
-            "total": 580,
-            "coverage": 83.79
+            "documented": 79,
+            "total": 347,
+            "coverage": 22.77
         },
         "overall": {
-            "documented": 1069,
-            "total": 1403,
-            "coverage": 76.19
+            "documented": 153,
+            "total": 561,
+            "coverage": 27.27
         }
     }
 }
