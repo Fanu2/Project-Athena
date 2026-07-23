@@ -63,7 +63,7 @@ class RepositoryScanner:
                 )
             )
 
-        repository.statistics.files = len(repository.source_files)
+        repository.statistics.source_files = len(repository.source_files)
 
         return repository
 

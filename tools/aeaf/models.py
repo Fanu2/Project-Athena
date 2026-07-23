@@ -60,11 +60,12 @@ class RepositoryMetadata:
 class ProjectStatistics:
     """Repository statistics."""
 
-    files: int = 0
+    source_files: int = 0
     packages: int = 0
     modules: int = 0
     classes: int = 0
     functions: int = 0
+    methods: int = 0
     imports: int = 0
     findings: int = 0
 
