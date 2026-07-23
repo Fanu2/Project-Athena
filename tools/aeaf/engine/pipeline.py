@@ -13,6 +13,7 @@ from pathlib import Path
 
 from ..analyzers.inventory import InventoryAnalyzer
 from ..analyzers.dependency_graph import DependencyGraphAnalyzer
+from ..analyzers.documentation import DocumentationAnalyzer
 from ..analyzers.complexity import ComplexityAnalyzer
 from ..config import AEAFConfig
 from ..models import RepositoryModel
@@ -48,12 +49,15 @@ class AnalysisPipeline:
         #
         # The order is important:
         #
-        # 1. Inventory collects basic repository statistics.
-        # 2. DependencyGraph builds relationships between modules.
+        # 1. Inventory collects repository statistics.
+        # 2. DependencyGraph builds module relationships.
+        # 3. Documentation measures documentation coverage.
+        # 4. Complexity identifies complexity hotspots.
         #
         self.analyzers = [
             InventoryAnalyzer(),
             DependencyGraphAnalyzer(),
+            DocumentationAnalyzer(),
             ComplexityAnalyzer(),
         ]
 
@@ -101,7 +105,7 @@ class AnalysisPipeline:
         Parameters
         ----------
         repository_path
-            Repository root directory.
+            Root directory of the repository.
 
         Returns
         -------

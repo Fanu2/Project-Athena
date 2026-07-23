@@ -83,6 +83,23 @@ def main() -> None:
                 f"{item.score}"
             )
 
+    print()
+    print("Documentation")
+    print("-" * 60)
+
+    documentation = repository.documentation
+
+    for name, data in documentation.items():
+
+        if isinstance(data, dict):
+
+            print(
+                f"{name:20} "
+                f"{data.get('documented', 0)}/"
+                f"{data.get('total', 0)} "
+                f"({data.get('coverage', 0)}%)"
+            )
+
 
 if __name__ == "__main__":
     main()

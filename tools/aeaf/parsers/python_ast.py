@@ -16,6 +16,7 @@ from pathlib import Path
 from ..config import AEAFConfig
 from ..models import (
     ClassInfo,
+    DocumentationInfo,
     FunctionInfo,
     ImportInfo,
     ModuleInfo,
@@ -98,6 +99,9 @@ class PythonASTParser:
         module = ModuleInfo(
             name=path.stem,
             path=path,
+            documentation=self._extract_documentation(
+                tree,
+            ),
         )
 
         self._parse_tree(
@@ -187,8 +191,17 @@ class PythonASTParser:
             class_info = ClassInfo(
                 name=node.name,
                 lineno=node.lineno,
-                end_lineno=getattr(node, "end_lineno", None),
-                bases=self._extract_base_classes(node),
+                end_lineno=getattr(
+                    node,
+                    "end_lineno",
+                    None,
+                ),
+                bases=self._extract_base_classes(
+                    node,
+                ),
+                documentation=self._extract_documentation(
+                    node,
+                ),
             )
 
             self._parse_methods(
@@ -234,6 +247,9 @@ class PythonASTParser:
                 decorators=self._extract_decorators(
                     node,
                 ),
+                documentation=self._extract_documentation(
+                    node,
+                ),
             )
 
             class_info.methods.append(
@@ -275,6 +291,9 @@ class PythonASTParser:
                     node,
                 ),
                 decorators=self._extract_decorators(
+                    node,
+                ),
+                documentation=self._extract_documentation(
                     node,
                 ),
             )
@@ -375,3 +394,25 @@ class PythonASTParser:
                 decorators.append("<unknown>")
 
         return decorators
+
+    def _extract_documentation(
+        self,
+        node,
+    ) -> DocumentationInfo:
+        """
+        Extract documentation information from AST node.
+        """
+
+        docstring = ast.get_docstring(
+            node,
+        )
+
+        if not docstring:
+            return DocumentationInfo()
+
+        summary = docstring.strip().splitlines()[0]
+
+        return DocumentationInfo(
+            has_docstring=True,
+            summary=summary,
+        )

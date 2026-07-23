@@ -6,7 +6,10 @@ Analyzes documentation coverage across the repository.
 
 from __future__ import annotations
 
-from athena.aeaf.models import RepositoryModel
+from ..models import (
+    DocumentationInfo,
+    RepositoryModel,
+)
 
 
 class DocumentationAnalyzer:
@@ -50,61 +53,20 @@ class DocumentationAnalyzer:
 
         return repository
 
+
     def _analyze_modules(
         self,
         repository: RepositoryModel,
     ) -> None:
         """
-        Analyze module documentation.
-
-        Parameters
-        ----------
-        repository
-            Parsed repository model.
+        Validate module documentation metadata.
         """
 
         for module in repository.modules:
 
-            docstring = getattr(
-                module,
-                "docstring",
-                None,
-            )
+            if module.documentation is None:
+                module.documentation = DocumentationInfo()
 
-            module.documentation = {
-                "has_docstring": bool(
-                    docstring and docstring.strip(),
-                ),
-            }
-
-
-    def _module_has_docstring(
-        self,
-        module,
-    ) -> bool:
-        """
-        Determine whether a module has a docstring.
-
-        Parameters
-        ----------
-        module
-            Parsed module model.
-
-        Returns
-        -------
-        bool
-            True if a non-empty docstring exists.
-        """
-
-        docstring = getattr(
-            module,
-            "docstring",
-            None,
-        )
-
-        return bool(
-            docstring and docstring.strip(),
-        )
 
     def _analyze_classes(
         self,
@@ -112,26 +74,14 @@ class DocumentationAnalyzer:
     ) -> None:
         """
         Analyze class documentation.
-
-        Parameters
-        ----------
-        repository
-            Parsed repository model.
         """
 
         for module in repository.modules:
 
-            for class_model in getattr(
-                module,
-                "classes",
-                [],
-            ):
+            for class_model in module.classes:
 
-                class_model.documentation = {
-                    "has_docstring": self._has_docstring(
-                        class_model,
-                    ),
-                }
+                if class_model.documentation is None:
+                    class_model.documentation = DocumentationInfo()
 
 
     def _analyze_functions(
@@ -139,74 +89,41 @@ class DocumentationAnalyzer:
         repository: RepositoryModel,
     ) -> None:
         """
-        Analyze function documentation.
-
-        Parameters
-        ----------
-        repository
-            Parsed repository model.
+        Analyze function and method documentation.
         """
 
         for module in repository.modules:
 
-            for function in getattr(
-                module,
-                "functions",
-                [],
-            ):
+            for function in module.functions:
 
-                function.documentation = {
-                    "has_docstring": self._has_docstring(
-                        function,
-                    ),
-                }
+                if function.documentation is None:
+                    function.documentation = DocumentationInfo()
 
-            for class_model in getattr(
-                module,
-                "classes",
-                [],
-            ):
+            for class_model in module.classes:
 
-                for method in getattr(
-                    class_model,
-                    "methods",
-                    [],
-                ):
+                for method in class_model.methods:
 
-                    method.documentation = {
-                        "has_docstring": self._has_docstring(
-                            method,
-                        ),
-                    }
-
+                    if method.documentation is None:
+                        method.documentation = DocumentationInfo()
 
     def _has_docstring(
         self,
         obj,
     ) -> bool:
         """
-        Determine whether an object has a docstring.
-
-        Parameters
-        ----------
-        obj
-            Parsed repository object.
-
-        Returns
-        -------
-        bool
-            True if a non-empty docstring exists.
+        Determine whether documentation exists.
         """
 
-        docstring = getattr(
+        documentation = getattr(
             obj,
-            "docstring",
+            "documentation",
             None,
         )
 
-        return bool(
-            docstring and docstring.strip(),
-        )
+        if documentation is None:
+            return False
+
+        return documentation.has_docstring
 
     def _build_summary(
         self,
@@ -214,11 +131,6 @@ class DocumentationAnalyzer:
     ) -> None:
         """
         Build repository documentation summary.
-
-        Parameters
-        ----------
-        repository
-            Parsed repository model.
         """
 
         module_total = 0
@@ -237,67 +149,35 @@ class DocumentationAnalyzer:
 
             module_total += 1
 
-            if getattr(
+            if self._has_docstring(
                 module,
-                "documentation",
-                {},
-            ).get(
-                "has_docstring",
-                False,
             ):
                 module_documented += 1
 
-            for class_model in getattr(
-                module,
-                "classes",
-                [],
-            ):
+            for class_model in module.classes:
 
                 class_total += 1
 
-                if getattr(
+                if self._has_docstring(
                     class_model,
-                    "documentation",
-                    {},
-                ).get(
-                    "has_docstring",
-                    False,
                 ):
                     class_documented += 1
 
-                for method in getattr(
-                    class_model,
-                    "methods",
-                    [],
-                ):
+                for method in class_model.methods:
 
                     method_total += 1
 
-                    if getattr(
+                    if self._has_docstring(
                         method,
-                        "documentation",
-                        {},
-                    ).get(
-                        "has_docstring",
-                        False,
                     ):
                         method_documented += 1
 
-            for function in getattr(
-                module,
-                "functions",
-                [],
-            ):
+            for function in module.functions:
 
                 function_total += 1
 
-                if getattr(
+                if self._has_docstring(
                     function,
-                    "documentation",
-                    {},
-                ).get(
-                    "has_docstring",
-                    False,
                 ):
                     function_documented += 1
 
@@ -305,6 +185,10 @@ class DocumentationAnalyzer:
             documented: int,
             total: int,
         ) -> float:
+            """
+            Calculate documentation coverage percentage.
+            """
+
             if total == 0:
                 return 100.0
 
@@ -312,6 +196,7 @@ class DocumentationAnalyzer:
                 documented * 100 / total,
                 2,
             )
+
 
         total_items = (
             module_total
@@ -327,6 +212,7 @@ class DocumentationAnalyzer:
             + method_documented
         )
 
+
         repository.documentation = {
             "modules": {
                 "documented": module_documented,
@@ -336,6 +222,7 @@ class DocumentationAnalyzer:
                     module_total,
                 ),
             },
+
             "classes": {
                 "documented": class_documented,
                 "total": class_total,
@@ -344,6 +231,7 @@ class DocumentationAnalyzer:
                     class_total,
                 ),
             },
+
             "functions": {
                 "documented": function_documented,
                 "total": function_total,
@@ -352,6 +240,7 @@ class DocumentationAnalyzer:
                     function_total,
                 ),
             },
+
             "methods": {
                 "documented": method_documented,
                 "total": method_total,
@@ -360,6 +249,7 @@ class DocumentationAnalyzer:
                     method_total,
                 ),
             },
+
             "overall": {
                 "documented": documented_items,
                 "total": total_items,
@@ -369,51 +259,3 @@ class DocumentationAnalyzer:
                 ),
             },
         }
-
-        def coverage(
-            documented: int,
-            total: int,
-        ) -> float:
-            if total == 0:
-                return 100.0
-
-            return round(
-                documented * 100 / total,
-                2,
-            )
-
-        repository.documentation = {
-            "modules": {
-                "documented": module_documented,
-                "total": module_total,
-                "coverage": coverage(
-                    module_documented,
-                    module_total,
-                ),
-            },
-            "classes": {
-                "documented": class_documented,
-                "total": class_total,
-                "coverage": coverage(
-                    class_documented,
-                    class_total,
-                ),
-            },
-            "functions": {
-                "documented": function_documented,
-                "total": function_total,
-                "coverage": coverage(
-                    function_documented,
-                    function_total,
-                ),
-            },
-            "methods": {
-                "documented": method_documented,
-                "total": method_total,
-                "coverage": coverage(
-                    method_documented,
-                    method_total,
-                ),
-            },
-        }
-

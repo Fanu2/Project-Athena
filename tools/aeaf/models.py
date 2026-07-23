@@ -87,6 +87,17 @@ class ComplexityInfo:
     )
 
 
+@dataclass(slots=True)
+class DocumentationInfo:
+    """
+    Documentation metadata for a code element.
+    """
+
+    has_docstring: bool = False
+
+    summary: str = ""
+
+
 # ============================================================================
 # Source Code Models
 # ============================================================================
@@ -108,20 +119,52 @@ class ImportInfo:
 
 @dataclass(slots=True)
 class FunctionInfo:
+    """
+    Information about a Python function or method.
+    """
+
     name: str
+
     lineno: int
+
     end_lineno: int | None = None
-    parameters: list[str] = field(default_factory=list)
-    decorators: list[str] = field(default_factory=list)
+
+    parameters: list[str] = field(
+        default_factory=list,
+    )
+
+    decorators: list[str] = field(
+        default_factory=list,
+    )
+
+    documentation: DocumentationInfo = field(
+        default_factory=DocumentationInfo,
+    )
 
 
 @dataclass(slots=True)
 class ClassInfo:
+    """
+    Information about a Python class.
+    """
+
     name: str
+
     lineno: int
+
     end_lineno: int | None = None
-    bases: list[str] = field(default_factory=list)
-    methods: list[FunctionInfo] = field(default_factory=list)
+
+    bases: list[str] = field(
+        default_factory=list,
+    )
+
+    methods: list[FunctionInfo] = field(
+        default_factory=list,
+    )
+
+    documentation: DocumentationInfo = field(
+        default_factory=DocumentationInfo,
+    )
 
 
 @dataclass(slots=True)
@@ -131,9 +174,12 @@ class ModuleInfo:
     """
 
     name: str
+
     path: Path
 
-    imports: list[ImportInfo] = field(default_factory=list)
+    imports: list[ImportInfo] = field(
+        default_factory=list,
+    )
 
     classes: list[ClassInfo] = field(
         default_factory=list,
@@ -151,12 +197,18 @@ class ModuleInfo:
         default_factory=list,
     )
 
+    documentation: DocumentationInfo = field(
+        default_factory=DocumentationInfo,
+    )
+
 
 @dataclass(slots=True)
 class PackageInfo:
     name: str
     path: Path
-    modules: list[ModuleInfo] = field(default_factory=list)
+    modules: list[ModuleInfo] = field(
+        default_factory=list,
+    )
 
 
 # ============================================================================
@@ -172,8 +224,9 @@ class DependencyEdge:
 
 @dataclass(slots=True)
 class DependencyGraph:
-    edges: list[DependencyEdge] = field(default_factory=list)
-
+    edges: list[DependencyEdge] = field(
+        default_factory=list,
+    )
 
 # ============================================================================
 # Findings
@@ -206,21 +259,50 @@ class PluginResult:
 
 @dataclass(slots=True)
 class RepositoryModel:
-    """The central data model shared by the entire AEAF pipeline."""
+    """
+    The central data model shared by the entire AEAF pipeline.
+    """
 
-    metadata: RepositoryMetadata = field(default_factory=RepositoryMetadata)
-    statistics: ProjectStatistics = field(default_factory=ProjectStatistics)
+    metadata: RepositoryMetadata = field(
+        default_factory=RepositoryMetadata,
+    )
 
-    source_files: list[SourceFile] = field(default_factory=list)
-    packages: list[PackageInfo] = field(default_factory=list)
-    modules: list[ModuleInfo] = field(default_factory=list)
+    statistics: ProjectStatistics = field(
+        default_factory=ProjectStatistics,
+    )
 
-    dependency_graph: DependencyGraph = field(default_factory=DependencyGraph)
+    source_files: list[SourceFile] = field(
+        default_factory=list,
+    )
+
+    packages: list[PackageInfo] = field(
+        default_factory=list,
+    )
+
+    modules: list[ModuleInfo] = field(
+        default_factory=list,
+    )
+
+    dependency_graph: DependencyGraph = field(
+        default_factory=DependencyGraph,
+    )
 
     complexity: list[ComplexityInfo] = field(
         default_factory=list,
     )
 
-    findings: list[Finding] = field(default_factory=list)
-    recommendations: list[Recommendation] = field(default_factory=list)
-    plugin_results: list[PluginResult] = field(default_factory=list)
+    documentation: dict[str, Any] = field(
+        default_factory=dict,
+    )
+
+    findings: list[Finding] = field(
+        default_factory=list,
+    )
+
+    recommendations: list[Recommendation] = field(
+        default_factory=list,
+    )
+
+    plugin_results: list[PluginResult] = field(
+        default_factory=list,
+    )
