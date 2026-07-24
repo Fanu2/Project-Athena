@@ -101,12 +101,9 @@ testpaths = [
 # Package Discovery
 # ============================================================================
 
+[tool.setuptools]
+package-dir = {"" = "src"}
+
 [tool.setuptools.packages.find]
-
-where = [
-    ".",
-]
-
-include = [
-    "tools*",
-]
+where = ["src"]
+include = ["athena*"]
