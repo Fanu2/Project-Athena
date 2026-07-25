@@ -16,12 +16,11 @@ def test_directory_not_document(tmp_path):
         validate_document(tmp_path)
 
 
-def test_invalid_extension(tmp_path):
+def test_valid_docx(tmp_path):
     file = tmp_path / "notes.docx"
     file.write_text("hello")
 
-    with pytest.raises(InvalidDocumentError):
-        validate_document(file)
+    assert validate_document(file) == file
 
 
 def test_valid_pdf(tmp_path):

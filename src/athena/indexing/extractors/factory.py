@@ -27,6 +27,7 @@ from athena.indexing.extractors.pdf import (
 from athena.indexing.extractors.text import (
     TextExtractor,
 )
+from athena.indexing.extractors.epub import EPUBExtractor
 
 
 class ExtractorFactory:
@@ -70,6 +71,7 @@ class ExtractorFactory:
             TextExtractor(),
             MarkdownExtractor(),
             DOCXExtractor(),
+            EPUBExtractor(),
         )
 
         for extractor in extractors:

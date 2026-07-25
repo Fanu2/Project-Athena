@@ -1,0 +1,50 @@
+            self.passage.clear()
+            return
+
+        passage = items[0].data(
+            3,
+            Qt.ItemDataRole.UserRole,
+        )
+
+        self.passage.setPlainText(
+            passage or "",
+        )
+
+    def _open_source(
+        self,
+        item: QTreeWidgetItem,
+        column: int,
+    ) -> None:
+        """Open a cited source document."""
+
+        del column
+
+        path = item.data(
+            0,
+            Qt.ItemDataRole.UserRole,
+        )
+
+        page = item.data(
+            1,
+            Qt.ItemDataRole.UserRole,
+        )
+
+        if path is None:
+            return
+
+        self.document_requested.emit(
+            Path(path),
+            int(page),
+        )
+
+    def set_conversation_service(
+        self,
+        service: ConversationService,
+    ) -> None:
+        """Attach conversation service."""
+
+        self._conversation_service = service
+
+        model = ConversationModel(
+            service,
+        )

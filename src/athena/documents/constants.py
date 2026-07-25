@@ -6,4 +6,6 @@ SUPPORTED_DOCUMENT_TYPES = (
     ".pdf",
     ".txt",
     ".md",
+    ".epub",
+    ".docx",
 )

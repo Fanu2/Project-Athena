@@ -5,6 +5,9 @@ Document extractors.
 from athena.indexing.extractors.base import (
     BaseExtractor,
 )
+from athena.indexing.extractors.epub import (
+    EPUBExtractor,
+)
 from athena.indexing.extractors.factory import (
     ExtractorFactory,
 )
@@ -20,6 +23,7 @@ from athena.indexing.extractors.text import (
 
 __all__ = [
     "BaseExtractor",
+    "EPUBExtractor",
     "ExtractorFactory",
     "MarkdownExtractor",
     "PDFExtractor",
