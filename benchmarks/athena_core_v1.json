@@ -1,233 +1,233 @@
 ﻿[
     {
-        "question_id":  "AQ-001",
-        "question":  "What is the Athena Constitution?",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "constitution",
-                     "architecture"
-                 ]
+        "question_id": "AQ-001",
+        "question": "What is the Athena Constitution?",
+        "expected_document_id": "constitution.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "constitution",
+            "architecture"
+        ]
     },
     {
-        "question_id":  "AQ-002",
-        "question":  "What are the principles of the Athena Constitution?",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "constitution"
-                 ]
+        "question_id": "AQ-002",
+        "question": "What are the principles of the Athena Constitution?",
+        "expected_document_id": "constitution.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "constitution"
+        ]
     },
     {
-        "question_id":  "AQ-003",
-        "question":  "Explain the Athena Engineering Lifecycle.",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "engineering",
-                     "ael"
-                 ]
+        "question_id": "AQ-003",
+        "question": "Explain the Athena Engineering Lifecycle.",
+        "expected_document_id": "SAS-v1.0-Draft.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "engineering",
+            "ael"
+        ]
     },
     {
-        "question_id":  "AQ-004",
-        "question":  "What is Repository Truth?",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "engineering",
-                     "repository"
-                 ]
+        "question_id": "AQ-004",
+        "question": "What is Repository Truth?",
+        "expected_document_id": "architecture.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "engineering",
+            "repository"
+        ]
     },
     {
-        "question_id":  "AQ-005",
-        "question":  "What is Zero Regression?",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "engineering",
-                     "testing"
-                 ]
+        "question_id": "AQ-005",
+        "question": "What is Zero Regression?",
+        "expected_document_id": "Testing-Benchmark-Guide-v1.0.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "engineering",
+            "testing"
+        ]
     },
     {
-        "question_id":  "AQ-006",
-        "question":  "Explain Freeze Before Expansion.",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "engineering"
-                 ]
+        "question_id": "AQ-006",
+        "question": "Explain Freeze Before Expansion.",
+        "expected_document_id": "architecture.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "engineering"
+        ]
     },
     {
-        "question_id":  "AQ-007",
-        "question":  "Describe Athena\u0027s layered architecture.",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "architecture"
-                 ]
+        "question_id": "AQ-007",
+        "question": "Describe Athena's layered architecture.",
+        "expected_document_id": "architecture.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "architecture"
+        ]
     },
     {
-        "question_id":  "AQ-008",
-        "question":  "What is the role of the Retrieval Service?",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "retrieval"
-                 ]
+        "question_id": "AQ-008",
+        "question": "What is the role of the Retrieval Service?",
+        "expected_document_id": "RIE-Specification-v1.0.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "retrieval"
+        ]
     },
     {
-        "question_id":  "AQ-009",
-        "question":  "How does semantic retrieval work?",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "retrieval",
-                     "semantic"
-                 ]
+        "question_id": "AQ-009",
+        "question": "How does semantic retrieval work?",
+        "expected_document_id": "RIE-Specification-v1.0.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "retrieval",
+            "semantic"
+        ]
     },
     {
-        "question_id":  "AQ-010",
-        "question":  "What is a SemanticResult?",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "retrieval"
-                 ]
+        "question_id": "AQ-010",
+        "question": "What is a SemanticResult?",
+        "expected_document_id": "02-RETRIEVAL-MODEL.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "retrieval"
+        ]
     },
     {
-        "question_id":  "AQ-011",
-        "question":  "What is a RetrievalResult?",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "domain"
-                 ]
+        "question_id": "AQ-011",
+        "question": "What is a RetrievalResult?",
+        "expected_document_id": "02-RETRIEVAL-MODEL.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "domain"
+        ]
     },
     {
-        "question_id":  "AQ-012",
-        "question":  "Explain the Query Planner.",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "retrieval"
-                 ]
+        "question_id": "AQ-012",
+        "question": "Explain the Query Planner.",
+        "expected_document_id": "RIE-Specification-v1.0.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "retrieval"
+        ]
     },
     {
-        "question_id":  "AQ-013",
-        "question":  "How are embeddings generated?",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "embeddings"
-                 ]
+        "question_id": "AQ-013",
+        "question": "How are embeddings generated?",
+        "expected_document_id": "indexing-pipeline.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "embeddings"
+        ]
     },
     {
-        "question_id":  "AQ-014",
-        "question":  "Describe the indexing pipeline.",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "indexing"
-                 ]
+        "question_id": "AQ-014",
+        "question": "Describe the indexing pipeline.",
+        "expected_document_id": "indexing-pipeline.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "indexing"
+        ]
     },
     {
-        "question_id":  "AQ-015",
-        "question":  "How are document chunks stored?",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "indexing"
-                 ]
+        "question_id": "AQ-015",
+        "question": "How are document chunks stored?",
+        "expected_document_id": "architecture.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "indexing"
+        ]
     },
     {
-        "question_id":  "AQ-016",
-        "question":  "What is the purpose of BenchmarkRunner?",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "evaluation"
-                 ]
+        "question_id": "AQ-016",
+        "question": "What is the purpose of BenchmarkRunner?",
+        "expected_document_id": "Testing-Benchmark-Guide-v1.0.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "evaluation"
+        ]
     },
     {
-        "question_id":  "AQ-017",
-        "question":  "What is BenchmarkMetrics?",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "evaluation"
-                 ]
+        "question_id": "AQ-017",
+        "question": "What is BenchmarkMetrics?",
+        "expected_document_id": "04-BENCHMARK-GUIDE.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "evaluation"
+        ]
     },
     {
-        "question_id":  "AQ-018",
-        "question":  "What metrics does Athena calculate?",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "evaluation"
-                 ]
+        "question_id": "AQ-018",
+        "question": "What metrics does Athena calculate?",
+        "expected_document_id": "Testing-Benchmark-Guide-v1.0.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "evaluation"
+        ]
     },
     {
-        "question_id":  "AQ-019",
-        "question":  "What is Mean Reciprocal Rank?",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "evaluation"
-                 ]
+        "question_id": "AQ-019",
+        "question": "What is Mean Reciprocal Rank?",
+        "expected_document_id": "RIE-Specification-v1.0.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "evaluation"
+        ]
     },
     {
-        "question_id":  "AQ-020",
-        "question":  "What is Top-1 Accuracy?",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "evaluation"
-                 ]
+        "question_id": "AQ-020",
+        "question": "What is Top-1 Accuracy?",
+        "expected_document_id": "RIE-Specification-v1.0.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "evaluation"
+        ]
     },
     {
-        "question_id":  "AQ-021",
-        "question":  "What is Top-3 Accuracy?",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "evaluation"
-                 ]
+        "question_id": "AQ-021",
+        "question": "What is Top-3 Accuracy?",
+        "expected_document_id": "RIE-Specification-v1.0.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "evaluation"
+        ]
     },
     {
-        "question_id":  "AQ-022",
-        "question":  "How are benchmark reports generated?",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "evaluation"
-                 ]
+        "question_id": "AQ-022",
+        "question": "How are benchmark reports generated?",
+        "expected_document_id": "Testing-Benchmark-Guide-v1.0.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "evaluation"
+        ]
     },
     {
-        "question_id":  "AQ-023",
-        "question":  "What is the benchmark exporter?",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "evaluation"
-                 ]
+        "question_id": "AQ-023",
+        "question": "What is the benchmark exporter?",
+        "expected_document_id": "Testing-Benchmark-Guide-v1.0.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "evaluation"
+        ]
     },
     {
-        "question_id":  "AQ-024",
-        "question":  "How are benchmark datasets loaded?",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "evaluation"
-                 ]
+        "question_id": "AQ-024",
+        "question": "How are benchmark datasets loaded?",
+        "expected_document_id": "Testing-Benchmark-Guide-v1.0.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "evaluation"
+        ]
     },
     {
-        "question_id":  "AQ-025",
-        "question":  "How is retrieval quality evaluated in Athena?",
-        "expected_document_id":  "",
-        "expected_chunk_id":  "",
-        "tags":  [
-                     "evaluation",
-                     "retrieval"
-                 ]
+        "question_id": "AQ-025",
+        "question": "How is retrieval quality evaluated in Athena?",
+        "expected_document_id": "Athena_Quality_Intelligence_AQI_v1.0.docx",
+        "expected_chunk_id": "",
+        "tags": [
+            "evaluation",
+            "retrieval"
+        ]
     }
 ]

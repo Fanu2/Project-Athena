@@ -4,8 +4,6 @@ Retrieval service.
 
 from __future__ import annotations
 
-from uuid import UUID
-
 from athena.ai.retrieval.service import (
     RetrievalService as SemanticRetrievalService,
 )
@@ -43,7 +41,7 @@ class RetrievalService:
         for item in semantic_results:
             results.append(
                 RetrievalResult(
-                    document_id=UUID(item.document_id),
+                    document_id=item.document_id,
                     document_name=item.document_title,
                     page=item.page_number,
                     text=item.text,
@@ -52,3 +50,6 @@ class RetrievalService:
             )
 
         return results
+
+
+

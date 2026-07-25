@@ -1,4 +1,4 @@
-﻿"""
+"""
 Application context.
 
 Creates and owns shared application services.
@@ -26,8 +26,12 @@ from athena.ai.rag.context_builder import (
 from athena.ai.rag.service import (
     RAGService,
 )
-from athena.ai.retrieval.service import (
+from athena.application.ai.retrieval_service import (
     RetrievalService,
+)
+
+from athena.ai.retrieval.service import (
+    RetrievalService as SemanticRetrievalService,
 )
 
 from athena.bookmarks.service import BookmarkService
@@ -256,10 +260,14 @@ class ApplicationContext:
         # RAG
         #
 
-        self.retrieval_service = RetrievalService(
+        semantic_retrieval_service = SemanticRetrievalService(
             embedding_service=embedding_service,
             embedding_repository=embedding_repository,
             chunk_repository=chunk_repository,
+        )
+
+        self.retrieval_service = RetrievalService(
+            semantic_retrieval_service=semantic_retrieval_service,
         )
 
         context_builder = ContextBuilder(
@@ -347,6 +355,11 @@ class ApplicationContext:
             )
 
         return self.current_workspace
+
+
+
+
+
 
 
 
