@@ -1,0 +1,13 @@
+﻿{
+    "version": "1.0",
+    "description": "Athena Benchmark Dataset",
+    "question": {
+        "question_id": "string",
+        "question": "string",
+        "expected_document_id": "string",
+        "expected_chunk_id": "string",
+        "tags": [
+            "string"
+        ]
+    }
+}

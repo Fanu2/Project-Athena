@@ -19,7 +19,7 @@ class BenchmarkLoader:
 
         dataset_path = Path(path)
 
-        with dataset_path.open("r", encoding="utf-8") as fp:
+        with dataset_path.open("r", encoding="utf-8-sig") as fp:
             data = json.load(fp)
 
         questions: list[BenchmarkQuestion] = []

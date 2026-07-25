@@ -1,18 +1,14 @@
 ﻿"""
 Benchmark domain models.
 
-These models define the data structures used by the Athena Retrieval
-Evaluation Framework.
-
-The benchmark framework evaluates retrieval quality while reusing the
-existing retrieval models provided by Athena.
+Core domain objects for the Athena Evaluation Framework.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from athena.ai.retrieval.models import SemanticResult
+from athena.domain.ai.retrieval_result import RetrievalResult
 
 
 @dataclass(slots=True, frozen=True)
@@ -21,39 +17,41 @@ class BenchmarkQuestion:
 
     question_id: str
     question: str
-    expected_document_id: str | None = None
-    expected_chunk_id: str | None = None
+    expected_document_id: str |None = None
+    expected_chunk_id: str |None = None
     tags: tuple[str, ...] = ()
 
 
 @dataclass(slots=True)
-class BenchmarkMetrics:
-    """Evaluation metrics for a benchmark run."""
-
-    top1_hit: bool = False
-    top3_hit: bool = False
-    recall: float = 0.0
-    mrr: float = 0.0
-    latency_ms: float = 0.0
-
-
-@dataclass(slots=True)
 class BenchmarkRun:
-    """Result of executing one benchmark question."""
+    """Represents one executed benchmark question."""
 
     question: BenchmarkQuestion
-    retrieval_results: list[SemanticResult] = field(default_factory=list)
-    metrics: BenchmarkMetrics = field(default_factory=BenchmarkMetrics)
+
+    retrieval_results: list[RetrievalResult] = field(
+        default_factory=list,
+    )
+
+    elapsed_ms: float = 0.0
 
 
 @dataclass(slots=True)
 class BenchmarkSummary:
-    """Summary of an entire benchmark session."""
+    """Summary statistics for a benchmark session."""
 
     total_questions: int = 0
-    completed_questions: int = 0
-    average_recall: float = 0.0
-    average_mrr: float = 0.0
-    average_latency_ms: float = 0.0
+
+    successful_retrievals: int = 0
+    failed_retrievals: int = 0
+
     top1_accuracy: float = 0.0
     top3_accuracy: float = 0.0
+    top5_accuracy: float = 0.0
+
+    mean_reciprocal_rank: float = 0.0
+
+    average_latency_ms: float = 0.0
+    median_latency_ms: float = 0.0
+
+    fastest_latency_ms: float = 0.0
+    slowest_latency_ms: float = 0.0

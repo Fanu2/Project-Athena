@@ -1,0 +1,12 @@
+﻿[
+    {
+        "question_id": "RR-001",
+        "question": "Find information about semantic retrieval.",
+        "expected_document_id": "",
+        "expected_chunk_id": "",
+        "tags": [
+            "retrieval",
+            "regression"
+        ]
+    }
+]

@@ -1,0 +1,11 @@
+﻿[
+    {
+        "question_id": "DOC-001",
+        "question": "How do I import documents into Athena?",
+        "expected_document_id": "",
+        "expected_chunk_id": "",
+        "tags": [
+            "documentation"
+        ]
+    }
+]

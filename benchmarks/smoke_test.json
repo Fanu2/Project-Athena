@@ -1,0 +1,11 @@
+﻿[
+    {
+        "question_id": "SM-001",
+        "question": "What is Athena?",
+        "expected_document_id": "",
+        "expected_chunk_id": "",
+        "tags": [
+            "smoke"
+        ]
+    }
+]

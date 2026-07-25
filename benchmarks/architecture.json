@@ -1,0 +1,11 @@
+﻿[
+    {
+        "question_id": "AR-001",
+        "question": "Describe Athena architecture.",
+        "expected_document_id": "",
+        "expected_chunk_id": "",
+        "tags": [
+            "architecture"
+        ]
+    }
+]
