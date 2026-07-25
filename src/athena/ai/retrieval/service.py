@@ -27,6 +27,8 @@ from athena.repositories.document_repository import (
 from athena.ai.metadata.models import (
     MetadataResult,
 )
+from athena.retrieval.query_planner import QueryPlanner
+from athena.retrieval.metadata_filter import MetadataFilter
 
 
 class RetrievalService:
@@ -52,6 +54,10 @@ class RetrievalService:
 
         self._similarity = SimilarityCalculator()
 
+        self._query_planner = QueryPlanner()
+
+        self._metadata_filter = MetadataFilter()
+
         self._max_chunks_per_document = max_chunks_per_document
 
     def search_similar(
@@ -62,8 +68,12 @@ class RetrievalService:
     ) -> list[SemanticResult]:
         """Find semantically similar chunks."""
 
+        # Parse the user query into a structured intent.
+        # The intent will be used in future retrieval enhancements.
+        intent = self._query_planner.parse(query)
+
         query_vector = self._embedding_service.embed(
-            query,
+            intent.semantic_query,
         )
 
         embeddings = self._embedding_repository.list_all()
@@ -117,7 +127,10 @@ class RetrievalService:
                     )
 
                     if document is not None:
-                        document_title = document.title or document.filename
+                        document_title = (
+                            document.title
+                            or document.filename
+                        )
 
                 except ValueError:
                     pass
