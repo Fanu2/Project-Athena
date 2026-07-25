@@ -12,7 +12,7 @@ from athena.ai.rag.models import (
     RAGContext,
     RAGSource,
 )
-from athena.ai.retrieval.models import SemanticResult
+from athena.domain.ai.retrieval_result import RetrievalResult
 from athena.documents.service import DocumentService
 
 
@@ -30,7 +30,7 @@ class ContextBuilder:
     def build(
         self,
         question: str,
-        results: list[SemanticResult],
+        results: list[RetrievalResult],
     ) -> RAGContext:
         """Create RAG context."""
 
@@ -42,7 +42,7 @@ class ContextBuilder:
             results,
             start=1,
         ):
-            document_name = result.document_id
+            document_name = result.document_name
             document_path = Path()
 
             if self._document_service is not None:
@@ -58,18 +58,18 @@ class ContextBuilder:
                 (
                     f"Source {index}\n"
                     f"Document: {document_name}\n"
-                    f"Page: {result.page_number}\n"
+                    f"Page: {result.page}\n"
                     f"{result.text}"
                 )
             )
 
             sources.append(
                 RAGSource(
-                    chunk_id=result.chunk_id,
-                    document_id=result.document_id,
+                    chunk_id="",
+                    document_id=str(result.document_id),
                     document_name=document_name,
                     document_path=document_path,
-                    page_number=result.page_number,
+                    page_number=result.page,
                     score=result.score,
                     text=result.text,
                 )
