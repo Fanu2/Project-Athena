@@ -85,6 +85,10 @@ from athena.conversation.service import (
     ConversationService,
 )
 
+from athena.application.conversation.conversation_query_service import (
+    ConversationQueryService,
+)
+
 from athena.workspace.models import Workspace
 from athena.workspace.service import WorkspaceService
 
@@ -130,6 +134,7 @@ class ApplicationContext:
         self.metadata_service: MetadataService | None = None
 
         self.athena_query_service: AthenaQueryService | None = None
+        self.conversation_query_service: ConversationQueryService | None = None
 
         self.conversation_service: ConversationService | None = None
 
@@ -277,6 +282,12 @@ class ApplicationContext:
             ),
         )
 
+        self.conversation_query_service = ConversationQueryService(
+            conversation_service=self.conversation_service,
+            query_service=self.athena_query_service,
+        )
+
+
         #
         # User data
         #
@@ -316,6 +327,7 @@ class ApplicationContext:
         self.rag_service = None
 
         self.athena_query_service = None
+        self.conversation_query_service = None
 
         self.ai_settings_service = None
 
@@ -335,3 +347,11 @@ class ApplicationContext:
             )
 
         return self.current_workspace
+
+
+
+
+
+
+
+

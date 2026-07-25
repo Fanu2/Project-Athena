@@ -392,7 +392,7 @@ class MainWindow(QMainWindow):
                 bookmark_service,
             )
 
-        query_service = self.context.athena_query_service
+        query_service = self.context.conversation_query_service
 
         if query_service is not None:
             self.ask_athena.set_query_service(
@@ -551,3 +551,4 @@ class MainWindow(QMainWindow):
         self.page_stack.setCurrentWidget(
             self.viewer,
         )
+

@@ -1,13 +1,18 @@
 """
 Conversation query orchestration service.
+
+This service coordinates the complete question-answering workflow by
+maintaining conversation history while delegating AI response generation
+to AthenaQueryService.
 """
 
 from __future__ import annotations
 
+from typing import Any
+
 from athena.conversation.service import (
     ConversationService,
 )
-
 from athena.services.athena_query_service import (
     AthenaQueryService,
 )
@@ -15,11 +20,18 @@ from athena.services.athena_query_service import (
 
 class ConversationQueryService:
     """
-    Coordinates conversations with Athena.
+    Coordinates the complete conversation workflow.
 
-    This service records user messages, delegates
-    question answering, stores assistant replies,
-    and returns the generated response.
+    Responsibilities
+    ----------------
+    - Record the user's question.
+    - Delegate question answering to AthenaQueryService.
+    - Record Athena's response.
+    - Return the original response object unchanged.
+
+    This service provides a presentation-independent conversation
+    orchestration layer so that UI components do not directly manage
+    conversation persistence.
     """
 
     def __init__(
@@ -27,34 +39,39 @@ class ConversationQueryService:
         conversation_service: ConversationService,
         query_service: AthenaQueryService,
     ) -> None:
-        self._conversation = conversation_service
-        self._query = query_service
+        """Initialize the conversation query service."""
 
-    def ask(
+        self._conversation_service = conversation_service
+        self._query_service = query_service
+
+    def answer(
         self,
         question: str,
-    ):
+    ) -> Any:
         """
-        Ask Athena a question while maintaining
-        conversation history.
+        Answer a question while maintaining conversation history.
+
+        The returned value is passed through unchanged from
+        AthenaQueryService, preserving compatibility with existing
+        callers.
         """
 
-        self._conversation.add_user_message(
+        self._conversation_service.add_user_message(
             question,
         )
 
-        answer = self._query.answer(
+        result = self._query_service.answer(
             question,
         )
 
-        reply = (
-            answer.answer
-            if hasattr(answer, "answer")
-            else str(answer)
+        assistant_reply = (
+            result.answer
+            if hasattr(result, "answer")
+            else str(result)
         )
 
-        self._conversation.add_assistant_message(
-            reply,
+        self._conversation_service.add_assistant_message(
+            assistant_reply,
         )
 
-        return answer
+        return result

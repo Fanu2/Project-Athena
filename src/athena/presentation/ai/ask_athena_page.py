@@ -32,8 +32,8 @@ from athena.presentation.ai.conversation_model import (
 from athena.presentation.ai.conversation_widget import (
     ConversationWidget,
 )
-from athena.services.athena_query_service import (
-    AthenaQueryService,
+from athena.application.conversation.conversation_query_service import (
+    ConversationQueryService,
 )
 
 
@@ -53,7 +53,7 @@ class AskAthenaPage(QWidget):
         # Services
         #
 
-        self._query_service: AthenaQueryService | None = None
+        self._query_service: ConversationQueryService | None = None
         self._conversation_service: ConversationService | None = None
 
         #
@@ -260,7 +260,7 @@ class AskAthenaPage(QWidget):
         )
     def set_query_service(
         self,
-        service: AthenaQueryService,
+        service: ConversationQueryService,
     ) -> None:
         """Attach Athena query service."""
 
@@ -365,16 +365,12 @@ class AskAthenaPage(QWidget):
                 "Searching Athena knowledge...",
             )
 
-            if self._conversation_service is not None:
-                self._conversation_service.add_user_message(
-                    question,
-                )
-
-                self.conversation.refresh()
-
             result = self._query_service.answer(
                 question,
             )
+
+            if self._conversation_service is not None:
+                self.conversation.refresh()
 
             self.sources.clear()
 
@@ -388,13 +384,6 @@ class AskAthenaPage(QWidget):
                 result,
                 str,
             ):
-                if self._conversation_service is not None:
-                    self._conversation_service.add_assistant_message(
-                        result,
-                    )
-
-                    self.conversation.refresh()
-
                 self.model_label.setText(
                     "Model: Built-in",
                 )
@@ -408,13 +397,6 @@ class AskAthenaPage(QWidget):
             #
             # RAG response with citations
             #
-
-            if self._conversation_service is not None:
-                self._conversation_service.add_assistant_message(
-                    result.answer,
-                )
-
-                self.conversation.refresh()
 
             self.model_label.setText(
                 f"Model: {result.model}",
@@ -572,3 +554,6 @@ class AskAthenaPage(QWidget):
         self.conversation.set_model(
             model,
         )
+
+
+
