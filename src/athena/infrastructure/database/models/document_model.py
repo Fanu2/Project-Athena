@@ -19,6 +19,9 @@ from sqlalchemy.orm import relationship
 from athena.infrastructure.database.base import Base
 
 if TYPE_CHECKING:
+    from athena.infrastructure.database.models.document_metadata_model import (
+        DocumentMetadataModel,
+    )
     from athena.infrastructure.database.models.document_version_model import (
         DocumentVersionModel,
     )
@@ -86,4 +89,11 @@ class DocumentModel(Base):
         back_populates="document",
         cascade="all, delete-orphan",
         order_by="DocumentVersionModel.version",
+    )
+
+    document_metadata: Mapped["DocumentMetadataModel | None"] = relationship(
+        "DocumentMetadataModel",
+        back_populates="document",
+        uselist=False,
+        cascade="all, delete-orphan",
     )
