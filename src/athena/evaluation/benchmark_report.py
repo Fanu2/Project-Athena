@@ -1,36 +1,58 @@
 ﻿"""
-Benchmark report generation.
+Benchmark report generators.
 """
 
 from __future__ import annotations
 
-from athena.evaluation.benchmark_models import (
-    BenchmarkSummary,
-)
+from athena.evaluation.benchmark_models import BenchmarkSummary
+from athena.evaluation.benchmark_session import BenchmarkSession
 
 
-class BenchmarkReport:
-    """Generates benchmark reports."""
+class MarkdownReporter:
+    """Generate a Markdown benchmark report."""
 
-    @staticmethod
-    def to_markdown(
+    def generate(
+        self,
+        session: BenchmarkSession,
         summary: BenchmarkSummary,
     ) -> str:
-        """Generate a Markdown report."""
 
-        lines = [
-            "# Athena Retrieval Benchmark Report",
-            "",
-            f"Total Questions: {summary.total_questions}",
-            f"Completed Questions: {summary.completed_questions}",
-            "",
-            "## Metrics",
-            "",
-            f"- Top-1 Accuracy: {summary.top1_accuracy:.2%}",
-            f"- Top-3 Accuracy: {summary.top3_accuracy:.2%}",
-            f"- Average Recall: {summary.average_recall:.2%}",
-            f"- Mean Reciprocal Rank: {summary.average_mrr:.4f}",
-            f"- Average Latency: {summary.average_latency_ms:.2f} ms",
-        ]
+        return f"""# Athena Retrieval Benchmark Report
 
-        return "\n".join(lines)
+## Session
+
+| Item | Value |
+|------|-------|
+| Dataset | {session.dataset_name} |
+| Started | {session.started_at} |
+| Finished | {session.finished_at} |
+| Athena Version | {session.athena_version} |
+| Embedding Model | {session.embedding_model} |
+| Workspace | {session.workspace_name} |
+
+## Dataset
+
+| Metric | Value |
+|--------|------:|
+| Questions | {summary.total_questions} |
+| Successful | {summary.successful_retrievals} |
+| Failed | {summary.failed_retrievals} |
+
+## Retrieval Quality
+
+| Metric | Value |
+|--------|------:|
+| Top-1 Accuracy | {summary.top1_accuracy:.2%} |
+| Top-3 Accuracy | {summary.top3_accuracy:.2%} |
+| Top-5 Accuracy | {summary.top5_accuracy:.2%} |
+| Mean Reciprocal Rank | {summary.mean_reciprocal_rank:.3f} |
+
+## Performance
+
+| Metric | Value |
+|--------|------:|
+| Average Latency | {summary.average_latency_ms:.2f} ms |
+| Median Latency | {summary.median_latency_ms:.2f} ms |
+| Fastest | {summary.fastest_latency_ms:.2f} ms |
+| Slowest | {summary.slowest_latency_ms:.2f} ms |
+"""
