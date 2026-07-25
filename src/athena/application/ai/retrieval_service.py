@@ -4,6 +4,11 @@ Retrieval service.
 
 from __future__ import annotations
 
+from uuid import UUID
+
+from athena.ai.retrieval.service import (
+    RetrievalService as SemanticRetrievalService,
+)
 from athena.domain.ai.question import Question
 from athena.domain.ai.retrieval_result import RetrievalResult
 
@@ -11,25 +16,39 @@ from athena.domain.ai.retrieval_result import RetrievalResult
 class RetrievalService:
     """Retrieve relevant evidence for a question."""
 
+    def __init__(
+        self,
+        semantic_retrieval_service: SemanticRetrievalService,
+    ) -> None:
+        self._semantic_retrieval_service = (
+            semantic_retrieval_service
+        )
+
     def retrieve(
         self,
         question: Question,
     ) -> list[RetrievalResult]:
         """
         Retrieve evidence supporting the supplied question.
-
-        Parameters
-        ----------
-        question:
-            User question.
-
-        Returns
-        -------
-        list[RetrievalResult]
-            Ranked retrieval results.
         """
-        del question
 
-        # TODO:
-        # Integrate with DocumentSearchService.
-        return []
+        semantic_results = (
+            self._semantic_retrieval_service.search_similar(
+                query=question.text,
+            )
+        )
+
+        results: list[RetrievalResult] = []
+
+        for item in semantic_results:
+            results.append(
+                RetrievalResult(
+                    document_id=UUID(item.document_id),
+                    document_name=item.document_title,
+                    page=item.page_number,
+                    text=item.text,
+                    score=item.score,
+                )
+            )
+
+        return results
