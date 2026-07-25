@@ -1,4 +1,4 @@
-﻿"""
+"""
 Application context.
 
 Creates and owns shared application services.
@@ -256,7 +256,7 @@ class ApplicationContext:
         # RAG
         #
 
-        self.retrieval_service = RetrievalService(
+        retrieval_service = RetrievalService(
             embedding_service=embedding_service,
             embedding_repository=embedding_repository,
             chunk_repository=chunk_repository,
@@ -267,7 +267,7 @@ class ApplicationContext:
         )
 
         self.rag_service = RAGService(
-            retrieval_service=self.retrieval_service,
+            retrieval_service=retrieval_service,
             context_builder=context_builder,
             llm_provider=OllamaProvider(),
             intent_service=intent_service,
@@ -347,7 +347,6 @@ class ApplicationContext:
             )
 
         return self.current_workspace
-
 
 
 
