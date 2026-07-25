@@ -174,3 +174,133 @@ def test_latency_statistics():
     assert summary.median_latency_ms == 20.0
     assert summary.fastest_latency_ms == 10.0
     assert summary.slowest_latency_ms == 30.0
+
+from uuid import uuid4
+
+from athena.domain.ai.retrieval_result import RetrievalResult
+from athena.evaluation.benchmark_models import (
+    BenchmarkQuestion,
+    BenchmarkRun,
+)
+from athena.evaluation.benchmark_metrics_engine import (
+    BenchmarkMetricsEngine,
+)
+from athena.evaluation.benchmark_session import (
+    BenchmarkSession,
+)
+
+
+def test_top1_accuracy():
+
+    doc = uuid4()
+
+    question = BenchmarkQuestion(
+        question_id="Q1",
+        question="Question",
+        expected_document_id=str(doc),
+    )
+
+    run = BenchmarkRun(
+        question=question,
+        retrieval_results=[
+            RetrievalResult(
+                document_id=doc,
+                document_name="Doc",
+                page=1,
+                text="Answer",
+                score=0.95,
+            )
+        ],
+        elapsed_ms=10,
+    )
+
+    session = BenchmarkSession(
+        runs=[run],
+    )
+
+    summary = BenchmarkMetricsEngine().summarize(
+        session,
+    )
+
+    assert summary.top1_accuracy == 1.0
+    assert summary.top3_accuracy == 1.0
+    assert summary.top5_accuracy == 1.0
+    assert summary.mean_reciprocal_rank == 1.0
+
+
+def test_mrr_rank_two():
+
+    expected = uuid4()
+
+    run = BenchmarkRun(
+        question=BenchmarkQuestion(
+            question_id="Q1",
+            question="Question",
+            expected_document_id=str(expected),
+        ),
+        retrieval_results=[
+            RetrievalResult(
+                uuid4(),
+                "Wrong",
+                1,
+                "",
+                0.99,
+            ),
+            RetrievalResult(
+                expected,
+                "Correct",
+                1,
+                "",
+                0.90,
+            ),
+        ],
+        elapsed_ms=5,
+    )
+
+    session = BenchmarkSession(
+        runs=[run],
+    )
+
+    summary = BenchmarkMetricsEngine().summarize(
+        session,
+    )
+
+    assert summary.top1_accuracy == 0.0
+    assert summary.top3_accuracy == 1.0
+    assert summary.top5_accuracy == 1.0
+    assert summary.mean_reciprocal_rank == 0.5
+
+
+def test_document_not_found():
+
+    run = BenchmarkRun(
+        question=BenchmarkQuestion(
+            question_id="Q1",
+            question="Question",
+            expected_document_id=str(uuid4()),
+        ),
+        retrieval_results=[
+            RetrievalResult(
+                uuid4(),
+                "Wrong",
+                1,
+                "",
+                0.8,
+            ),
+        ],
+        elapsed_ms=5,
+    )
+
+    session = BenchmarkSession(
+        runs=[run],
+    )
+
+    summary = BenchmarkMetricsEngine().summarize(
+        session,
+    )
+
+    assert summary.top1_accuracy == 0.0
+    assert summary.top3_accuracy == 0.0
+    assert summary.top5_accuracy == 0.0
+    assert summary.mean_reciprocal_rank == 0.0
+
