@@ -1,0 +1,33 @@
+[
+    {
+        "question_id": "LONG-001",
+        "question": "Explain the Athena Engineering Lifecycle in detail.",
+        "expected_document_id": "SAS-v1.0-Draft.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "long_context",
+            "engineering",
+            "architecture"
+        ]
+    },
+    {
+        "question_id": "LONG-002",
+        "question": "Explain the Athena Constitution principles.",
+        "expected_document_id": "constitution.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "long_context",
+            "constitution"
+        ]
+    },
+    {
+        "question_id": "LONG-003",
+        "question": "Describe Athena system architecture components.",
+        "expected_document_id": "architecture.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "long_context",
+            "architecture"
+        ]
+    }
+]

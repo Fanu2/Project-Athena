@@ -1,0 +1,35 @@
+[
+    {
+        "question_id": "CODE-001",
+        "question": "Where is the Athena application context created?",
+        "expected_document_id": "application_context.py",
+        "expected_chunk_id": "",
+        "tags": [
+            "code",
+            "architecture",
+            "services"
+        ]
+    },
+    {
+        "question_id": "CODE-002",
+        "question": "Which service coordinates benchmark execution?",
+        "expected_document_id": "benchmark_service.py",
+        "expected_chunk_id": "",
+        "tags": [
+            "code",
+            "benchmark",
+            "evaluation"
+        ]
+    },
+    {
+        "question_id": "CODE-003",
+        "question": "Where is semantic retrieval implemented?",
+        "expected_document_id": "service.py",
+        "expected_chunk_id": "",
+        "tags": [
+            "code",
+            "retrieval",
+            "ai"
+        ]
+    }
+]

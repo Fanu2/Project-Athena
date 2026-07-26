@@ -1,0 +1,25 @@
+{
+    "suite_name": "Athena Evaluation Suite v1",
+    "datasets": [
+        {
+            "name": "core",
+            "path": "athena_core_v1.json",
+            "category": "retrieval"
+        },
+        {
+            "name": "duplicate_documents",
+            "path": "duplicate_documents/duplicate_documents_v1.json",
+            "category": "retrieval"
+        },
+        {
+            "name": "long_context",
+            "path": "long_context/long_context_v1.json",
+            "category": "context"
+        },
+        {
+            "name": "code_retrieval",
+            "path": "code_retrieval/code_retrieval_v1.json",
+            "category": "code"
+        }
+    ]
+}

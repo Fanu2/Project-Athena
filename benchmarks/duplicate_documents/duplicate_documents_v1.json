@@ -1,0 +1,34 @@
+[
+    {
+        "question_id": "DUP-001",
+        "question": "What is the Athena Constitution?",
+        "expected_document_id": "constitution.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "duplicate",
+            "multi-format",
+            "constitution"
+        ]
+    },
+    {
+        "question_id": "DUP-002",
+        "question": "Explain the Athena Engineering Lifecycle.",
+        "expected_document_id": "SAS-v1.0-Draft.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "duplicate",
+            "multi-format",
+            "engineering"
+        ]
+    },
+    {
+        "question_id": "DUP-003",
+        "question": "Describe Athena architecture.",
+        "expected_document_id": "architecture.md",
+        "expected_chunk_id": "",
+        "tags": [
+            "duplicate",
+            "architecture"
+        ]
+    }
+]
