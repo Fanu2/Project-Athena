@@ -5,8 +5,8 @@
 | Item | Value |
 |------|-------|
 | Dataset | code_retrieval_v1.json |
-| Started | 2026-07-26 05:31:34.225176+00:00 |
-| Finished | 2026-07-26 05:31:34.645291+00:00 |
+| Started | 2026-07-26 08:27:38.201089+00:00 |
+| Finished | 2026-07-26 08:27:38.681843+00:00 |
 | Athena Version |  |
 | Embedding Model |  |
 | Workspace |  |
@@ -32,7 +32,7 @@
 
 | Metric | Value |
 |--------|------:|
-| Average Latency | 140.03 ms |
-| Median Latency | 139.17 ms |
-| Fastest | 138.43 ms |
-| Slowest | 142.49 ms |
+| Average Latency | 160.25 ms |
+| Median Latency | 160.62 ms |
+| Fastest | 148.56 ms |
+| Slowest | 171.59 ms |

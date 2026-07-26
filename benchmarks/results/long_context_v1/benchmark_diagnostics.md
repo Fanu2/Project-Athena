@@ -3,23 +3,23 @@
 ## Question LONG-001
 
 - Expected Document: SAS-v1.0-Draft.md
-- Status: Found
-- Rank: 1
-- Expected Score: 0.5562977277237979
-- Top Document: SAS-v1.0-Draft.md
-- Top Score: 0.5562977277237979
+- Status: Not Retrieved
+- Rank: None
+- Expected Score: None
+- Top Document: 01-CONSTITUTION.md
+- Top Score: 0.2833795806001402
 
 ### Retrieved Documents
 
-1. SAS-v1.0-Draft.md
-2. SAS-v1.0-Draft.md
-3. Operations-Deployment-Guide-v1.0.md
-4. SAS-v1.0-Draft.docx
-5. Memory-Engine-Specification-v1.0.md
+1. 01-CONSTITUTION.md
+2. 01-SYSTEM-ARCHITECTURE.md
+3. 02-SAS-v1.0.md
+4. 04-GLOSSARY.md
+5. 03-VISION.md
 
 ### Notes
 
-- Expected document ranked first.
+- Expected document was not retrieved.
 
 ---
 
@@ -28,17 +28,17 @@
 - Expected Document: constitution.md
 - Status: Found
 - Rank: 1
-- Expected Score: 0.6893280373610126
-- Top Document: constitution.md
-- Top Score: 0.6893280373610126
+- Expected Score: 0.43010313087186514
+- Top Document: 01-CONSTITUTION.md
+- Top Score: 0.43010313087186514
 
 ### Retrieved Documents
 
-1. constitution.md
-2. SAS-v1.0-Draft.md
-3. SAS-v1.0-Draft.md
-4. SAS-v1.0-Draft.docx
-5. 01-CONSTITUTION.md
+1. 01-CONSTITUTION.md
+2. 01-SYSTEM-ARCHITECTURE.md
+3. 02-SAS-v1.0.md
+4. 03-VISION.md
+5. 04-GLOSSARY.md
 
 ### Notes
 
@@ -49,22 +49,22 @@
 ## Question LONG-003
 
 - Expected Document: architecture.md
-- Status: Found
-- Rank: 4
-- Expected Score: 0.6048673996456088
-- Top Document: SAS-v1.0-Draft.md
-- Top Score: 0.6207038219571385
+- Status: Not Retrieved
+- Rank: None
+- Expected Score: None
+- Top Document: 01-SYSTEM-ARCHITECTURE.md
+- Top Score: 0.3253497863116457
 
 ### Retrieved Documents
 
-1. SAS-v1.0-Draft.md
-2. SAS-v1.0-Draft.docx
-3. SAS-v1.0-Draft.md
-4. architecture.md
-5. SAS-v1.0-Draft.docx
+1. 01-SYSTEM-ARCHITECTURE.md
+2. 01-CONSTITUTION.md
+3. 02-SAS-v1.0.md
+4. 03-VISION.md
+5. 04-GLOSSARY.md
 
 ### Notes
 
-- Expected document retrieved at rank 4.
+- Expected document was not retrieved.
 
 ---

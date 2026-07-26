@@ -5,8 +5,8 @@
 | Item | Value |
 |------|-------|
 | Dataset | duplicate_documents_v1.json |
-| Started | 2026-07-26 05:31:33.394724+00:00 |
-| Finished | 2026-07-26 05:31:33.805343+00:00 |
+| Started | 2026-07-26 08:27:37.259156+00:00 |
+| Finished | 2026-07-26 08:27:37.711615+00:00 |
 | Athena Version |  |
 | Embedding Model |  |
 | Workspace |  |
@@ -23,16 +23,16 @@
 
 | Metric | Value |
 |--------|------:|
-| Top-1 Accuracy | 66.67% |
-| Top-3 Accuracy | 100.00% |
-| Top-5 Accuracy | 100.00% |
-| Mean Reciprocal Rank | 0.833 |
+| Top-1 Accuracy | 33.33% |
+| Top-3 Accuracy | 33.33% |
+| Top-5 Accuracy | 33.33% |
+| Mean Reciprocal Rank | 0.333 |
 
 ## Performance
 
 | Metric | Value |
 |--------|------:|
-| Average Latency | 136.86 ms |
-| Median Latency | 138.72 ms |
-| Fastest | 131.66 ms |
-| Slowest | 140.21 ms |
+| Average Latency | 150.82 ms |
+| Median Latency | 150.93 ms |
+| Fastest | 147.30 ms |
+| Slowest | 154.23 ms |

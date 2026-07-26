@@ -6,16 +6,16 @@
 - Status: Not Retrieved
 - Rank: None
 - Expected Score: None
-- Top Document: architecture.md
-- Top Score: 0.6143425919281539
+- Top Document: 01-CONSTITUTION.md
+- Top Score: 0.3034914336704864
 
 ### Retrieved Documents
 
-1. architecture.md
-2. constitution.md
-3. Operations-Deployment-Guide-v1.0.md
-4. SAS-v1.0-Draft.docx
-5. Operations-Deployment-Guide-v1.0.docx
+1. 01-CONSTITUTION.md
+2. 02-SAS-v1.0.md
+3. 01-SYSTEM-ARCHITECTURE.md
+4. 03-VISION.md
+5. 04-GLOSSARY.md
 
 ### Notes
 
@@ -29,16 +29,16 @@
 - Status: Not Retrieved
 - Rank: None
 - Expected Score: None
-- Top Document: 03-PERFORMANCE.md
-- Top Score: 0.5046056196877712
+- Top Document: 01-SYSTEM-ARCHITECTURE.md
+- Top Score: 0.27071685980123983
 
 ### Retrieved Documents
 
-1. 03-PERFORMANCE.md
-2. Testing-Benchmark-Guide-v1.0.docx
-3. 04-BENCHMARK-GUIDE.md
-4. Testing-Benchmark-Guide-v1.0.md
-5. Testing-Benchmark-Guide-v1.0.docx
+1. 01-SYSTEM-ARCHITECTURE.md
+2. 02-SAS-v1.0.md
+3. 03-VISION.md
+4. 04-GLOSSARY.md
+5. 01-CONSTITUTION.md
 
 ### Notes
 
@@ -52,16 +52,16 @@
 - Status: Not Retrieved
 - Rank: None
 - Expected Score: None
-- Top Document: RIE-Specification-v1.0.docx
-- Top Score: 0.572159318971079
+- Top Document: 02-SAS-v1.0.md
+- Top Score: 0.281988239097975
 
 ### Retrieved Documents
 
-1. RIE-Specification-v1.0.docx
-2. RIE-Specification-v1.0.md
-3. 02-RETRIEVAL-MODEL.md
-4. 04-RETRIEVAL-INTELLIGENCE-ENGINE.md
-5. RIE-Specification-v1.0.docx
+1. 02-SAS-v1.0.md
+2. 04-GLOSSARY.md
+3. 01-SYSTEM-ARCHITECTURE.md
+4. 03-VISION.md
+5. 01-CONSTITUTION.md
 
 ### Notes
 

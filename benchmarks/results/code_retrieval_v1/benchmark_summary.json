@@ -6,8 +6,8 @@
     "top3_accuracy": 0.0,
     "top5_accuracy": 0.0,
     "mean_reciprocal_rank": 0.0,
-    "average_latency_ms": 140.02993336180225,
-    "median_latency_ms": 139.16960003552958,
-    "fastest_latency_ms": 138.4348000283353,
-    "slowest_latency_ms": 142.48540002154186
+    "average_latency_ms": 160.25386667267108,
+    "median_latency_ms": 160.61500000068918,
+    "fastest_latency_ms": 148.5579000436701,
+    "slowest_latency_ms": 171.588699973654
 }
