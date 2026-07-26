@@ -1,6 +1,8 @@
-"""
+﻿"""
 Tests for hybrid retrieval ranking.
 """
+
+import pytest
 
 from athena.ai.retrieval.hybrid_ranker import (
     HybridRanker,
@@ -46,8 +48,8 @@ def test_hybrid_ranker_removes_duplicates() -> None:
     assert len(results) == 1
 
 
-def test_hybrid_ranker_keeps_best_duplicate() -> None:
-    """Higher score duplicate should remain."""
+def test_hybrid_ranker_combines_scores() -> None:
+    """Duplicate candidates should use reranking score."""
 
     ranker = HybridRanker()
 
@@ -61,7 +63,7 @@ def test_hybrid_ranker_keeps_best_duplicate() -> None:
         5,
     )
 
-    assert results[0].score == 0.9
+    assert results[0].score == pytest.approx(0.53)
 
 
 def test_hybrid_ranker_respects_limit() -> None:
