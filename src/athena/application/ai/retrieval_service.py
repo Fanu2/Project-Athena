@@ -38,7 +38,7 @@ class RetrievalService:
             results.append(
                 RetrievalResult(
                     document_id=item.document_id,
-                    document_name=item.document_title,
+                    document_name=item.document_name,
                     page=item.page_number,
                     text=item.text,
                     score=item.score,

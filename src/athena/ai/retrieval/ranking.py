@@ -1,4 +1,4 @@
-"""
+﻿"""
 Retrieval candidate ranking model.
 """
 
@@ -28,7 +28,9 @@ class CandidateScorer:
         metadata_weight: float = 0.10,
     ) -> None:
         self._semantic_weight = semantic_weight
+
         self._keyword_weight = keyword_weight
+
         self._metadata_weight = metadata_weight
 
     def score(

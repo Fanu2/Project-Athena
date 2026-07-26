@@ -4,6 +4,8 @@ Hybrid retrieval ranking.
 
 from __future__ import annotations
 
+from athena.ai.metadata.models import MetadataResult
+from athena.ai.retrieval.metadata_ranker import MetadataRanker
 from athena.ai.retrieval.models import SemanticResult
 from athena.ai.retrieval.ranking import (
     CandidateScorer,
@@ -17,31 +19,35 @@ class HybridRanker:
     def __init__(
         self,
         scorer: CandidateScorer | None = None,
+        metadata_ranker: MetadataRanker | None = None,
     ) -> None:
         """Initialize ranker."""
 
         self._scorer = scorer or CandidateScorer()
+
+        self._metadata_ranker = (
+            metadata_ranker
+            or MetadataRanker()
+        )
 
     def merge(
         self,
         semantic_results: list[SemanticResult],
         keyword_results: list[SemanticResult],
         limit: int,
+        metadata: MetadataResult | None = None,
     ) -> list[SemanticResult]:
-        """Merge candidates and calculate final ranking score."""
+        """
+        Merge candidates and rerank.
 
-        candidates: dict[
-            str,
-            tuple[SemanticResult, RankingFeatures],
-        ] = {}
+        Original semantic retrieval remains the primary signal.
+        Keyword and metadata signals refine ranking.
+        """
+
+        candidates: dict[str, SemanticResult] = {}
 
         for result in semantic_results:
-            candidates[result.chunk_id] = (
-                result,
-                RankingFeatures(
-                    semantic_score=result.score,
-                ),
-            )
+            candidates[result.chunk_id] = result
 
         for result in keyword_results:
             existing = candidates.get(
@@ -49,35 +55,37 @@ class HybridRanker:
             )
 
             if existing is None:
-                candidates[result.chunk_id] = (
-                    result,
-                    RankingFeatures(
-                        keyword_score=result.score,
-                    ),
-                )
-
-            else:
-                current_result, features = existing
-
-                candidates[result.chunk_id] = (
-                    current_result,
-                    RankingFeatures(
-                        semantic_score=features.semantic_score,
-                        keyword_score=result.score,
-                    ),
-                )
+                candidates[result.chunk_id] = result
 
         ranked: list[SemanticResult] = []
 
-        for result, features in candidates.values():
+        for result in candidates.values():
+
+            keyword_score = 0.0
+
+            for keyword_result in keyword_results:
+                if keyword_result.chunk_id == result.chunk_id:
+                    keyword_score = keyword_result.score
+                    break
+
+            metadata_score = self._metadata_score(
+                metadata,
+                result,
+            )
+
             final_score = self._scorer.score(
-                features,
+                RankingFeatures(
+                    semantic_score=result.score,
+                    keyword_score=keyword_score,
+                    metadata_score=metadata_score,
+                ),
             )
 
             ranked.append(
                 SemanticResult(
                     chunk_id=result.chunk_id,
                     document_id=result.document_id,
+                    document_name=result.document_name,
                     document_title=result.document_title,
                     page_number=result.page_number,
                     start_offset=result.start_offset,
@@ -93,3 +101,22 @@ class HybridRanker:
         )
 
         return ranked[:limit]
+
+    def _metadata_score(
+        self,
+        metadata: MetadataResult | None,
+        result: SemanticResult,
+    ) -> float:
+        """Calculate candidate-specific metadata score."""
+
+        if metadata is None:
+            return 0.0
+
+        for document in metadata.documents:
+            if (
+                document.document_id == result.document_id
+                or document.title == result.document_title
+            ):
+                return document.confidence
+
+        return 0.0

@@ -4,12 +4,45 @@ Benchmark metrics calculator.
 
 from __future__ import annotations
 
+import re
+
 from athena.domain.ai.retrieval_result import RetrievalResult
 from athena.evaluation.benchmark_models import BenchmarkMetrics
 
 
 class BenchmarkMetricsCalculator:
     """Calculates retrieval evaluation metrics."""
+
+    @staticmethod
+    def _normalize_document_id(document_id: str) -> str:
+        """
+        Normalize document identifiers for comparison.
+
+        Handles differences such as:
+        constitution.md
+        01-CONSTITUTION.md
+        """
+
+        name = document_id.lower()
+
+        name = re.sub(
+            r"\.[a-z0-9]+$",
+            "",
+            name,
+        )
+
+        name = name.replace(
+            "_",
+            "-",
+        )
+
+        name = re.sub(
+            r"^\d+-",
+            "",
+            name,
+        )
+
+        return name.strip("-")
 
     @staticmethod
     def calculate(
@@ -26,17 +59,42 @@ class BenchmarkMetricsCalculator:
         if not expected_document_id:
             return metrics
 
-        document_ids = [str(result.document_id) for result in retrieval_results]
+        expected = (
+            BenchmarkMetricsCalculator
+            ._normalize_document_id(
+                expected_document_id,
+            )
+        )
 
-        if document_ids:
-            metrics.top1_hit = document_ids[0] == expected_document_id
+        document_names = [
+            BenchmarkMetricsCalculator
+            ._normalize_document_id(
+                result.document_name,
+            )
+            for result in retrieval_results
+        ]
 
-            metrics.top3_hit = expected_document_id in document_ids[:3]
+        if document_names:
+            metrics.top1_hit = (
+                document_names[0] == expected
+            )
 
-            metrics.recall = 1.0 if expected_document_id in document_ids else 0.0
+            metrics.top3_hit = (
+                expected in document_names[:3]
+            )
 
-            if expected_document_id in document_ids:
-                rank = document_ids.index(expected_document_id) + 1
+            metrics.recall = (
+                1.0
+                if expected in document_names
+                else 0.0
+            )
+
+            if expected in document_names:
+                rank = (
+                    document_names.index(expected)
+                    + 1
+                )
+
                 metrics.mrr = 1.0 / rank
 
         return metrics

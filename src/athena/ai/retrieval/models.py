@@ -26,3 +26,5 @@ class SemanticResult:
     text: str
 
     score: float
+
+    document_name: str = ""

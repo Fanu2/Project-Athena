@@ -70,26 +70,6 @@ class RetrievalService:
 
         self._max_chunks_per_document = max_chunks_per_document
 
-    def _metadata_boost(
-        self,
-        query: str,
-        title: str,
-    ) -> float:
-        """Return a small metadata relevance boost."""
-
-        query_terms = set(
-            query.lower().split(),
-        )
-
-        title_terms = set(
-            title.lower().replace("_", " ").split(),
-        )
-
-        if query_terms.intersection(title_terms):
-            return 0.02
-
-        return 0.0
-
     def search_similar(
         self,
         query: str,
@@ -121,16 +101,12 @@ class RetrievalService:
                 )
             )
 
-        scored.sort(
-            key=lambda item: item[1],
-            reverse=True,
-        )
-
         semantic_results: list[SemanticResult] = []
 
         document_counts: dict[str, int] = {}
 
         for embedding, score in scored:
+
             chunk = self._chunk_repository.get_chunk(
                 embedding.chunk_id,
             )
@@ -146,6 +122,8 @@ class RetrievalService:
             if count >= self._max_chunks_per_document:
                 continue
 
+            document_name = chunk.document_id
+
             document_title = chunk.document_id
 
             if self._document_repository is not None:
@@ -155,26 +133,27 @@ class RetrievalService:
                     )
 
                     if document is not None:
-                        document_title = document.title or document.filename
+                        document_name = document.filename
+
+                        document_title = (
+                            document.title
+                            or document.filename
+                        )
 
                 except ValueError:
                     pass
-
-            adjusted_score = score + self._metadata_boost(
-                query,
-                document_title,
-            )
 
             semantic_results.append(
                 SemanticResult(
                     chunk_id=chunk.chunk_id,
                     document_id=chunk.document_id,
+                    document_name=document_name,
                     document_title=document_title,
                     page_number=chunk.page_number,
                     start_offset=chunk.start_offset,
                     end_offset=chunk.end_offset,
                     text=chunk.text,
-                    score=adjusted_score,
+                    score=score,
                 )
             )
 
@@ -197,4 +176,5 @@ class RetrievalService:
             semantic_results,
             keyword_results,
             limit,
+            metadata,
         )

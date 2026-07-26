@@ -47,6 +47,7 @@ class KeywordAdapter:
                 SemanticResult(
                     chunk_id=chunk.chunk_id,
                     document_id=chunk.document_id,
+                    document_name=chunk.document_id,
                     document_title=(
                         chunk.heading
                         or chunk.document_id
