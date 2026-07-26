@@ -12,6 +12,7 @@ from athena.evaluation.benchmark_diagnostics_engine import BenchmarkDiagnosticsE
 from athena.evaluation.benchmark_diagnostics_report import (
     BenchmarkDiagnosticsReporter,
 )
+from athena.evaluation.benchmark_export import BenchmarkExporter
 from athena.evaluation.benchmark_loader import BenchmarkLoader
 from athena.evaluation.benchmark_metrics_engine import BenchmarkMetricsEngine
 from athena.evaluation.benchmark_report import MarkdownReporter
@@ -69,6 +70,23 @@ class BenchmarkService:
             diagnostics,
         )
 
-        # Export integration will be added in a later sprint.
-        _ = report
-        _ = diagnostics_report
+        results_directory = Path("benchmarks/results")
+        results_directory.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        BenchmarkExporter.export_markdown(
+            report,
+            results_directory / "benchmark_report.md",
+        )
+
+        BenchmarkExporter.export_markdown(
+            diagnostics_report,
+            results_directory / "benchmark_diagnostics.md",
+        )
+
+        BenchmarkExporter.export_json(
+            summary,
+            results_directory / "benchmark_summary.json",
+        )

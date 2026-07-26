@@ -1,0 +1,13 @@
+{
+    "total_questions": 25,
+    "successful_retrievals": 25,
+    "failed_retrievals": 0,
+    "top1_accuracy": 0.6,
+    "top3_accuracy": 0.88,
+    "top5_accuracy": 0.96,
+    "mean_reciprocal_rank": 0.7313333333333333,
+    "average_latency_ms": 138.69253600249067,
+    "median_latency_ms": 134.57920000655577,
+    "fastest_latency_ms": 128.90240002889186,
+    "slowest_latency_ms": 211.32900001248345
+}
