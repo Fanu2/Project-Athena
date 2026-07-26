@@ -12,6 +12,9 @@ from athena.ai.embeddings.repository import (
 from athena.ai.embeddings.service import (
     EmbeddingService,
 )
+from athena.ai.metadata.models import (
+    MetadataResult,
+)
 from athena.ai.retrieval.models import (
     SemanticResult,
 )
@@ -24,11 +27,8 @@ from athena.indexing.repositories.sqlite import (
 from athena.repositories.document_repository import (
     DocumentRepository,
 )
-from athena.ai.metadata.models import (
-    MetadataResult,
-)
-from athena.retrieval.query_planner import QueryPlanner
 from athena.retrieval.metadata_filter import MetadataFilter
+from athena.retrieval.query_planner import QueryPlanner
 
 
 class RetrievalService:
@@ -60,6 +60,26 @@ class RetrievalService:
 
         self._max_chunks_per_document = max_chunks_per_document
 
+    def _metadata_boost(
+        self,
+        query: str,
+        title: str,
+    ) -> float:
+        """Return a small metadata relevance boost."""
+
+        query_terms = set(
+            query.lower().split(),
+        )
+
+        title_terms = set(
+            title.lower().replace("_", " ").split(),
+        )
+
+        if query_terms.intersection(title_terms):
+            return 0.02
+
+        return 0.0
+
     def search_similar(
         self,
         query: str,
@@ -68,8 +88,6 @@ class RetrievalService:
     ) -> list[SemanticResult]:
         """Find semantically similar chunks."""
 
-        # Parse the user query into a structured intent.
-        # The intent will be used in future retrieval enhancements.
         intent = self._query_planner.parse(query)
 
         query_vector = self._embedding_service.embed(
@@ -132,6 +150,11 @@ class RetrievalService:
                 except ValueError:
                     pass
 
+            adjusted_score = score + self._metadata_boost(
+                query,
+                document_title,
+            )
+
             results.append(
                 SemanticResult(
                     chunk_id=chunk.chunk_id,
@@ -141,7 +164,7 @@ class RetrievalService:
                     start_offset=chunk.start_offset,
                     end_offset=chunk.end_offset,
                     text=chunk.text,
-                    score=score,
+                    score=adjusted_score,
                 )
             )
 
