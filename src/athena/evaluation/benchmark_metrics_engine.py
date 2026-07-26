@@ -1,10 +1,11 @@
-﻿"""
+"""
 Benchmark metrics engine.
 """
 
 from __future__ import annotations
 
 import re
+from pathlib import Path
 from statistics import mean, median
 
 from athena.evaluation.benchmark_models import BenchmarkSummary
@@ -20,7 +21,7 @@ class BenchmarkMetricsEngine:
     ) -> str:
         """Normalize document identifiers."""
 
-        value = (name or "").lower().strip()
+        value = Path(name).name.lower().strip()
 
         value = re.sub(
             r"\.[a-z0-9]+$",

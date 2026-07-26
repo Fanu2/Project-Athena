@@ -5,8 +5,10 @@ Benchmark metrics calculator.
 from __future__ import annotations
 
 import re
+from pathlib import Path
 
 from athena.domain.ai.retrieval_result import RetrievalResult
+
 from athena.evaluation.benchmark_models import BenchmarkMetrics
 
 
@@ -23,7 +25,7 @@ class BenchmarkMetricsCalculator:
         01-CONSTITUTION.md
         """
 
-        name = document_id.lower()
+        name = Path(document_id).name.lower()
 
         name = re.sub(
             r"\.[a-z0-9]+$",

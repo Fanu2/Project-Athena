@@ -18,16 +18,21 @@ from athena.indexing.extractors.docling_pdf import (
 from athena.indexing.extractors.docx import (
     DOCXExtractor,
 )
+from athena.indexing.extractors.epub import (
+    EPUBExtractor,
+)
 from athena.indexing.extractors.markdown import (
     MarkdownExtractor,
 )
 from athena.indexing.extractors.pdf import (
     PDFExtractor,
 )
+from athena.indexing.extractors.python import (
+    PythonExtractor,
+)
 from athena.indexing.extractors.text import (
     TextExtractor,
 )
-from athena.indexing.extractors.epub import EPUBExtractor
 
 
 class ExtractorFactory:
@@ -40,8 +45,10 @@ class ExtractorFactory:
     @classmethod
     def _pdf_extractor(cls) -> BaseExtractor:
         """Return the configured PDF extractor."""
+
         if cls.USE_DOCLING:
             return DoclingPDFExtractor()
+
         return PDFExtractor()
 
     @classmethod
@@ -68,7 +75,14 @@ class ExtractorFactory:
 
         extractors: tuple[BaseExtractor, ...] = (
             cls._pdf_extractor(),
+
+            # Specific source/code extractors
+            # must come before generic text handling.
+            PythonExtractor(),
+
+            # Generic text extractor fallback
             TextExtractor(),
+
             MarkdownExtractor(),
             DOCXExtractor(),
             EPUBExtractor(),
@@ -78,4 +92,6 @@ class ExtractorFactory:
             if extension in extractor.supported_extensions:
                 return extractor
 
-        raise UnsupportedDocumentError(f"Unsupported document type: {extension}")
+        raise UnsupportedDocumentError(
+            f"Unsupported document type: {extension}"
+        )

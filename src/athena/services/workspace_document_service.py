@@ -46,6 +46,7 @@ class WorkspaceDocumentService:
     def import_document(
         self,
         source: Path,
+        force: bool = False,
     ) -> Path:
         """
         Import a document and index it.
@@ -53,6 +54,10 @@ class WorkspaceDocumentService:
         Args:
             source:
                 Source document path.
+
+            force:
+                Force re-indexing even if the document hash
+                already exists in the index.
 
         Returns:
             Imported document path inside the workspace.
@@ -64,6 +69,7 @@ class WorkspaceDocumentService:
 
         self._indexing.index_document(
             document_path,
+            force=force,
         )
 
         return document_path
@@ -71,6 +77,7 @@ class WorkspaceDocumentService:
     def import_folder(
         self,
         folder: Path,
+        force: bool = False,
     ) -> list[Path]:
         """
         Import and index all supported documents from a folder.
@@ -79,8 +86,11 @@ class WorkspaceDocumentService:
             folder:
                 Folder to scan recursively.
 
+            force:
+                Force re-indexing of existing documents.
+
         Returns:
-            List of imported document paths.
+            List of imported documents.
         """
 
         imported_documents: list[Path] = []
@@ -91,6 +101,7 @@ class WorkspaceDocumentService:
             imported_documents.append(
                 self.import_document(
                     source,
+                    force=force,
                 )
             )
 

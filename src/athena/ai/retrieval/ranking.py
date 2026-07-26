@@ -1,4 +1,4 @@
-﻿"""
+"""
 Retrieval candidate ranking model.
 """
 
@@ -17,21 +17,26 @@ class RankingFeatures:
 
     metadata_score: float = 0.0
 
+    identity_score: float = 0.0
+
 
 class CandidateScorer:
     """Combine retrieval signals into final score."""
 
     def __init__(
         self,
-        semantic_weight: float = 0.70,
+        semantic_weight: float = 0.65,
         keyword_weight: float = 0.20,
-        metadata_weight: float = 0.10,
+        metadata_weight: float = 0.05,
+        identity_weight: float = 0.10,
     ) -> None:
         self._semantic_weight = semantic_weight
 
         self._keyword_weight = keyword_weight
 
         self._metadata_weight = metadata_weight
+
+        self._identity_weight = identity_weight
 
     def score(
         self,
@@ -48,4 +53,10 @@ class CandidateScorer:
             +
             features.metadata_score
             * self._metadata_weight
+            +
+            features.identity_score
+            * self._identity_weight
         )
+
+
+

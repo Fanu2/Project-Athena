@@ -5,17 +5,17 @@
 - Expected Document: constitution.md
 - Status: Found
 - Rank: 1
-- Expected Score: 0.42299739201706377
-- Top Document: 01-CONSTITUTION.md
-- Top Score: 0.42299739201706377
+- Expected Score: 0.45495433638736965
+- Top Document: constitution.md
+- Top Score: 0.45495433638736965
 
 ### Retrieved Documents
 
-1. 01-CONSTITUTION.md
-2. 02-SAS-v1.0.md
-3. 03-VISION.md
-4. 01-SYSTEM-ARCHITECTURE.md
-5. 04-GLOSSARY.md
+1. constitution.md
+2. 01-CONSTITUTION.md
+3. SAS-v1.0-Draft.md
+4. SAS-v1.0-Draft.md
+5. SAS-v1.0-Draft.docx
 
 ### Notes
 
@@ -26,45 +26,45 @@
 ## Question DUP-002
 
 - Expected Document: SAS-v1.0-Draft.md
-- Status: Not Retrieved
-- Rank: None
-- Expected Score: None
-- Top Document: 01-CONSTITUTION.md
-- Top Score: 0.2926898878044957
+- Status: Found
+- Rank: 1
+- Expected Score: 0.37215460539635226
+- Top Document: SAS-v1.0-Draft.docx
+- Top Score: 0.37215460539635226
 
 ### Retrieved Documents
 
-1. 01-CONSTITUTION.md
-2. 01-SYSTEM-ARCHITECTURE.md
-3. 02-SAS-v1.0.md
-4. 04-GLOSSARY.md
-5. 03-VISION.md
+1. SAS-v1.0-Draft.docx
+2. SAS-v1.0-Draft.md
+3. Memory-Engine-Specification-v1.0.md
+4. Memory-Engine-Specification-v1.0.docx
+5. SAS-v1.0-Draft.md
 
 ### Notes
 
-- Expected document was not retrieved.
+- Expected document ranked first.
 
 ---
 
 ## Question DUP-003
 
 - Expected Document: architecture.md
-- Status: Not Retrieved
-- Rank: None
-- Expected Score: None
-- Top Document: 01-CONSTITUTION.md
-- Top Score: 0.35578662071191713
+- Status: Found
+- Rank: 1
+- Expected Score: 0.45047961683066035
+- Top Document: architecture.md
+- Top Score: 0.45047961683066035
 
 ### Retrieved Documents
 
-1. 01-CONSTITUTION.md
-2. 01-SYSTEM-ARCHITECTURE.md
-3. 02-SAS-v1.0.md
-4. 03-VISION.md
-5. 04-GLOSSARY.md
+1. architecture.md
+2. SAS-v1.0-Draft.md
+3. SAS-v1.0-Draft.docx
+4. SAS-v1.0-Draft.md
+5. SAS-v1.0-Draft.docx
 
 ### Notes
 
-- Expected document was not retrieved.
+- Expected document ranked first.
 
 ---

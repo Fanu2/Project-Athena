@@ -3,68 +3,68 @@
 ## Question CODE-001
 
 - Expected Document: application_context.py
-- Status: Not Retrieved
-- Rank: None
-- Expected Score: None
-- Top Document: 01-CONSTITUTION.md
-- Top Score: 0.3034914336704864
+- Status: Found
+- Rank: 1
+- Expected Score: 0.4162957236893259
+- Top Document: C:\Users\singh\Videos\AthenaBenchmarkWorkspace\documents\code\application_context.py
+- Top Score: 0.4162957236893259
 
 ### Retrieved Documents
 
-1. 01-CONSTITUTION.md
-2. 02-SAS-v1.0.md
-3. 01-SYSTEM-ARCHITECTURE.md
-4. 03-VISION.md
-5. 04-GLOSSARY.md
+1. C:\Users\singh\Videos\AthenaBenchmarkWorkspace\documents\code\application_context.py
+2. architecture.md
+3. C:\Users\singh\Videos\AthenaBenchmarkWorkspace\documents\code\application_context.py
+4. constitution.md
+5. C:\Users\singh\Videos\AthenaBenchmarkWorkspace\documents\code\application_context.py
 
 ### Notes
 
-- Expected document was not retrieved.
+- Expected document ranked first.
 
 ---
 
 ## Question CODE-002
 
 - Expected Document: benchmark_service.py
-- Status: Not Retrieved
-- Rank: None
-- Expected Score: None
-- Top Document: 01-SYSTEM-ARCHITECTURE.md
-- Top Score: 0.27071685980123983
+- Status: Found
+- Rank: 1
+- Expected Score: 0.40457710351601006
+- Top Document: C:\Users\singh\Videos\AthenaBenchmarkWorkspace\documents\code\benchmark_service.py
+- Top Score: 0.40457710351601006
 
 ### Retrieved Documents
 
-1. 01-SYSTEM-ARCHITECTURE.md
-2. 02-SAS-v1.0.md
-3. 03-VISION.md
-4. 04-GLOSSARY.md
-5. 01-CONSTITUTION.md
+1. C:\Users\singh\Videos\AthenaBenchmarkWorkspace\documents\code\benchmark_service.py
+2. C:\Users\singh\Videos\AthenaBenchmarkWorkspace\documents\code\benchmark_service.py
+3. C:\Users\singh\Videos\AthenaBenchmarkWorkspace\documents\code\benchmark_service.py
+4. 03-PERFORMANCE.md
+5. Testing-Benchmark-Guide-v1.0.docx
 
 ### Notes
 
-- Expected document was not retrieved.
+- Expected document ranked first.
 
 ---
 
 ## Question CODE-003
 
 - Expected Document: service.py
-- Status: Not Retrieved
-- Rank: None
-- Expected Score: None
-- Top Document: 02-SAS-v1.0.md
-- Top Score: 0.281988239097975
+- Status: Found
+- Rank: 1
+- Expected Score: 0.45577165974739325
+- Top Document: C:\Users\singh\Videos\AthenaBenchmarkWorkspace\documents\code\service.py
+- Top Score: 0.45577165974739325
 
 ### Retrieved Documents
 
-1. 02-SAS-v1.0.md
-2. 04-GLOSSARY.md
-3. 01-SYSTEM-ARCHITECTURE.md
-4. 03-VISION.md
-5. 01-CONSTITUTION.md
+1. C:\Users\singh\Videos\AthenaBenchmarkWorkspace\documents\code\service.py
+2. C:\Users\singh\Videos\AthenaBenchmarkWorkspace\documents\code\application_context.py
+3. C:\Users\singh\Videos\AthenaBenchmarkWorkspace\documents\code\application_context.py
+4. RIE-Specification-v1.0.docx
+5. RIE-Specification-v1.0.md
 
 ### Notes
 
-- Expected document was not retrieved.
+- Expected document ranked first.
 
 ---

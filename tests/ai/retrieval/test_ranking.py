@@ -1,4 +1,4 @@
-﻿"""
+"""
 Tests for retrieval candidate ranking.
 """
 
@@ -21,7 +21,7 @@ def test_semantic_only_score() -> None:
         )
     )
 
-    assert result == pytest.approx(0.70)
+    assert result == pytest.approx(0.65)
 
 
 def test_combined_score_calculation() -> None:
@@ -37,7 +37,7 @@ def test_combined_score_calculation() -> None:
         )
     )
 
-    assert result == pytest.approx(1.0)
+    assert result == pytest.approx(0.90)
 
 
 def test_custom_weights() -> None:

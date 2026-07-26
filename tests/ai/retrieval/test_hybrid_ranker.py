@@ -1,4 +1,4 @@
-﻿"""
+"""
 Tests for hybrid retrieval ranking.
 """
 
@@ -63,7 +63,7 @@ def test_hybrid_ranker_combines_scores() -> None:
         5,
     )
 
-    assert results[0].score == pytest.approx(0.53)
+    assert results[0].score == pytest.approx(0.605)
 
 
 def test_hybrid_ranker_respects_limit() -> None:

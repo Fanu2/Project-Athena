@@ -1,10 +1,11 @@
-﻿"""
+"""
 Benchmark diagnostics engine.
 """
 
 from __future__ import annotations
 
 import re
+from pathlib import Path
 
 from athena.evaluation.benchmark_diagnostics_models import (
     BenchmarkDiagnostics,
@@ -22,7 +23,9 @@ class BenchmarkDiagnosticsEngine:
     ) -> str:
         """Normalize document names for comparison."""
 
-        name = document_name.lower()
+        name = Path(
+            document_name,
+        ).name.lower().strip()
 
         name = re.sub(
             r"\.[a-z0-9]+$",

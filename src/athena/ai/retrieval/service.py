@@ -5,6 +5,7 @@ Semantic retrieval service.
 from __future__ import annotations
 
 from uuid import UUID
+from pathlib import Path
 
 from athena.ai.embeddings.repository import (
     EmbeddingRepository,
@@ -103,8 +104,6 @@ class RetrievalService:
 
         semantic_results: list[SemanticResult] = []
 
-        document_counts: dict[str, int] = {}
-
         for embedding, score in scored:
 
             chunk = self._chunk_repository.get_chunk(
@@ -112,14 +111,6 @@ class RetrievalService:
             )
 
             if chunk is None:
-                continue
-
-            count = document_counts.get(
-                chunk.document_id,
-                0,
-            )
-
-            if count >= self._max_chunks_per_document:
                 continue
 
             document_name = chunk.document_id
@@ -133,11 +124,11 @@ class RetrievalService:
                     )
 
                     if document is not None:
-                        document_name = document.filename
+                        document_name = Path(document.filename).name
 
                         document_title = (
                             document.title
-                            or document.filename
+                            or Path(document.filename).name
                         )
 
                 except ValueError:
@@ -157,10 +148,12 @@ class RetrievalService:
                 )
             )
 
-            document_counts[chunk.document_id] = count + 1
+        semantic_results.sort(
+            key=lambda item: item.score,
+            reverse=True,
+        )
 
-            if len(semantic_results) >= limit:
-                break
+        semantic_results = semantic_results[:limit]
 
         keyword_chunks = self._chunk_repository.search_chunks(
             query,
@@ -177,4 +170,5 @@ class RetrievalService:
             keyword_results,
             limit,
             metadata,
+            query,
         )

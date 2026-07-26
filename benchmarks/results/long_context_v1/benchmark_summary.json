@@ -2,12 +2,12 @@
     "total_questions": 3,
     "successful_retrievals": 3,
     "failed_retrievals": 0,
-    "top1_accuracy": 0.3333333333333333,
-    "top3_accuracy": 0.3333333333333333,
-    "top5_accuracy": 0.3333333333333333,
-    "mean_reciprocal_rank": 0.3333333333333333,
-    "average_latency_ms": 161.66336665628478,
-    "median_latency_ms": 164.24630000256002,
-    "fastest_latency_ms": 150.1979999593459,
-    "slowest_latency_ms": 170.5458000069484
+    "top1_accuracy": 1.0,
+    "top3_accuracy": 1.0,
+    "top5_accuracy": 1.0,
+    "mean_reciprocal_rank": 1.0,
+    "average_latency_ms": 241.6358333042202,
+    "median_latency_ms": 239.5945999887772,
+    "fastest_latency_ms": 238.834899966605,
+    "slowest_latency_ms": 246.47799995727837
 }

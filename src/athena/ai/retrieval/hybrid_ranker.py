@@ -5,6 +5,7 @@ Hybrid retrieval ranking.
 from __future__ import annotations
 
 from athena.ai.metadata.models import MetadataResult
+from athena.ai.retrieval.identity_ranker import IdentityRanker
 from athena.ai.retrieval.metadata_ranker import MetadataRanker
 from athena.ai.retrieval.models import SemanticResult
 from athena.ai.retrieval.ranking import (
@@ -20,6 +21,7 @@ class HybridRanker:
         self,
         scorer: CandidateScorer | None = None,
         metadata_ranker: MetadataRanker | None = None,
+        identity_ranker: IdentityRanker | None = None,
     ) -> None:
         """Initialize ranker."""
 
@@ -30,19 +32,20 @@ class HybridRanker:
             or MetadataRanker()
         )
 
+        self._identity_ranker = (
+            identity_ranker
+            or IdentityRanker()
+        )
+
     def merge(
         self,
         semantic_results: list[SemanticResult],
         keyword_results: list[SemanticResult],
         limit: int,
         metadata: MetadataResult | None = None,
+        query: str = "",
     ) -> list[SemanticResult]:
-        """
-        Merge candidates and rerank.
-
-        Original semantic retrieval remains the primary signal.
-        Keyword and metadata signals refine ranking.
-        """
+        """Merge candidates and rerank."""
 
         candidates: dict[str, SemanticResult] = {}
 
@@ -50,11 +53,7 @@ class HybridRanker:
             candidates[result.chunk_id] = result
 
         for result in keyword_results:
-            existing = candidates.get(
-                result.chunk_id,
-            )
-
-            if existing is None:
+            if result.chunk_id not in candidates:
                 candidates[result.chunk_id] = result
 
         ranked: list[SemanticResult] = []
@@ -73,11 +72,18 @@ class HybridRanker:
                 result,
             )
 
+            identity_score = self._identity_ranker.score(
+                query,
+                result.document_name,
+                result.document_title,
+            )
+
             final_score = self._scorer.score(
                 RankingFeatures(
                     semantic_score=result.score,
                     keyword_score=keyword_score,
                     metadata_score=metadata_score,
+                    identity_score=identity_score,
                 ),
             )
 
@@ -107,7 +113,7 @@ class HybridRanker:
         metadata: MetadataResult | None,
         result: SemanticResult,
     ) -> float:
-        """Calculate candidate-specific metadata score."""
+        """Calculate candidate metadata score."""
 
         if metadata is None:
             return 0.0

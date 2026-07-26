@@ -130,6 +130,7 @@ class IndexingService:
     def index_document(
         self,
         document: Path,
+        force: bool = False,
     ) -> list[DocumentChunk]:
         """Extract, chunk, store and embed document."""
 
@@ -137,8 +138,12 @@ class IndexingService:
             document,
         )
 
-        if self._index_repository is not None and self._index_repository.exists_by_hash(
-            document_hash,
+        if (
+            not force
+            and self._index_repository is not None
+            and self._index_repository.exists_by_hash(
+                document_hash,
+            )
         ):
             return []
 
@@ -184,7 +189,10 @@ class IndexingService:
                 )
             )
 
-        if self._embedding_service is not None and self._embedding_repository is not None:
+        if (
+            self._embedding_service is not None
+            and self._embedding_repository is not None
+        ):
             for chunk in chunks:
                 vector = self._embedding_service.embed(
                     chunk.text,
