@@ -15,6 +15,12 @@ from athena.ai.embeddings.service import (
 from athena.ai.metadata.models import (
     MetadataResult,
 )
+from athena.ai.retrieval.hybrid_ranker import (
+    HybridRanker,
+)
+from athena.ai.retrieval.keyword_adapter import (
+    KeywordAdapter,
+)
 from athena.ai.retrieval.models import (
     SemanticResult,
 )
@@ -57,6 +63,10 @@ class RetrievalService:
         self._query_planner = QueryPlanner()
 
         self._metadata_filter = MetadataFilter()
+
+        self._hybrid_ranker = HybridRanker()
+
+        self._keyword_adapter = KeywordAdapter()
 
         self._max_chunks_per_document = max_chunks_per_document
 
@@ -116,7 +126,7 @@ class RetrievalService:
             reverse=True,
         )
 
-        results: list[SemanticResult] = []
+        semantic_results: list[SemanticResult] = []
 
         document_counts: dict[str, int] = {}
 
@@ -155,7 +165,7 @@ class RetrievalService:
                 document_title,
             )
 
-            results.append(
+            semantic_results.append(
                 SemanticResult(
                     chunk_id=chunk.chunk_id,
                     document_id=chunk.document_id,
@@ -170,7 +180,21 @@ class RetrievalService:
 
             document_counts[chunk.document_id] = count + 1
 
-            if len(results) >= limit:
+            if len(semantic_results) >= limit:
                 break
 
-        return results
+        keyword_chunks = self._chunk_repository.search_chunks(
+            query,
+            limit=limit * 2,
+        )
+
+        keyword_results = self._keyword_adapter.convert(
+            keyword_chunks,
+            query,
+        )
+
+        return self._hybrid_ranker.merge(
+            semantic_results,
+            keyword_results,
+            limit,
+        )
