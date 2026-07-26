@@ -5,8 +5,10 @@ Athena Benchmark CLI.
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
 
-from athena.evaluation.benchmark_loader import BenchmarkLoader
+from athena.core.application_context import ApplicationContext
+from athena.evaluation.benchmark_service import BenchmarkService
 
 
 def main() -> None:
@@ -15,6 +17,12 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         prog="athena-benchmark",
         description="Athena Retrieval Benchmark",
+    )
+
+    parser.add_argument(
+        "--workspace",
+        required=True,
+        help="Athena workspace path",
     )
 
     parser.add_argument(
@@ -29,17 +37,31 @@ def main() -> None:
     print("Athena Retrieval Benchmark")
     print("=" * 60)
 
-    questions = BenchmarkLoader.load(args.dataset)
+    context = ApplicationContext()
 
-    print(f"Dataset : {args.dataset}")
-    print(f"Questions Loaded : {len(questions)}")
-    print()
+    try:
+        context.open_workspace(
+            Path(args.workspace),
+        )
 
-    for question in questions:
-        print(f"{question.question_id}: {question.question}")
+        if context.retrieval_service is None:
+            raise RuntimeError(
+                "Retrieval service was not initialized.",
+            )
 
-    print()
-    print("Loader verification completed successfully.")
+        service = BenchmarkService(
+            context.retrieval_service,
+        )
+
+        service.run(
+            args.dataset,
+        )
+
+        print()
+        print("Benchmark completed successfully.")
+
+    finally:
+        context.close_workspace()
 
 
 if __name__ == "__main__":
