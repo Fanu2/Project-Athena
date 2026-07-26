@@ -57,7 +57,6 @@ class PythonASTParser:
         repository.modules.clear()
 
         for source_file in repository.source_files:
-
             module = self._parse_module(
                 source_file.path,
             )
@@ -65,9 +64,7 @@ class PythonASTParser:
             if module is not None:
                 repository.modules.append(module)
 
-        repository.statistics.modules = len(
-            repository.modules
-        )
+        repository.statistics.modules = len(repository.modules)
 
         return repository
 
@@ -148,11 +145,8 @@ class PythonASTParser:
         """
 
         for node in ast.walk(tree):
-
             if isinstance(node, ast.Import):
-
                 for alias in node.names:
-
                     module.imports.append(
                         ImportInfo(
                             module=alias.name,
@@ -161,11 +155,9 @@ class PythonASTParser:
                     )
 
             elif isinstance(node, ast.ImportFrom):
-
                 module_name = node.module or ""
 
                 for alias in node.names:
-
                     module.imports.append(
                         ImportInfo(
                             module=module_name,
@@ -184,7 +176,6 @@ class PythonASTParser:
         """
 
         for node in tree.body:
-
             if not isinstance(node, ast.ClassDef):
                 continue
 
@@ -223,7 +214,6 @@ class PythonASTParser:
         """
 
         for node in class_node.body:
-
             if not isinstance(
                 node,
                 (
@@ -269,7 +259,6 @@ class PythonASTParser:
         """
 
         for node in tree.body:
-
             if not isinstance(
                 node,
                 (
@@ -313,13 +302,10 @@ class PythonASTParser:
         bases: list[str] = []
 
         for base in node.bases:
-
             if isinstance(base, ast.Name):
-
                 bases.append(base.id)
 
             elif isinstance(base, ast.Attribute):
-
                 parts: list[str] = []
 
                 current = base
@@ -334,7 +320,6 @@ class PythonASTParser:
                 bases.append(".".join(reversed(parts)))
 
             else:
-
                 try:
                     bases.append(ast.unparse(base))
                 except Exception:
@@ -385,11 +370,8 @@ class PythonASTParser:
         decorators: list[str] = []
 
         for decorator in node.decorator_list:
-
             try:
-                decorators.append(
-                    ast.unparse(decorator)
-                )
+                decorators.append(ast.unparse(decorator))
             except Exception:
                 decorators.append("<unknown>")
 

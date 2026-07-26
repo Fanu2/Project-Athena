@@ -39,7 +39,6 @@ class ComplexityAnalyzer:
         repository.complexity.clear()
 
         for module in repository.modules:
-
             self._analyze_module(
                 repository,
                 module,
@@ -56,10 +55,7 @@ class ComplexityAnalyzer:
         Analyze module complexity.
         """
 
-        score = (
-            len(module.classes)
-            + len(module.functions)
-        )
+        score = len(module.classes) + len(module.functions)
 
         repository.complexity.append(
             ComplexityInfo(
@@ -74,19 +70,16 @@ class ComplexityAnalyzer:
         )
 
         for class_info in module.classes:
-
             self._analyze_class(
                 repository,
                 class_info,
             )
 
         for function in module.functions:
-
             self._analyze_function(
                 repository,
                 function,
             )
-
 
     def _analyze_class(
         self,
@@ -115,12 +108,10 @@ class ComplexityAnalyzer:
         )
 
         for method in class_info.methods:
-
             self._analyze_function(
                 repository,
                 method,
             )
-
 
     def _analyze_function(
         self,
@@ -134,17 +125,9 @@ class ComplexityAnalyzer:
         lines = 0
 
         if function.end_lineno is not None:
+            lines = function.end_lineno - function.lineno + 1
 
-            lines = (
-                function.end_lineno
-                - function.lineno
-                + 1
-            )
-
-        score = (
-            len(function.parameters)
-            + lines
-        )
+        score = len(function.parameters) + lines
 
         repository.complexity.append(
             ComplexityInfo(
@@ -159,4 +142,3 @@ class ComplexityAnalyzer:
                 },
             )
         )
-

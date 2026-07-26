@@ -22,9 +22,7 @@ class AEAFConfig:
 
     max_file_size: int = 5 * 1024 * 1024
 
-    python_extensions: tuple[str, ...] = (
-        ".py",
-    )
+    python_extensions: tuple[str, ...] = (".py",)
 
     exclude_directories: tuple[str, ...] = (
         ".git",
@@ -74,19 +72,13 @@ class AEAFConfig:
         """
 
         if not self.project_root.exists():
-            raise FileNotFoundError(
-                f"Project root does not exist: {self.project_root}"
-            )
+            raise FileNotFoundError(f"Project root does not exist: {self.project_root}")
 
         if not self.project_root.is_dir():
-            raise NotADirectoryError(
-                f"Project root is not a directory: {self.project_root}"
-            )
+            raise NotADirectoryError(f"Project root is not a directory: {self.project_root}")
 
         if self.max_file_size <= 0:
-            raise ValueError(
-                "Maximum file size must be greater than zero."
-            )
+            raise ValueError("Maximum file size must be greater than zero.")
 
     @property
     def max_file_size_mb(self) -> float:
@@ -105,10 +97,7 @@ class AEAFConfig:
         """
         Return True if the directory should be scanned.
         """
-        return (
-            directory.is_dir()
-            and not self.is_excluded_directory(directory.name)
-        )
+        return directory.is_dir() and not self.is_excluded_directory(directory.name)
 
     def should_scan_file(self, file: Path) -> bool:
         """
@@ -135,4 +124,3 @@ class AEAFConfig:
             exclude_files=self.exclude_files,
             verbose=self.verbose,
         )
-

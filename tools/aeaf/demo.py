@@ -49,9 +49,7 @@ def main() -> None:
 
     graph = repository.dependency_graph
 
-    print(
-        f"{'Edges':20} {len(graph.edges)}"
-    )
+    print(f"{'Edges':20} {len(graph.edges)}")
 
     print()
     print("Complexity")
@@ -59,12 +57,9 @@ def main() -> None:
 
     complexity = repository.complexity
 
-    print(
-        f"{'Elements analyzed':20} {len(complexity)}"
-    )
+    print(f"{'Elements analyzed':20} {len(complexity)}")
 
     if complexity:
-
         print()
         print("Top Complexity Hotspots")
         print("-" * 60)
@@ -79,12 +74,7 @@ def main() -> None:
             hotspots,
             start=1,
         ):
-
-            print(
-                f"{index:2}. "
-                f"{item.name:30} "
-                f"{item.score}"
-            )
+            print(f"{index:2}. {item.name:30} {item.score}")
 
     print()
     print("Documentation")
@@ -93,9 +83,7 @@ def main() -> None:
     documentation = repository.documentation
 
     for name, data in documentation.items():
-
         if isinstance(data, dict):
-
             print(
                 f"{name:20} "
                 f"{data.get('documented', 0)}/"
@@ -113,9 +101,7 @@ def main() -> None:
         exist_ok=True,
     )
 
-    json_report_path = (
-        report_directory / "aeaf_report.json"
-    )
+    json_report_path = report_directory / "aeaf_report.json"
 
     json_generator = JSONReportGenerator()
 
@@ -124,10 +110,7 @@ def main() -> None:
         json_report_path,
     )
 
-
-    markdown_report_path = (
-        report_directory / "aeaf_report.md"
-    )
+    markdown_report_path = report_directory / "aeaf_report.md"
 
     markdown_generator = MarkdownReportGenerator()
 
@@ -136,10 +119,7 @@ def main() -> None:
         markdown_report_path,
     )
 
-
-    html_report_path = (
-        report_directory / "aeaf_dashboard.html"
-    )
+    html_report_path = report_directory / "aeaf_dashboard.html"
 
     dashboard = DashboardBuilder()
 
@@ -148,18 +128,11 @@ def main() -> None:
         html_report_path,
     )
 
+    print(f"JSON report written: {json_report_path}")
 
-    print(
-        f"JSON report written: {json_report_path}"
-    )
+    print(f"Markdown report written: {markdown_report_path}")
 
-    print(
-        f"Markdown report written: {markdown_report_path}"
-    )
-
-    print(
-        f"HTML dashboard written: {html_report_path}"
-    )
+    print(f"HTML dashboard written: {html_report_path}")
 
 
 if __name__ == "__main__":

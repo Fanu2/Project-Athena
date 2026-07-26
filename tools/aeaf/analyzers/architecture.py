@@ -60,7 +60,6 @@ class ComplexityAnalyzer:
         """
 
         for module in repository.modules:
-
             module.metrics = {
                 "classes": len(
                     getattr(module, "classes", []),
@@ -75,7 +74,6 @@ class ComplexityAnalyzer:
                     getattr(module, "imports", []),
                 ),
             }
-
 
     def _count_methods(
         self,
@@ -116,9 +114,7 @@ class ComplexityAnalyzer:
         """
 
         for module in repository.modules:
-
             for class_model in getattr(module, "classes", []):
-
                 class_model.metrics = {
                     "methods": len(
                         getattr(class_model, "methods", []),
@@ -130,7 +126,6 @@ class ComplexityAnalyzer:
                         getattr(class_model, "base_classes", []),
                     ),
                 }
-
 
     def _largest_class(
         self,
@@ -154,9 +149,7 @@ class ComplexityAnalyzer:
         largest_count = -1
 
         for module in repository.modules:
-
             for class_model in getattr(module, "classes", []):
-
                 method_count = len(
                     getattr(class_model, "methods", []),
                 )
@@ -190,7 +183,6 @@ class ComplexityAnalyzer:
         largest_module_methods = -1
 
         for module in repository.modules:
-
             metrics = getattr(module, "metrics", {})
 
             total_classes += metrics.get("classes", 0)
@@ -206,11 +198,7 @@ class ComplexityAnalyzer:
             repository,
         )
 
-        average_methods_per_class = (
-            total_methods / total_classes
-            if total_classes > 0
-            else 0.0
-        )
+        average_methods_per_class = total_methods / total_classes if total_classes > 0 else 0.0
 
         repository.complexity = {
             "modules": total_modules,
@@ -222,16 +210,6 @@ class ComplexityAnalyzer:
                 average_methods_per_class,
                 2,
             ),
-            "largest_module": (
-                largest_module.name
-                if largest_module is not None
-                else None
-            ),
-            "largest_class": (
-                largest_class.name
-                if largest_class is not None
-                else None
-            ),
+            "largest_module": (largest_module.name if largest_module is not None else None),
+            "largest_class": (largest_class.name if largest_class is not None else None),
         }
-
-

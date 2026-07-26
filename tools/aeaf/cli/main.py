@@ -43,40 +43,23 @@ def audit_command(
     print("AEAF Audit")
     print("=" * 60)
 
-    print(
-        f"{'Source Files':20} {stats.source_files}"
-    )
+    print(f"{'Source Files':20} {stats.source_files}")
 
-    print(
-        f"{'Modules':20} {stats.modules}"
-    )
+    print(f"{'Modules':20} {stats.modules}")
 
-    print(
-        f"{'Classes':20} {stats.classes}"
-    )
+    print(f"{'Classes':20} {stats.classes}")
 
-    print(
-        f"{'Functions':20} {stats.functions}"
-    )
+    print(f"{'Functions':20} {stats.functions}")
 
-    print(
-        f"{'Methods':20} {stats.methods}"
-    )
+    print(f"{'Methods':20} {stats.methods}")
 
-    print(
-        f"{'Imports':20} {stats.imports}"
-    )
+    print(f"{'Imports':20} {stats.imports}")
 
-    print(
-        f"{'Dependencies':20} "
-        f"{len(repository.dependency_graph.edges)}"
-    )
-
+    print(f"{'Dependencies':20} {len(repository.dependency_graph.edges)}")
 
     print()
     print("Generating Reports")
     print("-" * 60)
-
 
     report_directory = Path("reports")
 
@@ -84,10 +67,7 @@ def audit_command(
         exist_ok=True,
     )
 
-
-    json_path = (
-        report_directory / "aeaf_report.json"
-    )
+    json_path = report_directory / "aeaf_report.json"
 
     json_generator = JSONReportGenerator()
 
@@ -96,10 +76,7 @@ def audit_command(
         json_path,
     )
 
-
-    markdown_path = (
-        report_directory / "aeaf_report.md"
-    )
+    markdown_path = report_directory / "aeaf_report.md"
 
     markdown_generator = MarkdownReportGenerator()
 
@@ -108,10 +85,7 @@ def audit_command(
         markdown_path,
     )
 
-
-    dashboard_path = (
-        report_directory / "aeaf_dashboard.html"
-    )
+    dashboard_path = report_directory / "aeaf_dashboard.html"
 
     dashboard = DashboardBuilder()
 
@@ -120,19 +94,11 @@ def audit_command(
         dashboard_path,
     )
 
+    print(f"JSON       : {json_path}")
 
-    print(
-        f"JSON       : {json_path}"
-    )
+    print(f"Markdown   : {markdown_path}")
 
-    print(
-        f"Markdown   : {markdown_path}"
-    )
-
-    print(
-        f"Dashboard  : {dashboard_path}"
-    )
-
+    print(f"Dashboard  : {dashboard_path}")
 
     print()
     print("Audit complete.")
@@ -145,16 +111,13 @@ def main() -> None:
 
     parser = argparse.ArgumentParser(
         prog="aeaf",
-        description=(
-            "Athena Engineering Audit Framework"
-        ),
+        description=("Athena Engineering Audit Framework"),
     )
 
     subparsers = parser.add_subparsers(
         dest="command",
         required=True,
     )
-
 
     audit_parser = subparsers.add_parser(
         "audit",
@@ -167,12 +130,9 @@ def main() -> None:
         help="Repository path",
     )
 
-
     args = parser.parse_args()
 
-
     if args.command == "audit":
-
         audit_command(
             args.path,
         )

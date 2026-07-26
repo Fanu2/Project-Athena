@@ -24,7 +24,6 @@ class DashboardBuilder:
 
         self.generator = HTMLReportGenerator()
 
-
     def build(
         self,
         repository: RepositoryModel,

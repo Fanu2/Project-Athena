@@ -58,10 +58,10 @@ class HTMLReportGenerator:
                 <td>
                     <div class="progress">
                         <div class="bar"
-                             style="width:{data.get('coverage',0)}%">
+                             style="width:{data.get("coverage", 0)}%">
                         </div>
                     </div>
-                    {data.get('coverage',0)}%
+                    {data.get("coverage", 0)}%
                 </td>
             </tr>
             """

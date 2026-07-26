@@ -73,7 +73,6 @@ class RepositoryScanner:
         """
 
         for path in root.rglob("*.py"):
-
             if self._is_ignored(path):
                 continue
 
@@ -84,10 +83,7 @@ class RepositoryScanner:
         Determine whether a path should be skipped.
         """
 
-        return any(
-            part in self.DEFAULT_IGNORES
-            for part in path.parts
-        )
+        return any(part in self.DEFAULT_IGNORES for part in path.parts)
 
     @staticmethod
     def _package_name(path: Path) -> str:

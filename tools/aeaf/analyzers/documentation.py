@@ -53,7 +53,6 @@ class DocumentationAnalyzer:
 
         return repository
 
-
     def _analyze_modules(
         self,
         repository: RepositoryModel,
@@ -63,10 +62,8 @@ class DocumentationAnalyzer:
         """
 
         for module in repository.modules:
-
             if module.documentation is None:
                 module.documentation = DocumentationInfo()
-
 
     def _analyze_classes(
         self,
@@ -77,12 +74,9 @@ class DocumentationAnalyzer:
         """
 
         for module in repository.modules:
-
             for class_model in module.classes:
-
                 if class_model.documentation is None:
                     class_model.documentation = DocumentationInfo()
-
 
     def _analyze_functions(
         self,
@@ -93,16 +87,12 @@ class DocumentationAnalyzer:
         """
 
         for module in repository.modules:
-
             for function in module.functions:
-
                 if function.documentation is None:
                     function.documentation = DocumentationInfo()
 
             for class_model in module.classes:
-
                 for method in class_model.methods:
-
                     if method.documentation is None:
                         method.documentation = DocumentationInfo()
 
@@ -146,7 +136,6 @@ class DocumentationAnalyzer:
         method_documented = 0
 
         for module in repository.modules:
-
             module_total += 1
 
             if self._has_docstring(
@@ -155,7 +144,6 @@ class DocumentationAnalyzer:
                 module_documented += 1
 
             for class_model in module.classes:
-
                 class_total += 1
 
                 if self._has_docstring(
@@ -164,7 +152,6 @@ class DocumentationAnalyzer:
                     class_documented += 1
 
                 for method in class_model.methods:
-
                     method_total += 1
 
                     if self._has_docstring(
@@ -173,7 +160,6 @@ class DocumentationAnalyzer:
                         method_documented += 1
 
             for function in module.functions:
-
                 function_total += 1
 
                 if self._has_docstring(
@@ -197,21 +183,11 @@ class DocumentationAnalyzer:
                 2,
             )
 
-
-        total_items = (
-            module_total
-            + class_total
-            + function_total
-            + method_total
-        )
+        total_items = module_total + class_total + function_total + method_total
 
         documented_items = (
-            module_documented
-            + class_documented
-            + function_documented
-            + method_documented
+            module_documented + class_documented + function_documented + method_documented
         )
-
 
         repository.documentation = {
             "modules": {
@@ -222,7 +198,6 @@ class DocumentationAnalyzer:
                     module_total,
                 ),
             },
-
             "classes": {
                 "documented": class_documented,
                 "total": class_total,
@@ -231,7 +206,6 @@ class DocumentationAnalyzer:
                     class_total,
                 ),
             },
-
             "functions": {
                 "documented": function_documented,
                 "total": function_total,
@@ -240,7 +214,6 @@ class DocumentationAnalyzer:
                     function_total,
                 ),
             },
-
             "methods": {
                 "documented": method_documented,
                 "total": method_total,
@@ -249,7 +222,6 @@ class DocumentationAnalyzer:
                     method_total,
                 ),
             },
-
             "overall": {
                 "documented": documented_items,
                 "total": total_items,

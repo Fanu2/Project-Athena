@@ -31,7 +31,6 @@ class DependencyGraphAnalyzer:
 
         return repository
 
-
     def _build_dependency_graph(
         self,
         repository: RepositoryModel,
@@ -43,7 +42,6 @@ class DependencyGraphAnalyzer:
         repository.dependency_graph.edges.clear()
 
         for module in repository.modules:
-
             module.dependencies.clear()
 
             self._collect_outgoing_dependencies(
@@ -51,7 +49,6 @@ class DependencyGraphAnalyzer:
             )
 
             for dependency in module.dependencies:
-
                 repository.dependency_graph.edges.append(
                     DependencyEdge(
                         source=module.name,
@@ -62,7 +59,6 @@ class DependencyGraphAnalyzer:
         self._calculate_incoming_dependencies(
             repository,
         )
-
 
     def _collect_outgoing_dependencies(
         self,
@@ -75,15 +71,11 @@ class DependencyGraphAnalyzer:
         dependencies = []
 
         for imported_module in module.imports:
-
             dependency = self._normalize_import(
                 imported_module.module,
             )
 
-            if (
-                dependency
-                and dependency not in dependencies
-            ):
+            if dependency and dependency not in dependencies:
                 dependencies.append(
                     dependency,
                 )
@@ -91,7 +83,6 @@ class DependencyGraphAnalyzer:
         module.dependencies.extend(
             dependencies,
         )
-
 
     def _normalize_import(
         self,
@@ -103,7 +94,6 @@ class DependencyGraphAnalyzer:
 
         return import_name.strip()
 
-
     def _calculate_incoming_dependencies(
         self,
         repository: RepositoryModel,
@@ -113,18 +103,12 @@ class DependencyGraphAnalyzer:
         """
 
         for module in repository.modules:
-
             module.dependents.clear()
 
-        module_lookup = {
-            module.name: module
-            for module in repository.modules
-        }
+        module_lookup = {module.name: module for module in repository.modules}
 
         for module in repository.modules:
-
             for dependency in module.dependencies:
-
                 normalized = dependency.split(".")[-1]
 
                 target = module_lookup.get(
@@ -135,7 +119,6 @@ class DependencyGraphAnalyzer:
                     continue
 
                 if module.name not in target.dependents:
-
                     target.dependents.append(
                         module.name,
                     )

@@ -58,9 +58,7 @@ class InventoryAnalyzer:
         Count parsed Python modules.
         """
 
-        repository.statistics.modules = len(
-            repository.modules
-        )
+        repository.statistics.modules = len(repository.modules)
 
     def _count_classes(
         self,
@@ -103,7 +101,6 @@ class InventoryAnalyzer:
         total = 0
 
         for module in repository.modules:
-
             for class_info in module.classes:
                 total += len(class_info.methods)
 
@@ -132,7 +129,4 @@ class InventoryAnalyzer:
         Count discovered source files.
         """
 
-        repository.statistics.source_files = len(
-            repository.source_files
-        )
-
+        repository.statistics.source_files = len(repository.source_files)

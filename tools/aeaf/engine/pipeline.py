@@ -88,7 +88,6 @@ class AnalysisPipeline:
         )
 
         for analyzer in self.analyzers:
-
             repository = analyzer.analyze(
                 repository,
             )
@@ -124,13 +123,9 @@ class AnalysisPipeline:
         repository_path = repository_path.resolve()
 
         if not repository_path.exists():
-            raise FileNotFoundError(
-                f"Repository does not exist: {repository_path}"
-            )
+            raise FileNotFoundError(f"Repository does not exist: {repository_path}")
 
         if not repository_path.is_dir():
-            raise NotADirectoryError(
-                f"Not a directory: {repository_path}"
-            )
+            raise NotADirectoryError(f"Not a directory: {repository_path}")
 
         return repository_path

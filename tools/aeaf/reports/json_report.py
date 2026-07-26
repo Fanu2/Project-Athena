@@ -34,44 +34,24 @@ class JSONReportGenerator:
                     repository.metadata.root,
                 ),
             },
-
             "statistics": {
-                "source_files": (
-                    repository.statistics.source_files
-                ),
-                "packages": (
-                    repository.statistics.packages
-                ),
-                "modules": (
-                    repository.statistics.modules
-                ),
-                "classes": (
-                    repository.statistics.classes
-                ),
-                "functions": (
-                    repository.statistics.functions
-                ),
-                "methods": (
-                    repository.statistics.methods
-                ),
-                "imports": (
-                    repository.statistics.imports
-                ),
+                "source_files": (repository.statistics.source_files),
+                "packages": (repository.statistics.packages),
+                "modules": (repository.statistics.modules),
+                "classes": (repository.statistics.classes),
+                "functions": (repository.statistics.functions),
+                "methods": (repository.statistics.methods),
+                "imports": (repository.statistics.imports),
             },
-
             "dependency_graph": {
                 "edges": len(
                     repository.dependency_graph.edges,
                 ),
             },
-
             "complexity": self._complexity_report(
                 repository,
             ),
-
-            "documentation": (
-                repository.documentation
-            ),
+            "documentation": (repository.documentation),
         }
 
     def save(
