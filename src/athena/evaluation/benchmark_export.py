@@ -21,6 +21,7 @@ class BenchmarkExporter:
         """Write a Markdown report."""
 
         output = Path(path)
+
         output.write_text(
             report,
             encoding="utf-8",
@@ -37,12 +38,16 @@ class BenchmarkExporter:
 
         data = {
             "total_questions": summary.total_questions,
-            "completed_questions": summary.completed_questions,
+            "successful_retrievals": summary.successful_retrievals,
+            "failed_retrievals": summary.failed_retrievals,
             "top1_accuracy": summary.top1_accuracy,
             "top3_accuracy": summary.top3_accuracy,
-            "average_recall": summary.average_recall,
-            "average_mrr": summary.average_mrr,
+            "top5_accuracy": summary.top5_accuracy,
+            "mean_reciprocal_rank": summary.mean_reciprocal_rank,
             "average_latency_ms": summary.average_latency_ms,
+            "median_latency_ms": summary.median_latency_ms,
+            "fastest_latency_ms": summary.fastest_latency_ms,
+            "slowest_latency_ms": summary.slowest_latency_ms,
         }
 
         output.write_text(
