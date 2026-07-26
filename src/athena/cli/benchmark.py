@@ -1,265 +1,46 @@
 """
-Unit tests for BenchmarkMetricsEngine.
+Athena Benchmark CLI.
 """
 
 from __future__ import annotations
 
-from uuid import uuid4
+import argparse
 
-from athena.domain.ai.retrieval_result import RetrievalResult
-from athena.evaluation.benchmark_metrics_engine import (
-    BenchmarkMetricsEngine,
-)
-from athena.evaluation.benchmark_models import (
-    BenchmarkQuestion,
-    BenchmarkRun,
-)
-from athena.evaluation.benchmark_session import (
-    BenchmarkSession,
-)
+from athena.evaluation.benchmark_loader import BenchmarkLoader
 
 
-def test_empty_session_returns_zero_summary():
-    """Empty benchmark session should produce zero metrics."""
+def main() -> None:
+    """Benchmark command-line entry point."""
 
-    engine = BenchmarkMetricsEngine()
-    session = BenchmarkSession()
-
-    summary = engine.summarize(session)
-
-    assert summary.total_questions == 0
-    assert summary.successful_retrievals == 0
-    assert summary.failed_retrievals == 0
-    assert summary.top1_accuracy == 0.0
-    assert summary.top3_accuracy == 0.0
-    assert summary.top5_accuracy == 0.0
-    assert summary.mean_reciprocal_rank == 0.0
-    assert summary.average_latency_ms == 0.0
-    assert summary.median_latency_ms == 0.0
-    assert summary.fastest_latency_ms == 0.0
-    assert summary.slowest_latency_ms == 0.0
-
-
-def test_summary_returns_benchmark_summary():
-    """Engine should always return a BenchmarkSummary."""
-
-    engine = BenchmarkMetricsEngine()
-    session = BenchmarkSession()
-
-    summary = engine.summarize(session)
-
-    assert summary is not None
-
-
-def test_empty_session_has_no_runs():
-    """BenchmarkSession should initially contain no runs."""
-
-    session = BenchmarkSession()
-
-    assert session.total_questions == 0
-    assert len(session.runs) == 0
-
-
-def test_question_model_can_be_created():
-    """BenchmarkQuestion should construct successfully."""
-
-    question = BenchmarkQuestion(
-        question_id="Q1",
-        question="What is Athena?",
+    parser = argparse.ArgumentParser(
+        prog="athena-benchmark",
+        description="Athena Retrieval Benchmark",
     )
 
-    assert question.question_id == "Q1"
-    assert question.question == "What is Athena?"
-
-
-def test_success_failure_counts():
-    """Engine should correctly count successful and failed retrievals."""
-
-    engine = BenchmarkMetricsEngine()
-
-    session = BenchmarkSession()
-
-    question = BenchmarkQuestion(
-        question_id="Q1",
-        question="Athena",
+    parser.add_argument(
+        "--dataset",
+        required=True,
+        help="Benchmark dataset JSON file",
     )
 
-    success_run = BenchmarkRun(
-        question=question,
-        retrieval_results=[
-            RetrievalResult(
-                document_id=uuid4(),
-                document_name="doc1",
-                page=1,
-                text="Athena",
-                score=0.95,
-            )
-        ],
-        elapsed_ms=12.0,
-    )
+    args = parser.parse_args()
 
-    failed_run = BenchmarkRun(
-        question=question,
-        retrieval_results=[],
-        elapsed_ms=18.0,
-    )
+    print("=" * 60)
+    print("Athena Retrieval Benchmark")
+    print("=" * 60)
 
-    session.runs.extend(
-        [
-            success_run,
-            failed_run,
-        ]
-    )
+    questions = BenchmarkLoader.load(args.dataset)
 
-    summary = engine.summarize(session)
+    print(f"Dataset : {args.dataset}")
+    print(f"Questions Loaded : {len(questions)}")
+    print()
 
-    assert summary.total_questions == 2
-    assert summary.successful_retrievals == 1
-    assert summary.failed_retrievals == 1
+    for question in questions:
+        print(f"{question.question_id}: {question.question}")
+
+    print()
+    print("Loader verification completed successfully.")
 
 
-def test_latency_statistics():
-    """Engine should calculate latency statistics."""
-
-    engine = BenchmarkMetricsEngine()
-
-    session = BenchmarkSession()
-
-    question = BenchmarkQuestion(
-        question_id="Q1",
-        question="Athena",
-    )
-
-    for latency in (10.0, 20.0, 30.0):
-        session.runs.append(
-            BenchmarkRun(
-                question=question,
-                retrieval_results=[],
-                elapsed_ms=latency,
-            )
-        )
-
-    summary = engine.summarize(session)
-
-    assert summary.average_latency_ms == 20.0
-    assert summary.median_latency_ms == 20.0
-    assert summary.fastest_latency_ms == 10.0
-    assert summary.slowest_latency_ms == 30.0
-
-
-def test_top1_accuracy():
-    """Top-1 retrieval should produce perfect accuracy."""
-
-    doc = uuid4()
-
-    question = BenchmarkQuestion(
-        question_id="Q1",
-        question="Question",
-        expected_document_id=str(doc),
-    )
-
-    run = BenchmarkRun(
-        question=question,
-        retrieval_results=[
-            RetrievalResult(
-                document_id=doc,
-                document_name="Doc",
-                page=1,
-                text="Answer",
-                score=0.95,
-            )
-        ],
-        elapsed_ms=10,
-    )
-
-    session = BenchmarkSession(
-        runs=[run],
-    )
-
-    summary = BenchmarkMetricsEngine().summarize(
-        session,
-    )
-
-    assert summary.top1_accuracy == 1.0
-    assert summary.top3_accuracy == 1.0
-    assert summary.top5_accuracy == 1.0
-    assert summary.mean_reciprocal_rank == 1.0
-
-
-def test_mrr_rank_two():
-    """MRR should be 0.5 when the expected document is ranked second."""
-
-    expected = uuid4()
-
-    run = BenchmarkRun(
-        question=BenchmarkQuestion(
-            question_id="Q1",
-            question="Question",
-            expected_document_id=str(expected),
-        ),
-        retrieval_results=[
-            RetrievalResult(
-                document_id=uuid4(),
-                document_name="Wrong",
-                page=1,
-                text="",
-                score=0.99,
-            ),
-            RetrievalResult(
-                document_id=expected,
-                document_name="Correct",
-                page=1,
-                text="",
-                score=0.90,
-            ),
-        ],
-        elapsed_ms=5,
-    )
-
-    session = BenchmarkSession(
-        runs=[run],
-    )
-
-    summary = BenchmarkMetricsEngine().summarize(
-        session,
-    )
-
-    assert summary.top1_accuracy == 0.0
-    assert summary.top3_accuracy == 1.0
-    assert summary.top5_accuracy == 1.0
-    assert summary.mean_reciprocal_rank == 0.5
-
-
-def test_document_not_found():
-    """Metrics should report zero accuracy when the expected document is absent."""
-
-    run = BenchmarkRun(
-        question=BenchmarkQuestion(
-            question_id="Q1",
-            question="Question",
-            expected_document_id=str(uuid4()),
-        ),
-        retrieval_results=[
-            RetrievalResult(
-                document_id=uuid4(),
-                document_name="Wrong",
-                page=1,
-                text="",
-                score=0.80,
-            ),
-        ],
-        elapsed_ms=5,
-    )
-
-    session = BenchmarkSession(
-        runs=[run],
-    )
-
-    summary = BenchmarkMetricsEngine().summarize(
-        session,
-    )
-
-    assert summary.top1_accuracy == 0.0
-    assert summary.top3_accuracy == 0.0
-    assert summary.top5_accuracy == 0.0
-    assert summary.mean_reciprocal_rank == 0.0
+if __name__ == "__main__":
+    main()
