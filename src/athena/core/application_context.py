@@ -295,7 +295,6 @@ class ApplicationContext:
             query_service=self.athena_query_service,
         )
 
-
         #
         # User data
         #
@@ -355,18 +354,3 @@ class ApplicationContext:
             )
 
         return self.current_workspace
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

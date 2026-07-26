@@ -13,9 +13,7 @@ def test_detector_finds_document():
         )
     )
 
-    result = detector.detect(
-        "Summarize My Secret Garden."
-    )
+    result = detector.detect("Summarize My Secret Garden.")
 
     assert result.found
     assert len(result.documents) == 1
@@ -23,15 +21,9 @@ def test_detector_finds_document():
 
 
 def test_detector_returns_empty_result():
-    detector = MetadataDetector(
-        (
-            "Python Guide.pdf",
-        )
-    )
+    detector = MetadataDetector(("Python Guide.pdf",))
 
-    result = detector.detect(
-        "Explain quantum computing."
-    )
+    result = detector.detect("Explain quantum computing.")
 
     assert not result.found
     assert result.documents == ()

@@ -46,9 +46,7 @@ class MetadataMatcher:
         matches: list[DocumentReference] = []
 
         for title in self._document_titles:
-            normalized_title = self._normalize(
-                self._title_without_extension(title)
-            )
+            normalized_title = self._normalize(self._title_without_extension(title))
 
             if normalized_title and normalized_title in normalized_query:
                 matches.append(

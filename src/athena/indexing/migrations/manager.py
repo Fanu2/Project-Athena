@@ -36,7 +36,6 @@ class MigrationManager:
         current_version = self._schema_version()
 
         for migration in self._migrations:
-
             if migration.version <= current_version:
                 continue
 
@@ -44,9 +43,7 @@ class MigrationManager:
                 self._connection,
             )
 
-            self._connection.execute(
-                f"PRAGMA user_version = {migration.version}"
-            )
+            self._connection.execute(f"PRAGMA user_version = {migration.version}")
 
             self._connection.commit()
 
@@ -55,9 +52,7 @@ class MigrationManager:
     ) -> int:
         """Return the current database schema version."""
 
-        cursor = self._connection.execute(
-            "PRAGMA user_version"
-        )
+        cursor = self._connection.execute("PRAGMA user_version")
 
         row = cursor.fetchone()
 

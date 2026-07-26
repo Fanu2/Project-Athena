@@ -98,13 +98,9 @@ def test_offsets_are_preserved(
 
     chunk = result[0]
 
-    assert chunk.start_offset == (
-        sample_candidate.blocks[0].start_offset
-    )
+    assert chunk.start_offset == (sample_candidate.blocks[0].start_offset)
 
-    assert chunk.end_offset == (
-        sample_candidate.blocks[-1].end_offset
-    )
+    assert chunk.end_offset == (sample_candidate.blocks[-1].end_offset)
 
 
 def test_heading_metadata_is_preserved(
@@ -150,9 +146,7 @@ def test_chunk_type_is_preserved(
         [sample_candidate],
     )
 
-    assert result[0].chunk_type == (
-        sample_candidate.chunk_type
-    )
+    assert result[0].chunk_type == (sample_candidate.chunk_type)
 
 
 def test_empty_candidates_returns_empty_list(

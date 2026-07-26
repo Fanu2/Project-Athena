@@ -37,10 +37,7 @@ def test_engine_preserves_document_id(sample_document):
 
     chunks = engine.process(sample_document)
 
-    assert all(
-        chunk.document_id == sample_document.document_id
-        for chunk in chunks
-    )
+    assert all(chunk.document_id == sample_document.document_id for chunk in chunks)
 
 
 def test_engine_chunk_indices_are_sequential(sample_document):
@@ -99,10 +96,7 @@ def test_engine_handles_multi_page_document(
     )
 
     assert chunks
-    assert all(
-        chunk.document_id == multi_page_document.document_id
-        for chunk in chunks
-    )
+    assert all(chunk.document_id == multi_page_document.document_id for chunk in chunks)
 
 
 def test_engine_handles_long_document(

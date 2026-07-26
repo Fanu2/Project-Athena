@@ -1,12 +1,17 @@
-﻿"""
+"""
 Unit tests for BenchmarkMetricsEngine.
 """
 
 from __future__ import annotations
 
+from uuid import uuid4
+
+from athena.domain.ai.retrieval_result import RetrievalResult
+
 from athena.evaluation.benchmark_metrics_engine import BenchmarkMetricsEngine
 from athena.evaluation.benchmark_models import (
     BenchmarkQuestion,
+    BenchmarkRun,
 )
 from athena.evaluation.benchmark_session import BenchmarkSession
 
@@ -62,48 +67,6 @@ def test_question_model_can_be_created():
 
     assert question.question_id == "Q1"
     assert question.question == "What is Athena?"
-
-def test_success_failure_counts():
-    """Engine should correctly count successful and failed retrievals."""
-
-    # TODO:
-    # Create two BenchmarkRun objects:
-    #   - One with retrieval_results populated.
-    #   - One with retrieval_results empty.
-    #
-    # Expected:
-    #   successful_retrievals == 1
-    #   failed_retrievals == 1
-    #
-    # This test will be completed after we inspect the
-    # RetrievalResult constructor.
-
-    pass
-
-
-def test_latency_statistics():
-    """Engine should correctly calculate latency statistics."""
-
-    # TODO:
-    # Create BenchmarkRun objects with elapsed_ms:
-    #
-    #   10
-    #   20
-    #   30
-    #
-    # Expected:
-    #
-    #   average_latency_ms == 20
-    #   median_latency_ms == 20
-    #   fastest_latency_ms == 10
-    #   slowest_latency_ms == 30
-
-    pass
-
-from uuid import uuid4
-
-from athena.domain.ai.retrieval_result import RetrievalResult
-from athena.evaluation.benchmark_models import BenchmarkQuestion, BenchmarkRun
 
 
 def test_success_failure_counts():
@@ -174,20 +137,6 @@ def test_latency_statistics():
     assert summary.median_latency_ms == 20.0
     assert summary.fastest_latency_ms == 10.0
     assert summary.slowest_latency_ms == 30.0
-
-from uuid import uuid4
-
-from athena.domain.ai.retrieval_result import RetrievalResult
-from athena.evaluation.benchmark_models import (
-    BenchmarkQuestion,
-    BenchmarkRun,
-)
-from athena.evaluation.benchmark_metrics_engine import (
-    BenchmarkMetricsEngine,
-)
-from athena.evaluation.benchmark_session import (
-    BenchmarkSession,
-)
 
 
 def test_top1_accuracy():
@@ -303,4 +252,3 @@ def test_document_not_found():
     assert summary.top3_accuracy == 0.0
     assert summary.top5_accuracy == 0.0
     assert summary.mean_reciprocal_rank == 0.0
-

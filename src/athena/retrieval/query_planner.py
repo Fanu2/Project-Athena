@@ -19,17 +19,9 @@ class QueryPlanner:
             query.lower(),
         )
 
-        languages = tuple(
-            language.title()
-            for language in sorted(LANGUAGES)
-            if language in words
-        )
+        languages = tuple(language.title() for language in sorted(LANGUAGES) if language in words)
 
-        file_types = tuple(
-            file_type
-            for file_type in sorted(FILE_TYPES)
-            if file_type in words
-        )
+        file_types = tuple(file_type for file_type in sorted(FILE_TYPES) if file_type in words)
 
         return QueryIntent(
             original_query=query,

@@ -109,9 +109,7 @@ def test_heading_information_is_preserved():
     )
 
     assert result[0].heading == "Introduction"
-    assert result[0].heading_path == (
-        "Introduction",
-    )
+    assert result[0].heading_path == ("Introduction",)
 
 
 def test_mixed_blocks_create_mixed_chunk_type():

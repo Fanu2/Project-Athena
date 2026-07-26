@@ -10,7 +10,6 @@ from __future__ import annotations
 from .models import IntentType
 
 INTENT_PATTERNS: dict[IntentType, tuple[str, ...]] = {
-
     IntentType.SUMMARIZE: (
         "summarize",
         "summary",
@@ -21,7 +20,6 @@ INTENT_PATTERNS: dict[IntentType, tuple[str, ...]] = {
         "shorten",
         "gist",
     ),
-
     IntentType.COMPARE: (
         "compare",
         "comparison",
@@ -33,7 +31,6 @@ INTENT_PATTERNS: dict[IntentType, tuple[str, ...]] = {
         "versus",
         "vs",
     ),
-
     IntentType.EXPLAIN: (
         "explain",
         "clarify",
@@ -44,7 +41,6 @@ INTENT_PATTERNS: dict[IntentType, tuple[str, ...]] = {
         "why",
         "how",
     ),
-
     IntentType.TRANSFORM: (
         "rewrite",
         "convert",
@@ -56,7 +52,6 @@ INTENT_PATTERNS: dict[IntentType, tuple[str, ...]] = {
         "letter",
         "story",
     ),
-
     IntentType.EXTRACT: (
         "extract",
         "list",
@@ -67,7 +62,6 @@ INTENT_PATTERNS: dict[IntentType, tuple[str, ...]] = {
         "action items",
         "key points",
     ),
-
     IntentType.ANALYZE: (
         "analyze",
         "analyse",
@@ -77,7 +71,6 @@ INTENT_PATTERNS: dict[IntentType, tuple[str, ...]] = {
         "assess",
         "examine",
     ),
-
     IntentType.SEARCH: (
         "search",
         "lookup",
@@ -85,7 +78,6 @@ INTENT_PATTERNS: dict[IntentType, tuple[str, ...]] = {
         "find",
         "where",
     ),
-
     IntentType.QUESTION: (
         "what",
         "when",
@@ -103,7 +95,6 @@ INTENT_PATTERNS: dict[IntentType, tuple[str, ...]] = {
         "was",
         "were",
     ),
-
     IntentType.CREATIVE: (
         "brainstorm",
         "idea",
@@ -114,5 +105,4 @@ INTENT_PATTERNS: dict[IntentType, tuple[str, ...]] = {
         "compose",
         "imagine",
     ),
-
 }

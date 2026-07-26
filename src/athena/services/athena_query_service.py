@@ -76,7 +76,4 @@ class AthenaQueryService:
             "what have i indexed",
         ]
 
-        return any(
-            pattern in text
-            for pattern in workspace_patterns
-        )
+        return any(pattern in text for pattern in workspace_patterns)

@@ -8,7 +8,6 @@ from .base import PromptStrategy
 
 
 class ExtractPrompt(PromptStrategy):
-
     def build(
         self,
         question: str,

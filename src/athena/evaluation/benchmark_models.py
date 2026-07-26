@@ -1,4 +1,4 @@
-﻿"""
+"""
 Benchmark domain models.
 
 Core domain objects for the Athena Evaluation Framework.
@@ -17,8 +17,8 @@ class BenchmarkQuestion:
 
     question_id: str
     question: str
-    expected_document_id: str |None = None
-    expected_chunk_id: str |None = None
+    expected_document_id: str | None = None
+    expected_chunk_id: str | None = None
     tags: tuple[str, ...] = ()
 
 

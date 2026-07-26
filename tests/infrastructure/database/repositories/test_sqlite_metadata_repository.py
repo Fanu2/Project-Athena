@@ -64,6 +64,7 @@ def test_get_returns_none_for_missing_metadata(test_session):
 
     assert repository.get(uuid4()) is None
 
+
 def test_update_metadata(test_session):
     """Metadata can be updated."""
 
@@ -95,6 +96,7 @@ def test_update_metadata(test_session):
     assert loaded.page_count == 20
     assert loaded.metadata_version == 2
 
+
 def test_delete_metadata(test_session):
     """Metadata can be deleted."""
 
@@ -115,6 +117,7 @@ def test_delete_metadata(test_session):
     repository.delete(document_id)
 
     assert repository.get(document_id) is None
+
 
 def test_get_all_metadata(test_session):
     """All metadata records can be retrieved."""

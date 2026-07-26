@@ -52,9 +52,7 @@ class EPUBExtractor(BaseExtractor):
                     parts.append(text)
 
         except Exception as exc:
-            raise ExtractionError(
-                f"Failed to extract '{document.name}'."
-            ) from exc
+            raise ExtractionError(f"Failed to extract '{document.name}'.") from exc
 
         return ExtractedDocument(
             document_id=document.name,

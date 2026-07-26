@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+
 class ServiceRegistry:
     """Registers and provides application services."""
 

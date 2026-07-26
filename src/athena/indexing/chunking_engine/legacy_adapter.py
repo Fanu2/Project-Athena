@@ -27,9 +27,7 @@ class LegacyChunkingAdapter(ChunkingAdapter):
         chunking_service: ChunkingService | None = None,
     ) -> None:
         self._chunking_service = (
-            chunking_service
-            if chunking_service is not None
-            else ChunkingService()
+            chunking_service if chunking_service is not None else ChunkingService()
         )
 
     def chunk_document(

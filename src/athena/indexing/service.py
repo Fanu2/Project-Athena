@@ -46,6 +46,7 @@ from athena.services.document_indexing_adapter import (
     DocumentIndexingAdapter,
 )
 
+
 class IndexingService:
     """High-level document indexing service."""
 
@@ -136,11 +137,8 @@ class IndexingService:
             document,
         )
 
-        if (
-            self._index_repository is not None
-            and self._index_repository.exists_by_hash(
-                document_hash,
-            )
+        if self._index_repository is not None and self._index_repository.exists_by_hash(
+            document_hash,
         ):
             return []
 
@@ -186,10 +184,7 @@ class IndexingService:
                 )
             )
 
-        if (
-            self._embedding_service is not None
-            and self._embedding_repository is not None
-        ):
+        if self._embedding_service is not None and self._embedding_repository is not None:
             for chunk in chunks:
                 vector = self._embedding_service.embed(
                     chunk.text,

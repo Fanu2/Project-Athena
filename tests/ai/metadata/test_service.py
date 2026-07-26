@@ -13,9 +13,7 @@ def test_service_finds_document():
         )
     )
 
-    result = service.detect(
-        "Summarize My Secret Garden."
-    )
+    result = service.detect("Summarize My Secret Garden.")
 
     assert result.found
     assert len(result.documents) == 1
@@ -23,15 +21,9 @@ def test_service_finds_document():
 
 
 def test_service_returns_empty_result():
-    service = MetadataService(
-        (
-            "Python Guide.pdf",
-        )
-    )
+    service = MetadataService(("Python Guide.pdf",))
 
-    result = service.detect(
-        "Explain quantum computing."
-    )
+    result = service.detect("Explain quantum computing.")
 
     assert not result.found
     assert result.documents == ()

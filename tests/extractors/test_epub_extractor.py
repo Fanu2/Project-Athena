@@ -13,10 +13,7 @@ def test_epub_extraction() -> None:
     assert epub_files, "No EPUB files found."
 
     # Use the first EPUB that isn't the known-bad letters.epub
-    document = next(
-        epub for epub in epub_files
-        if epub.name != "letters.epub"
-    )
+    document = next(epub for epub in epub_files if epub.name != "letters.epub")
 
     result = extractor.extract(document)
 

@@ -1,4 +1,3 @@
-
 """
 Athena domain models.
 """

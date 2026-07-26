@@ -64,11 +64,7 @@ class ConversationQueryService:
             question,
         )
 
-        assistant_reply = (
-            result.answer
-            if hasattr(result, "answer")
-            else str(result)
-        )
+        assistant_reply = result.answer if hasattr(result, "answer") else str(result)
 
         self._conversation_service.add_assistant_message(
             assistant_reply,

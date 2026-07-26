@@ -1,4 +1,4 @@
-﻿"""
+"""
 SQLAlchemy model for persistent document metadata.
 """
 

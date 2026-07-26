@@ -1,3 +1,3 @@
-﻿"""
+"""
 Athena Chunking Engine.
 """

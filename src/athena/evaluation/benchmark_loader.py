@@ -1,4 +1,4 @@
-﻿"""
+"""
 Benchmark dataset loader.
 """
 
@@ -25,7 +25,6 @@ class BenchmarkLoader:
         questions: list[BenchmarkQuestion] = []
 
         for item in data:
-
             questions.append(
                 BenchmarkQuestion(
                     question_id=item["question_id"],

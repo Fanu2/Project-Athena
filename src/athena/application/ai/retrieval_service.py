@@ -18,9 +18,7 @@ class RetrievalService:
         self,
         semantic_retrieval_service: SemanticRetrievalService,
     ) -> None:
-        self._semantic_retrieval_service = (
-            semantic_retrieval_service
-        )
+        self._semantic_retrieval_service = semantic_retrieval_service
 
     def retrieve(
         self,
@@ -30,10 +28,8 @@ class RetrievalService:
         Retrieve evidence supporting the supplied question.
         """
 
-        semantic_results = (
-            self._semantic_retrieval_service.search_similar(
-                query=question.text,
-            )
+        semantic_results = self._semantic_retrieval_service.search_similar(
+            query=question.text,
         )
 
         results: list[RetrievalResult] = []
@@ -50,6 +46,3 @@ class RetrievalService:
             )
 
         return results
-
-
-

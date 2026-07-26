@@ -1,4 +1,4 @@
-﻿"""
+"""
 Metadata builder.
 
 Converts ChunkCandidate objects into immutable DocumentChunk instances
@@ -34,17 +34,9 @@ class MetadataBuilder:
         chunks: list[DocumentChunk] = []
 
         for index, candidate in enumerate(candidates):
-            start_offset = (
-                candidate.blocks[0].start_offset
-                if candidate.blocks
-                else 0
-            )
+            start_offset = candidate.blocks[0].start_offset if candidate.blocks else 0
 
-            end_offset = (
-                candidate.blocks[-1].end_offset
-                if candidate.blocks
-                else 0
-            )
+            end_offset = candidate.blocks[-1].end_offset if candidate.blocks else 0
 
             chunks.append(
                 DocumentChunk(

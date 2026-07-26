@@ -13,38 +13,24 @@ def test_exact_match():
         )
     )
 
-    result = matcher.match(
-        "Summarize My Secret Garden."
-    )
+    result = matcher.match("Summarize My Secret Garden.")
 
     assert len(result) == 1
     assert result[0].title == "My Secret Garden.pdf"
 
 
 def test_case_insensitive_match():
-    matcher = MetadataMatcher(
-        (
-            "My Secret Garden.pdf",
-        )
-    )
+    matcher = MetadataMatcher(("My Secret Garden.pdf",))
 
-    result = matcher.match(
-        "summarize my secret garden"
-    )
+    result = matcher.match("summarize my secret garden")
 
     assert len(result) == 1
 
 
 def test_no_match():
-    matcher = MetadataMatcher(
-        (
-            "Python Guide.pdf",
-        )
-    )
+    matcher = MetadataMatcher(("Python Guide.pdf",))
 
-    result = matcher.match(
-        "Explain quantum computing."
-    )
+    result = matcher.match("Explain quantum computing.")
 
     assert result == ()
 
@@ -57,22 +43,14 @@ def test_multiple_matches():
         )
     )
 
-    result = matcher.match(
-        "Compare Einstein and Newton."
-    )
+    result = matcher.match("Compare Einstein and Newton.")
 
     assert len(result) == 2
 
 
 def test_filename_extension_ignored():
-    matcher = MetadataMatcher(
-        (
-            "Athena Design Notes.md",
-        )
-    )
+    matcher = MetadataMatcher(("Athena Design Notes.md",))
 
-    result = matcher.match(
-        "Summarize Athena Design Notes."
-    )
+    result = matcher.match("Summarize Athena Design Notes.")
 
     assert len(result) == 1

@@ -49,6 +49,7 @@ def test_get_returns_none_for_missing_document(test_session):
 
     assert repository.get(uuid4()) is None
 
+
 def test_exists_by_path(test_session):
     """Repository can detect an existing document by path."""
 
@@ -95,9 +96,8 @@ def test_get_by_path(test_session):
     assert loaded.id == document.id
     assert loaded.filename == "example.pdf"
 
-    assert repository.get_by_path(
-        str(Path("C:/docs/missing.pdf"))
-    ) is None
+    assert repository.get_by_path(str(Path("C:/docs/missing.pdf"))) is None
+
 
 def test_update_document(test_session):
     """Document can be updated."""
@@ -138,29 +138,6 @@ def test_update_document(test_session):
     assert loaded.file_path == Path("C:/docs/updated.pdf")
     assert loaded.file_size == 4321
 
-def test_delete_document(test_session):
-    """Document can be deleted."""
-
-    repository = SqliteDocumentRepository(test_session)
-
-    document = Document(
-        id=uuid4(),
-        filename="example.pdf",
-        title="Example",
-        file_path=Path("C:/docs/example.pdf"),
-        file_type="pdf",
-        file_size=1234,
-        created_at=datetime.now(),
-        updated_at=datetime.now(),
-    )
-
-    repository.add(document)
-
-    assert repository.get(document.id) is not None
-
-    repository.delete(document.id)
-
-    assert repository.get(document.id) is None
 
 def test_delete_document(test_session):
     """Document can be deleted."""
@@ -185,6 +162,7 @@ def test_delete_document(test_session):
     repository.delete(document.id)
 
     assert repository.get(document.id) is None
+
 
 def test_get_all_documents(test_session):
     """All documents can be retrieved."""

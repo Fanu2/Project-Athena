@@ -22,14 +22,9 @@ class V002ChunkOffsets(Migration):
     ) -> None:
         """Apply the migration."""
 
-        cursor = connection.execute(
-            "PRAGMA table_info(chunks)"
-        )
+        cursor = connection.execute("PRAGMA table_info(chunks)")
 
-        columns = {
-            row[1]
-            for row in cursor.fetchall()
-        }
+        columns = {row[1] for row in cursor.fetchall()}
 
         if "start_offset" not in columns:
             connection.execute(

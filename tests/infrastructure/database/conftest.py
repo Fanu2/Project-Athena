@@ -11,10 +11,6 @@ from sqlalchemy.orm import sessionmaker
 from athena.infrastructure.database.base import Base
 
 # Register all SQLAlchemy models
-import athena.infrastructure.database.models.document_model
-import athena.infrastructure.database.models.document_metadata_model
-import athena.infrastructure.database.models.document_version_model
-import athena.infrastructure.database.models.document_checksum_model
 
 
 @pytest.fixture

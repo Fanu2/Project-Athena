@@ -1,4 +1,4 @@
-﻿"""
+"""
 Benchmark runner.
 """
 
@@ -32,9 +32,7 @@ class BenchmarkRunner:
 
         start = perf_counter()
 
-        retrieval_results = self._retrieval_service.retrieve(
-            Question(text=question.question)
-        )
+        retrieval_results = self._retrieval_service.retrieve(Question(text=question.question))
 
         elapsed_ms = (perf_counter() - start) * 1000.0
 

@@ -75,10 +75,7 @@ def test_split_preserves_block_type(
         [block],
     )
 
-    assert all(
-        item.block_type == BlockType.PARAGRAPH
-        for item in result
-    )
+    assert all(item.block_type == BlockType.PARAGRAPH for item in result)
 
 
 def test_split_preserves_page_number(
@@ -102,10 +99,7 @@ def test_split_preserves_page_number(
         [block],
     )
 
-    assert all(
-        item.page_number == 3
-        for item in result
-    )
+    assert all(item.page_number == 3 for item in result)
 
 
 def test_split_offsets_are_valid(

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Benchmark export utilities.
 """
 

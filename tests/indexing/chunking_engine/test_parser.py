@@ -36,10 +36,7 @@ def test_parser_detects_heading(sample_document):
 
     blocks = parser.parse(sample_document)
 
-    assert any(
-        block.block_type == BlockType.HEADING
-        for block in blocks
-    )
+    assert any(block.block_type == BlockType.HEADING for block in blocks)
 
 
 def test_parser_produces_paragraph_blocks(sample_document):
@@ -49,10 +46,7 @@ def test_parser_produces_paragraph_blocks(sample_document):
 
     blocks = parser.parse(sample_document)
 
-    assert any(
-        block.block_type == BlockType.PARAGRAPH
-        for block in blocks
-    )
+    assert any(block.block_type == BlockType.PARAGRAPH for block in blocks)
 
 
 def test_parser_offsets_are_valid(sample_document):

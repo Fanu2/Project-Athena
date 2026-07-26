@@ -1,4 +1,4 @@
-﻿"""
+"""
 Structure-aware document parser.
 
 The parser converts an ExtractedDocument into an ordered sequence of
@@ -92,11 +92,7 @@ class DocumentParser:
         Empty paragraphs are discarded.
         """
 
-        return [
-            paragraph.strip()
-            for paragraph in text.split("\n\n")
-            if paragraph.strip()
-        ]
+        return [paragraph.strip() for paragraph in text.split("\n\n") if paragraph.strip()]
 
     def _detect_block_type(
         self,

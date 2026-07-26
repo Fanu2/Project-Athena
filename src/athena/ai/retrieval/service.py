@@ -127,10 +127,7 @@ class RetrievalService:
                     )
 
                     if document is not None:
-                        document_title = (
-                            document.title
-                            or document.filename
-                        )
+                        document_title = document.title or document.filename
 
                 except ValueError:
                     pass

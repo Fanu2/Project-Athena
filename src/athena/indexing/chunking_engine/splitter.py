@@ -1,4 +1,4 @@
-﻿"""
+"""
 Structure-aware block splitter.
 
 The splitter ensures that individual DocumentBlocks do not exceed the
@@ -35,7 +35,6 @@ class ChunkSplitter:
         result: list[DocumentBlock] = []
 
         for block in blocks:
-
             if len(block.text) <= self._max_characters:
                 result.append(block)
                 continue
@@ -59,7 +58,6 @@ class ChunkSplitter:
         start = 0
 
         while start < len(text):
-
             end = min(
                 start + self._max_characters,
                 len(text),

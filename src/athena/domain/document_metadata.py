@@ -1,4 +1,3 @@
-
 """
 Document metadata domain model.
 """

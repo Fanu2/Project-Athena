@@ -1,4 +1,4 @@
-﻿"""
+"""
 Structure-aware chunking engine.
 
 Coordinates the complete chunking pipeline.
@@ -46,9 +46,7 @@ class ChunkingEngine:
         self._parser = parser or DocumentParser()
         self._splitter = splitter or ChunkSplitter()
         self._builder = builder or ChunkBuilder()
-        self._metadata_builder = (
-            metadata_builder or MetadataBuilder()
-        )
+        self._metadata_builder = metadata_builder or MetadataBuilder()
 
     def process(
         self,

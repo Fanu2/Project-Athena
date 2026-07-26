@@ -1,4 +1,4 @@
-﻿"""
+"""
 Benchmark report generators.
 """
 
@@ -56,4 +56,3 @@ class MarkdownReporter:
 | Fastest | {summary.fastest_latency_ms:.2f} ms |
 | Slowest | {summary.slowest_latency_ms:.2f} ms |
 """
-

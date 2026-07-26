@@ -47,9 +47,6 @@ class IntentDetector:
         return IntentResult(
             intent=result.intent,
             confidence=result.confidence,
-            matched_keywords=tuple(
-                match.keyword
-                for match in matches
-            ),
+            matched_keywords=tuple(match.keyword for match in matches),
             normalized_query=normalized_query,
         )

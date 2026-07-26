@@ -1,11 +1,11 @@
-﻿"""
+"""
 Benchmark session model.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import UTC, datetime
 from uuid import UUID, uuid4
 
 from athena.evaluation.benchmark_models import BenchmarkRun
@@ -21,7 +21,7 @@ class BenchmarkSession:
 
     dataset_version: str = "1.0"
 
-    started_at: datetime = field(default_factory=datetime.utcnow)
+    started_at: datetime = field(default_factory=lambda: datetime.now(UTC))
 
     finished_at: datetime | None = None
 
@@ -44,6 +44,4 @@ class BenchmarkSession:
         if self.finished_at is None:
             return 0.0
 
-        return (
-            self.finished_at - self.started_at
-        ).total_seconds() * 1000.0
+        return (self.finished_at - self.started_at).total_seconds() * 1000.0

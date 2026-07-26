@@ -551,4 +551,3 @@ class MainWindow(QMainWindow):
         self.page_stack.setCurrentWidget(
             self.viewer,
         )
-

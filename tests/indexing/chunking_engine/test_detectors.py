@@ -76,9 +76,7 @@ def test_table_detection():
     """Markdown tables should be detected."""
 
     result = detect(
-        "| Name | Value |\n"
-        "| --- | --- |\n"
-        "| A | 1 |",
+        "| Name | Value |\n| --- | --- |\n| A | 1 |",
     )
 
     assert result == BlockType.TABLE

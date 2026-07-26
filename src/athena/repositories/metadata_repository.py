@@ -1,4 +1,3 @@
-
 """
 Repository interface for document metadata.
 """

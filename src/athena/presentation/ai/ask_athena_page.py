@@ -258,6 +258,7 @@ class AskAthenaPage(QWidget):
         layout.addWidget(
             self.passage,
         )
+
     def set_query_service(
         self,
         service: ConversationQueryService,
@@ -554,6 +555,3 @@ class AskAthenaPage(QWidget):
         self.conversation.set_model(
             model,
         )
-
-
-

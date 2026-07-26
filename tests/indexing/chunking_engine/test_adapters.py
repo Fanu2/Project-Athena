@@ -28,10 +28,7 @@ def test_legacy_adapter_returns_chunks(
 
     assert isinstance(chunks, list)
 
-    assert all(
-        isinstance(chunk, DocumentChunk)
-        for chunk in chunks
-    )
+    assert all(isinstance(chunk, DocumentChunk) for chunk in chunks)
 
 
 def test_structure_adapter_returns_chunks(
@@ -47,10 +44,7 @@ def test_structure_adapter_returns_chunks(
 
     assert isinstance(chunks, list)
 
-    assert all(
-        isinstance(chunk, DocumentChunk)
-        for chunk in chunks
-    )
+    assert all(isinstance(chunk, DocumentChunk) for chunk in chunks)
 
 
 def test_both_adapters_preserve_document_id(
@@ -68,8 +62,4 @@ def test_both_adapters_preserve_document_id(
             sample_document,
         )
 
-        assert all(
-            chunk.document_id
-            == sample_document.document_id
-            for chunk in chunks
-        )
+        assert all(chunk.document_id == sample_document.document_id for chunk in chunks)

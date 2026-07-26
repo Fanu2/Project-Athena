@@ -1,4 +1,4 @@
-﻿"""
+"""
 Chunk builder.
 
 Combines DocumentBlocks into ChunkCandidates while preserving
@@ -45,7 +45,6 @@ class ChunkBuilder:
         current = ChunkCandidate()
 
         for block in blocks:
-
             projected_length = len(current.text)
 
             if current.text:
@@ -53,10 +52,7 @@ class ChunkBuilder:
 
             projected_length += len(block.text)
 
-            if (
-                current.blocks
-                and projected_length > self._max_characters
-            ):
+            if current.blocks and projected_length > self._max_characters:
                 chunks.append(current)
                 current = ChunkCandidate()
 
@@ -101,10 +97,7 @@ class ChunkBuilder:
         if not chunk.blocks:
             return ChunkType.PARAGRAPH
 
-        block_types = {
-            block.block_type
-            for block in chunk.blocks
-        }
+        block_types = {block.block_type for block in chunk.blocks}
 
         if len(block_types) > 1:
             return ChunkType.MIXED

@@ -28,11 +28,7 @@ class StructureChunkingAdapter(ChunkingAdapter):
         self,
         engine: ChunkingEngine | None = None,
     ) -> None:
-        self._engine = (
-            engine
-            if engine is not None
-            else ChunkingEngine()
-        )
+        self._engine = engine if engine is not None else ChunkingEngine()
 
     def chunk_document(
         self,

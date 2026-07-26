@@ -60,7 +60,6 @@ class RetrievalInspectorWidget(QWidget):
         self._results.clear()
 
         for result in results:
-
             preview = result.text.strip()
 
             if len(preview) > 250:

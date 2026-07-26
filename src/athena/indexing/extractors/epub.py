@@ -64,9 +64,7 @@ class EPUBExtractor(BaseExtractor):
                         text_parts.append(text)
 
         except Exception as exc:
-            raise ExtractionError(
-                f"Failed to extract '{document.name}'."
-            ) from exc
+            raise ExtractionError(f"Failed to extract '{document.name}'.") from exc
 
         pages = tuple(
             ExtractedPage(

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Structure detectors for the Athena Chunking Engine.
 
 Each detector class is responsible for recognizing a single logical
@@ -31,9 +31,9 @@ class HeadingDetector(BaseDetector):
     block_type = BlockType.HEADING
 
     _patterns = (
-        re.compile(r"^#{1,6}\s+"),                  # Markdown
-        re.compile(r"^\d+(\.\d+)*\s+"),             # 1  1.1  2.3.4
-        re.compile(r"^[A-Z][A-Z0-9\s\-]{2,}$"),     # ALL CAPS
+        re.compile(r"^#{1,6}\s+"),  # Markdown
+        re.compile(r"^\d+(\.\d+)*\s+"),  # 1  1.1  2.3.4
+        re.compile(r"^[A-Z][A-Z0-9\s\-]{2,}$"),  # ALL CAPS
     )
 
     def is_match(self, text: str) -> bool:
@@ -53,9 +53,7 @@ class ListDetector(BaseDetector):
 
     block_type = BlockType.LIST
 
-    _pattern = re.compile(
-        r"^\s*(?:[-*•]|\d+[.)]|[a-zA-Z][.)])\s+"
-    )
+    _pattern = re.compile(r"^\s*(?:[-*•]|\d+[.)]|[a-zA-Z][.)])\s+")
 
     def is_match(self, text: str) -> bool:
         return bool(self._pattern.match(text))

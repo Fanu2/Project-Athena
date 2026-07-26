@@ -55,12 +55,7 @@ class ContextBuilder:
                     document_path = document.path
 
             context_parts.append(
-                (
-                    f"Source {index}\n"
-                    f"Document: {document_name}\n"
-                    f"Page: {result.page}\n"
-                    f"{result.text}"
-                )
+                (f"Source {index}\nDocument: {document_name}\nPage: {result.page}\n{result.text}")
             )
 
             sources.append(
