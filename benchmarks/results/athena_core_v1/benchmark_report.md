@@ -5,8 +5,8 @@
 | Item | Value |
 |------|-------|
 | Dataset | athena_core_v1.json |
-| Started | 2026-07-26 04:24:03.693960+00:00 |
-| Finished | 2026-07-26 04:24:07.161347+00:00 |
+| Started | 2026-07-26 05:31:29.837241+00:00 |
+| Finished | 2026-07-26 05:31:33.391476+00:00 |
 | Athena Version |  |
 | Embedding Model |  |
 | Workspace |  |
@@ -32,7 +32,7 @@
 
 | Metric | Value |
 |--------|------:|
-| Average Latency | 138.69 ms |
-| Median Latency | 134.58 ms |
-| Fastest | 128.90 ms |
-| Slowest | 211.33 ms |
+| Average Latency | 142.16 ms |
+| Median Latency | 134.29 ms |
+| Fastest | 129.63 ms |
+| Slowest | 220.47 ms |

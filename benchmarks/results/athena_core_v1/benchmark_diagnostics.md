@@ -398,7 +398,7 @@
 - Rank: 4
 - Expected Score: 0.5218166737095444
 - Top Document: Athena_Quality_Intelligence_AQI_v1.0.docx
-- Top Score: 0.5543988162293295
+- Top Score: 0.5743988162293295
 
 ### Retrieved Documents
 
@@ -557,9 +557,9 @@
 - Expected Document: Athena_Quality_Intelligence_AQI_v1.0.docx
 - Status: Found
 - Rank: 1
-- Expected Score: 0.6128999471328843
+- Expected Score: 0.6328999471328843
 - Top Document: Athena_Quality_Intelligence_AQI_v1.0.docx
-- Top Score: 0.6128999471328843
+- Top Score: 0.6328999471328843
 
 ### Retrieved Documents
 

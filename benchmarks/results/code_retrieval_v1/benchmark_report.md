@@ -4,9 +4,9 @@
 
 | Item | Value |
 |------|-------|
-| Dataset | smoke_test.json |
-| Started | 2026-07-25 17:10:23.175564+00:00 |
-| Finished | 2026-07-25 17:10:24.384329+00:00 |
+| Dataset | code_retrieval_v1.json |
+| Started | 2026-07-26 05:31:34.225176+00:00 |
+| Finished | 2026-07-26 05:31:34.645291+00:00 |
 | Athena Version |  |
 | Embedding Model |  |
 | Workspace |  |
@@ -15,9 +15,9 @@
 
 | Metric | Value |
 |--------|------:|
-| Questions | 1 |
-| Successful | 0 |
-| Failed | 1 |
+| Questions | 3 |
+| Successful | 3 |
+| Failed | 0 |
 
 ## Retrieval Quality
 
@@ -32,7 +32,7 @@
 
 | Metric | Value |
 |--------|------:|
-| Average Latency | 1208.50 ms |
-| Median Latency | 1208.50 ms |
-| Fastest | 1208.50 ms |
-| Slowest | 1208.50 ms |
+| Average Latency | 140.03 ms |
+| Median Latency | 139.17 ms |
+| Fastest | 138.43 ms |
+| Slowest | 142.49 ms |

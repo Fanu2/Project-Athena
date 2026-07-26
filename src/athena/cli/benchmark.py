@@ -98,8 +98,11 @@ def main() -> None:
                     f"Running benchmark: {dataset}",
                 )
 
+                dataset_name = Path(dataset).stem
+
                 service.run(
                     dataset,
+                    output_directory=(Path("benchmarks/results") / dataset_name),
                 )
 
         else:

@@ -37,6 +37,7 @@ class BenchmarkService:
     def run(
         self,
         dataset_path: str,
+        output_directory: str | Path | None = None,
     ) -> None:
         """Execute a benchmark."""
 
@@ -70,7 +71,10 @@ class BenchmarkService:
             diagnostics,
         )
 
-        results_directory = Path("benchmarks/results")
+        results_directory = (
+            Path(output_directory) if output_directory else Path("benchmarks/results")
+        )
+
         results_directory.mkdir(
             parents=True,
             exist_ok=True,
