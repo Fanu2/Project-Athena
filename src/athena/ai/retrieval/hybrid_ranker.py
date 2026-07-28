@@ -5,6 +5,9 @@ Hybrid retrieval ranking.
 from __future__ import annotations
 
 from athena.ai.metadata.models import MetadataResult
+from athena.ai.retrieval.document_authority_ranker import (
+    DocumentAuthorityRanker,
+)
 from athena.ai.retrieval.identity_ranker import IdentityRanker
 from athena.ai.retrieval.metadata_ranker import MetadataRanker
 from athena.ai.retrieval.models import SemanticResult
@@ -22,6 +25,7 @@ class HybridRanker:
         scorer: CandidateScorer | None = None,
         metadata_ranker: MetadataRanker | None = None,
         identity_ranker: IdentityRanker | None = None,
+        document_authority_ranker: DocumentAuthorityRanker | None = None,
     ) -> None:
         """Initialize ranker."""
 
@@ -35,6 +39,11 @@ class HybridRanker:
         self._identity_ranker = (
             identity_ranker
             or IdentityRanker()
+        )
+
+        self._document_authority_ranker = (
+            document_authority_ranker
+            or DocumentAuthorityRanker()
         )
 
     def merge(
@@ -78,14 +87,22 @@ class HybridRanker:
                 result.document_title,
             )
 
+            document_authority_score = (
+                self._document_authority_ranker.score(
+                    result.document_name,
+                )
+            )
+
             final_score = self._scorer.score(
                 RankingFeatures(
                     semantic_score=result.score,
                     keyword_score=keyword_score,
                     metadata_score=metadata_score,
                     identity_score=identity_score,
+                    document_authority_score=document_authority_score,
                 ),
             )
+
             ranked.append(
                 SemanticResult(
                     chunk_id=result.chunk_id,
@@ -101,9 +118,9 @@ class HybridRanker:
                     keyword_score=keyword_score,
                     metadata_score=metadata_score,
                     identity_score=identity_score,
+                    document_authority_score=document_authority_score,
                 )
             )
-
 
         ranked.sort(
             key=lambda item: item.score,
@@ -117,7 +134,7 @@ class HybridRanker:
         metadata: MetadataResult | None,
         result: SemanticResult,
     ) -> float:
-        """Calculate candidate metadata score."""
+        """Calculate metadata score."""
 
         if metadata is None:
             return 0.0
@@ -130,6 +147,3 @@ class HybridRanker:
                 return document.confidence
 
         return 0.0
-
-
-

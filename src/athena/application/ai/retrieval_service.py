@@ -20,6 +20,14 @@ class RetrievalService:
     ) -> None:
         self._semantic_retrieval_service = semantic_retrieval_service
 
+    @property
+    def semantic_retrieval_service(
+        self,
+    ) -> SemanticRetrievalService:
+        """Return the underlying semantic retrieval service."""
+
+        return self._semantic_retrieval_service
+
     def retrieve(
         self,
         question: Question,
@@ -42,13 +50,32 @@ class RetrievalService:
                     page=item.page_number,
                     text=item.text,
                     score=item.score,
-                    semantic_score=getattr(item, "semantic_score", item.score),
-                    keyword_score=getattr(item, "keyword_score", 0.0),
-                    metadata_score=getattr(item, "metadata_score", 0.0),
-                    identity_score=getattr(item, "identity_score", 0.0),
+                    semantic_score=getattr(
+                        item,
+                        "semantic_score",
+                        item.score,
+                    ),
+                    keyword_score=getattr(
+                        item,
+                        "keyword_score",
+                        0.0,
+                    ),
+                    metadata_score=getattr(
+                        item,
+                        "metadata_score",
+                        0.0,
+                    ),
+                    identity_score=getattr(
+                        item,
+                        "identity_score",
+                        0.0,
+                    ),
+                    document_authority_score=getattr(
+                        item,
+                        "document_authority_score",
+                        0.0,
+                    ),
                 )
             )
 
         return results
-
-

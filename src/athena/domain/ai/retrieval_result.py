@@ -22,3 +22,6 @@ class RetrievalResult:
     keyword_score: float = 0.0
     metadata_score: float = 0.0
     identity_score: float = 0.0
+
+    document_authority_score: float = 0.0
+

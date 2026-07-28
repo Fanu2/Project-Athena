@@ -4,8 +4,8 @@ Semantic retrieval service.
 
 from __future__ import annotations
 
-from uuid import UUID
 from pathlib import Path
+from uuid import UUID
 
 from athena.ai.embeddings.repository import (
     EmbeddingRepository,
@@ -48,6 +48,7 @@ class RetrievalService:
         chunk_repository: SQLiteChunkRepository,
         document_repository: DocumentRepository | None = None,
         max_chunks_per_document: int = 2,
+        hybrid_ranker: HybridRanker | None = None,
     ) -> None:
         """Initialize retrieval service."""
 
@@ -65,11 +66,22 @@ class RetrievalService:
 
         self._metadata_filter = MetadataFilter()
 
-        self._hybrid_ranker = HybridRanker()
+        self._hybrid_ranker = (
+            hybrid_ranker
+            or HybridRanker()
+        )
 
         self._keyword_adapter = KeywordAdapter()
 
         self._max_chunks_per_document = max_chunks_per_document
+
+    def set_hybrid_ranker(
+        self,
+        hybrid_ranker: HybridRanker,
+    ) -> None:
+        """Replace retrieval ranking strategy."""
+
+        self._hybrid_ranker = hybrid_ranker
 
     def search_similar(
         self,
@@ -124,7 +136,9 @@ class RetrievalService:
                     )
 
                     if document is not None:
-                        document_name = Path(document.filename).name
+                        document_name = Path(
+                            document.filename
+                        ).name
 
                         document_title = (
                             document.title
@@ -172,4 +186,3 @@ class RetrievalService:
             metadata,
             query,
         )
-
