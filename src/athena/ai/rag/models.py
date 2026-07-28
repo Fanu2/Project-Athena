@@ -8,6 +8,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from athena.ai.retrieval.models import SemanticResult
+from athena.domain.ai.citation import Citation
+from athena.domain.ai.evidence_record import EvidenceRecord
 
 
 @dataclass(slots=True)
@@ -43,11 +45,10 @@ class RAGContext:
 @dataclass(slots=True)
 class RAGAnswer:
     """
-    Generated answer together with the retrieval evidence.
+    Generated answer together with retrieval evidence.
 
-    This object is the primary output of the RAG pipeline and is
-    intended to power both the chat interface and the Retrieval
-    Inspector.
+    This object is the primary output of the RAG pipeline and
+    powers chat, citations, and retrieval inspection.
     """
 
     answer: str
@@ -60,3 +61,10 @@ class RAGAnswer:
         default_factory=list,
     )
 
+    evidence: list[EvidenceRecord] = field(
+        default_factory=list,
+    )
+
+    citations: list[Citation] = field(
+        default_factory=list,
+    )

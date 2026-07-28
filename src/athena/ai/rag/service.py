@@ -11,6 +11,7 @@ from athena.ai.llm.models import (
 from athena.ai.llm.provider import (
     LLMProvider,
 )
+from athena.ai.metadata.service import MetadataService
 from athena.ai.rag.context_builder import (
     ContextBuilder,
 )
@@ -20,11 +21,15 @@ from athena.ai.rag.models import (
 from athena.ai.rag.prompt_builder import (
     PromptBuilder,
 )
-from athena.ai.metadata.service import MetadataService
+from athena.application.ai.citation_service import (
+    CitationService,
+)
 from athena.application.ai.retrieval_service import (
     RetrievalService,
 )
-from athena.domain.ai.question import Question
+from athena.domain.ai.question import (
+    Question,
+)
 
 
 class RAGService:
@@ -58,6 +63,8 @@ class RAGService:
 
         self._prompt_builder = PromptBuilder()
 
+        self._citation_service = CitationService()
+
     def answer(
         self,
         question: str,
@@ -66,44 +73,40 @@ class RAGService:
         Generate an answer using retrieved document context.
         """
 
-        #
-        # Detect user intent
-        #
-
-        intent = self._intent_service.detect(question)
-
-        self._metadata_service.detect(question)
-
-        #
-        # Retrieve relevant chunks
-        #
-
-        results = self._retrieval.retrieve(
-            Question(text=question),
+        intent = self._intent_service.detect(
+            question,
         )
 
-        #
-        # Build context from retrieved sources
-        #
+        self._metadata_service.detect(
+            question,
+        )
+
+        question_object = Question(
+            text=question,
+        )
+
+        results = self._retrieval.retrieve(
+            question_object,
+        )
+
+        evidence = self._retrieval.retrieve_evidence(
+            question_object,
+        )
+
+        citations = self._citation_service.create_citations(
+            evidence,
+        )
 
         context = self._context_builder.build(
             question,
             results,
         )
 
-        #
-        # Build final user prompt
-        #
-
         prompt = self._prompt_builder.build(
             question=question,
             context=context.context,
             intent=intent,
         )
-
-        #
-        # Create LLM request
-        #
 
         request = LLMRequest(
             system_prompt=(
@@ -116,22 +119,15 @@ class RAGService:
             model_name=self._model_name,
         )
 
-        #
-        # Generate response
-        #
-
         response = self._llm.analyze(
             request,
         )
-
-        #
-        # Return structured RAG answer
-        #
 
         return RAGAnswer(
             answer=response.text,
             model=response.model,
             sources=context.sources,
             retrieval_results=results,
+            evidence=evidence,
+            citations=citations,
         )
-

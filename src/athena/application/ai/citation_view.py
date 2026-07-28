@@ -1,18 +1,15 @@
 """
-Citation model.
+Citation presentation model.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from uuid import UUID
 
 
 @dataclass(slots=True, frozen=True)
-class Citation:
-    """Evidence supporting an AI answer."""
-
-    document_id: UUID
+class CitationView:
+    """UI-friendly citation representation."""
 
     document_name: str
 
@@ -21,7 +18,5 @@ class Citation:
     snippet: str
 
     score: float
-
-    chunk_id: str = ""
 
     ranking_reasons: tuple[str, ...] = ()

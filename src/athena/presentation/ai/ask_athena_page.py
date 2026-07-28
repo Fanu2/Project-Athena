@@ -403,10 +403,12 @@ class AskAthenaPage(QWidget):
                 f"Model: {result.model}",
             )
 
-            for source, retrieval in zip(
-                result.sources,
-                result.retrieval_results,
-                strict=False,
+            for index, (source, retrieval) in enumerate(
+                zip(
+                    result.sources,
+                    result.retrieval_results,
+                    strict=False,
+                )
             ):
                 similarity = int(
                     source.score * 100,
@@ -429,10 +431,24 @@ class AskAthenaPage(QWidget):
                     ]
                 )
 
-                item.setToolTip(
-                    3,
-                    retrieval.text,
-                )
+                #
+                # Evidence intelligence explanation.
+                #
+
+                if index < len(result.evidence):
+                    evidence = result.evidence[index]
+
+                    reasons = "\n".join(
+                        evidence.ranking_reasons,
+                    )
+
+                    item.setToolTip(
+                        2,
+                        (
+                            f"Score: {evidence.final_score:.3f}\n\n"
+                            f"Why selected:\n{reasons}"
+                        ),
+                    )
 
                 item.setData(
                     3,
@@ -464,9 +480,13 @@ class AskAthenaPage(QWidget):
                     item,
                 )
 
-            self.status.setText(
-                f"Completed ({len(result.sources)} sources)",
-            )
+                self.status.setText(
+                    (
+                        f"Completed "
+                        f"({len(result.sources)} sources, "
+                        f"{len(result.citations)} citations)"
+                    ),
+                )
 
         except Exception as exc:
             self.sources.clear()
