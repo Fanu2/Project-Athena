@@ -4,23 +4,18 @@ Citation formatter.
 
 from __future__ import annotations
 
-from athena.ai.citations.models import Citation
+from athena.ai.rag.models import RAGSource
 
 
 class CitationFormatter:
-    """Formats citations for display."""
+    """Formats RAG sources for presentation."""
 
     @staticmethod
-    def format(citation: Citation) -> str:
-        """
-        Format a citation for display.
-        """
+    def format(source: RAGSource) -> str:
+        """Format a RAG source for display."""
 
         return (
-            f"{citation.title}\n"
-            f"Page {citation.page_number}\n"
-            f"Characters {citation.start_offset}"
-            f"–{citation.end_offset}\n"
-            f"Similarity {citation.score:.2f}"
+            f"{source.document_name}\n"
+            f"Page {source.page_number}\n"
+            f"Similarity {source.score:.2f}"
         )
-

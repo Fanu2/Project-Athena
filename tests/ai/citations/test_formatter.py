@@ -1,32 +1,23 @@
-"""
-Tests for citation formatter.
-"""
+from pathlib import Path
 
-from __future__ import annotations
-
-from athena.ai.citations import Citation
 from athena.ai.citations import CitationFormatter
+from athena.ai.rag.models import RAGSource
 
 
-def test_format_citation() -> None:
-    """Citation formatter produces readable output."""
+def test_formatter():
 
-    citation = Citation(
-        document_id="doc-1",
-        title="AI Safety.pdf",
-        page_number=18,
-        start_offset=1540,
-        end_offset=2012,
-        score=0.943,
+    source = RAGSource(
+        chunk_id="chunk1",
+        document_id="doc1",
+        document_name="Manual.pdf",
+        document_path=Path("Manual.pdf"),
+        page_number=12,
+        score=0.91,
+        text="Example text",
     )
 
-    formatted = CitationFormatter.format(
-        citation,
-    )
+    text = CitationFormatter.format(source)
 
-    assert "AI Safety.pdf" in formatted
-    assert "Page 18" in formatted
-    assert "1540" in formatted
-    assert "2012" in formatted
-    assert "Similarity 0.94" in formatted
-
+    assert "Manual.pdf" in text
+    assert "Page 12" in text
+    assert "0.91" in text

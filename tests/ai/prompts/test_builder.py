@@ -11,7 +11,6 @@ from athena.ai.retrieval.models import SemanticResult
 
 
 def test_build_prompt() -> None:
-    """Prompt builder includes question and retrieved context."""
 
     result = SemanticResult(
         chunk_id="chunk-1",
@@ -43,5 +42,7 @@ def test_build_prompt() -> None:
 
     assert "What is Athena?" in prompt.user
     assert "Athena is an offline AI assistant." in prompt.user
+    assert "Sources:" in prompt.user
+    assert "Guide.pdf" in prompt.user
+    assert "Page 2" in prompt.user
     assert "offline AI research assistant" in prompt.system
-
