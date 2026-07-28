@@ -11,7 +11,7 @@ from athena.evaluation.benchmark_session import BenchmarkSession
 class MarkdownReporter:
     """Generate a Markdown benchmark report."""
 
-    def generate(
+    def analyze(
         self,
         session: BenchmarkSession,
         summary: BenchmarkSummary,
@@ -56,3 +56,4 @@ class MarkdownReporter:
 | Fastest | {summary.fastest_latency_ms:.2f} ms |
 | Slowest | {summary.slowest_latency_ms:.2f} ms |
 """
+

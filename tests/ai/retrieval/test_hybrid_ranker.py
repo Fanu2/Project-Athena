@@ -81,3 +81,4 @@ def test_hybrid_ranker_respects_limit() -> None:
     )
 
     assert len(results) == 1
+

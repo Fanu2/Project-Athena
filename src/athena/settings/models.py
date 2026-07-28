@@ -14,3 +14,4 @@ class AISettings:
     """Workspace AI settings."""
 
     default_model: str = DEFAULT_LLM_MODEL
+

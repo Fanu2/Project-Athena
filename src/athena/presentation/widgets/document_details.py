@@ -301,3 +301,4 @@ class DocumentDetails(QWidget):
         self.bookmark_button.setText(
             "☆ Bookmark",
         )
+

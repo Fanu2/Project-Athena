@@ -199,3 +199,4 @@ class SQLiteDocumentRepository(DocumentRepository):
                 """,
                 (document_id,),
             )
+

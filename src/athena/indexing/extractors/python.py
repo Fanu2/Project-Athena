@@ -198,3 +198,4 @@ class PythonExtractor(BaseExtractor):
             )
 
         return "\n".join(lines)
+

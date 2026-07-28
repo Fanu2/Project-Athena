@@ -62,3 +62,4 @@ def test_analyze_prompt():
     assert QUESTION in prompt
     assert CONTEXT in prompt
     assert "Analysis:" in prompt
+

@@ -20,7 +20,7 @@ class LLMClient:
 
         self._provider = provider
 
-    def generate(
+    def analyze(
         self,
         request: LLMRequest,
     ) -> LLMResponse:
@@ -28,6 +28,7 @@ class LLMClient:
         Generate text using configured provider.
         """
 
-        return self._provider.generate(
+        return self._provider.analyze(
             request,
         )
+

@@ -139,3 +139,4 @@ class SearchResultViewer(QWidget):
         self.open_button.setEnabled(
             False,
         )
+

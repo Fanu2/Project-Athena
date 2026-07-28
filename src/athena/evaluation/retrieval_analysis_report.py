@@ -12,7 +12,7 @@ from athena.evaluation.retrieval_analysis import (
 class RetrievalAnalysisReporter:
     """Generate retrieval intelligence reports."""
 
-    def generate(
+    def analyze(
         self,
         report: RetrievalAnalysisReport,
     ) -> str:
@@ -51,3 +51,4 @@ class RetrievalAnalysisReporter:
             lines.append("")
 
         return "\n".join(lines)
+

@@ -24,3 +24,4 @@ class RetrievalItemWidget(QWidget):
     """
 
     pass
+

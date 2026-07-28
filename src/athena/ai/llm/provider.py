@@ -15,7 +15,7 @@ class LLMProvider(ABC):
     """Abstract LLM provider."""
 
     @abstractmethod
-    def generate(
+    def analyze(
         self,
         request: LLMRequest,
     ) -> LLMResponse:
@@ -25,3 +25,4 @@ class LLMProvider(ABC):
         Implemented by concrete providers.
         """
         raise NotImplementedError
+

@@ -49,3 +49,4 @@ class BenchmarkValidator:
                 seen_questions.add(question.question)
 
         return errors
+

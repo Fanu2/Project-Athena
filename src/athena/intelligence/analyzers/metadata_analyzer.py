@@ -40,3 +40,4 @@ class MetadataAnalyzer:
             page_count=document.page_count,
             estimated_reading_minutes=estimated_reading_minutes,
         )
+

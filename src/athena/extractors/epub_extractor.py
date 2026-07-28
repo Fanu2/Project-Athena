@@ -61,3 +61,4 @@ class EPUBExtractor(BaseExtractor):
             text="\n\n".join(parts),
             page_count=len(parts),
         )
+

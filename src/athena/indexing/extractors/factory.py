@@ -95,3 +95,4 @@ class ExtractorFactory:
         raise UnsupportedDocumentError(
             f"Unsupported document type: {extension}"
         )
+

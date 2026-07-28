@@ -82,3 +82,4 @@ class BookmarkService:
         return list(
             self._bookmarks.values(),
         )
+

@@ -19,3 +19,4 @@ PDF_EXTENSION = ".pdf"
 TEXT_EXTENSION = ".txt"
 
 MARKDOWN_EXTENSION = ".md"
+

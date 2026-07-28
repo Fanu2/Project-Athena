@@ -46,3 +46,4 @@ class RetrievalService:
             )
 
         return results
+

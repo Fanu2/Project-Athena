@@ -1,4 +1,4 @@
-﻿"""
+"""
 Tests for retrieval analysis report generator.
 """
 
@@ -21,7 +21,7 @@ def test_empty_report_generation() -> None:
         findings=[],
     )
 
-    output = reporter.generate(
+    output = reporter.analyze(
         report,
     )
 
@@ -66,7 +66,7 @@ def test_finding_appears_in_report() -> None:
         ],
     )
 
-    output = reporter.generate(
+    output = reporter.analyze(
         report,
     )
 
@@ -100,7 +100,7 @@ def test_finding_count_appears_in_report() -> None:
         ],
     )
 
-    output = reporter.generate(
+    output = reporter.analyze(
         report,
     )
 
@@ -113,3 +113,4 @@ def test_finding_count_appears_in_report() -> None:
         "wrong_rank"
         in output
     )
+

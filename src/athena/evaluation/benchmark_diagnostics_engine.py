@@ -28,7 +28,7 @@ class BenchmarkDiagnosticsEngine:
         ).name.lower().strip()
 
         name = re.sub(
-            r"\.[a-z0-9]+$",
+            r".[a-z0-9]+$",
             "",
             name,
         )
@@ -143,3 +143,4 @@ class BenchmarkDiagnosticsEngine:
             )
 
         return diagnostics
+

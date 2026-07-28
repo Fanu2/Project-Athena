@@ -15,3 +15,4 @@ class AIConfiguration:
     temperature: float
     max_tokens: int
     top_k: int
+

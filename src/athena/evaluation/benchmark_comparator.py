@@ -53,3 +53,4 @@ class BenchmarkComparator:
             degraded=bool(warnings),
             warnings=warnings,
         )
+

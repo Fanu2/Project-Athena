@@ -1,4 +1,4 @@
-﻿"""
+"""
 Metadata-aware retrieval ranking.
 """
 
@@ -27,3 +27,4 @@ class MetadataRanker:
             document.confidence
             for document in metadata.documents
         )
+

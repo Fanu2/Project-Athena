@@ -1,4 +1,4 @@
-﻿"""
+"""
 Hybrid retrieval ranking.
 """
 
@@ -126,3 +126,4 @@ class HybridRanker:
                 return document.confidence
 
         return 0.0
+

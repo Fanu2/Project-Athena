@@ -23,3 +23,4 @@ class InvalidPageError(ViewerError):
 
 class UnsupportedDocumentError(ViewerError):
     """Raised when the document format is unsupported."""
+

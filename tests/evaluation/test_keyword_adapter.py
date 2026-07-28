@@ -1,4 +1,4 @@
-﻿"""
+"""
 Tests for keyword retrieval adapter.
 """
 
@@ -103,3 +103,4 @@ def test_keyword_adapter_sorts_by_score() -> None:
         >
         results[1].score
     )
+

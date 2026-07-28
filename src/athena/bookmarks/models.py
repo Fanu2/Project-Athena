@@ -15,3 +15,4 @@ class Bookmark:
     document_id: str
 
     created: datetime
+

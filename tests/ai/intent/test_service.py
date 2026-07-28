@@ -48,3 +48,4 @@ def test_service_detect_unknown_intent():
     result = service.detect("asdf qwerty zxcv")
 
     assert result.intent == IntentType.UNKNOWN
+

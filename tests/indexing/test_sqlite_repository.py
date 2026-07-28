@@ -150,3 +150,4 @@ def test_save_replaces_existing_chunks(
 
     assert len(loaded) == 1
     assert loaded[0].chunk_index == 5
+

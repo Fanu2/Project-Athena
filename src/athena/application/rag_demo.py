@@ -106,7 +106,7 @@ def run_demo(
         OllamaProvider(),
     )
 
-    answer = client.generate(
+    answer = client.analyze(
         LLMRequest(
             system_prompt=prompt.system,
             user_prompt=prompt.user,
@@ -131,3 +131,4 @@ if __name__ == "__main__":
         Path("Athena_Test_Document.pdf"),
         "What is this document about?",
     )
+

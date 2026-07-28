@@ -149,3 +149,4 @@ class DocumentViewerService:
         """Expose the underlying renderer."""
 
         return self._renderer
+

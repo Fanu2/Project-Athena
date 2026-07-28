@@ -43,3 +43,4 @@ class SimilarityCalculator:
             return 0.0
 
         return dot_product / (first_norm * second_norm)
+

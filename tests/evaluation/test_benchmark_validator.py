@@ -63,3 +63,4 @@ def test_blank_question_id():
     errors = BenchmarkValidator.validate(questions)
 
     assert any("empty question_id" in e for e in errors)
+

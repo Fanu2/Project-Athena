@@ -16,3 +16,4 @@ def test_query_intent_defaults():
     assert intent.collections == ()
 
     assert dict(intent.filters) == {}
+

@@ -78,3 +78,4 @@ class QueryNormalizer:
         underscores and whitespace.
         """
         return self._PUNCTUATION_PATTERN.sub("", text)
+

@@ -202,3 +202,4 @@ def test_get_all_documents(test_session):
     filenames = {document.filename for document in documents}
 
     assert filenames == {"alpha.pdf", "beta.pdf"}
+

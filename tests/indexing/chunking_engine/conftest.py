@@ -165,3 +165,4 @@ def sample_chunk() -> DocumentChunk:
         previous_chunk=None,
         next_chunk=None,
     )
+

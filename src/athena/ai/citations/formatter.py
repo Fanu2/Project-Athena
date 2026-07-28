@@ -23,3 +23,4 @@ class CitationFormatter:
             f"–{citation.end_offset}\n"
             f"Similarity {citation.score:.2f}"
         )
+

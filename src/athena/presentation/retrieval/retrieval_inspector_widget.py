@@ -73,3 +73,4 @@ class RetrievalInspectorWidget(QWidget):
                     f"{preview}"
                 )
             )
+

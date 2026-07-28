@@ -85,3 +85,4 @@ def test_missing_classification() -> None:
     findings = BenchmarkFailureAnalyzer().analyze(session)
 
     assert findings[0].category == FailureCategory.MISSING
+

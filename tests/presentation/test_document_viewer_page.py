@@ -126,3 +126,4 @@ def test_navigation_single_page(
     page.previous_page()
 
     assert page.page_label.text() == "Page 1 / 1"
+

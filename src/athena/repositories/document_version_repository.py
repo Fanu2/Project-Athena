@@ -55,3 +55,4 @@ class DocumentVersionRepository(ABC):
         version_id: UUID,
     ) -> None:
         """Delete a document version."""
+

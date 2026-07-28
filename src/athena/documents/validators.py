@@ -45,3 +45,4 @@ def validate_document(path: Path) -> Path:
         raise InvalidDocumentError(f"Unsupported document type. Supported types: {supported}")
 
     return path
+

@@ -119,3 +119,4 @@ class ConversationModel(QAbstractListModel):
 
         self.beginResetModel()
         self.endResetModel()
+

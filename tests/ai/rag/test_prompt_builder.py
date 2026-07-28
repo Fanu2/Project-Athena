@@ -89,3 +89,4 @@ def test_default_prompt_selected():
     )
 
     assert "Answer:" in prompt
+

@@ -28,3 +28,4 @@ class SemanticSearchService:
             query=query,
             limit=limit,
         )
+

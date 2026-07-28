@@ -29,3 +29,4 @@ class WorkspaceActions:
     def is_workspace(self, path: Path) -> bool:
         """Check whether a folder is an Athena workspace."""
         return self._service.is_workspace(path)
+

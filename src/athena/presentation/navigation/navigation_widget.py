@@ -67,3 +67,4 @@ class NavigationWidget(QListWidget):
 
             case 6:
                 self.settings_selected.emit()
+

@@ -42,3 +42,4 @@ def test_valid_md(tmp_path):
     file.write_text("dummy")
 
     assert validate_document(file) == file
+

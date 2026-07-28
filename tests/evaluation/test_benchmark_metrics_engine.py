@@ -252,3 +252,4 @@ def test_document_not_found():
     assert summary.top3_accuracy == 0.0
     assert summary.top5_accuracy == 0.0
     assert summary.mean_reciprocal_rank == 0.0
+

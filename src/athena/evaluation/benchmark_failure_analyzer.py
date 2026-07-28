@@ -69,3 +69,4 @@ class BenchmarkFailureAnalyzer:
             )
 
         return findings
+

@@ -81,3 +81,4 @@ def test_unknown_setting_falls_back_to_legacy():
         adapter,
         LegacyChunkingAdapter,
     )
+

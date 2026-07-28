@@ -61,3 +61,4 @@ def test_set_none(qtbot) -> None:
     canvas.set_image(None)
 
     assert not canvas.has_image
+

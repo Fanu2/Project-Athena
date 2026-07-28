@@ -28,3 +28,4 @@ class ImportSummary:
     skipped_documents: list[str] = field(default_factory=list)
 
     failed_documents: list[str] = field(default_factory=list)
+

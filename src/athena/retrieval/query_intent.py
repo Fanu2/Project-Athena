@@ -18,3 +18,4 @@ class QueryIntent:
     collections: tuple[str, ...] = ()
 
     filters: dict[str, str] = field(default_factory=dict)
+

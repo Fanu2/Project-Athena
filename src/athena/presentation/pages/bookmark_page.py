@@ -112,3 +112,4 @@ class BookmarkPage(QWidget):
         """Clear bookmark list."""
 
         self.list_widget.clear()
+

@@ -71,3 +71,4 @@ class ConversationQueryService:
         )
 
         return result
+

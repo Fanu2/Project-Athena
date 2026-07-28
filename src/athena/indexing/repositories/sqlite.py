@@ -221,3 +221,4 @@ class SQLiteChunkRepository(ChunkRepository):
             )
             for row in rows
         ]
+

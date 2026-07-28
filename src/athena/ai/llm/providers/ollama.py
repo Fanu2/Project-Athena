@@ -31,7 +31,7 @@ class OllamaProvider(LLMProvider):
 
         self._settings = settings if settings is not None else LLMSettings()
 
-    def generate(
+    def analyze(
         self,
         request: LLMRequest,
     ) -> LLMResponse:
@@ -73,3 +73,4 @@ class OllamaProvider(LLMProvider):
                 self._settings.model,
             ),
         )
+

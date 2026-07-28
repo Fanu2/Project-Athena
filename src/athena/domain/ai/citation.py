@@ -17,3 +17,4 @@ class Citation:
     page: int
     snippet: str
     score: float
+

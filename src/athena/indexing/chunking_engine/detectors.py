@@ -32,7 +32,7 @@ class HeadingDetector(BaseDetector):
 
     _patterns = (
         re.compile(r"^#{1,6}\s+"),  # Markdown
-        re.compile(r"^\d+(\.\d+)*\s+"),  # 1  1.1  2.3.4
+        re.compile(r"^\d+(.\d+)*\s+"),  # 1  1.1  2.3.4
         re.compile(r"^[A-Z][A-Z0-9\s\-]{2,}$"),  # ALL CAPS
     )
 
@@ -109,3 +109,4 @@ DEFAULT_DETECTORS: tuple[BaseDetector, ...] = (
     TableDetector(),
     CodeDetector(),
 )
+

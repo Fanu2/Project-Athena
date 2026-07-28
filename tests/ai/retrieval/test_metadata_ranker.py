@@ -1,4 +1,4 @@
-﻿"""
+"""
 Tests for metadata-aware ranking.
 """
 
@@ -60,3 +60,4 @@ def test_metadata_ranker_uses_highest_match() -> None:
     )
 
     assert ranker.score(metadata) == pytest.approx(0.90)
+

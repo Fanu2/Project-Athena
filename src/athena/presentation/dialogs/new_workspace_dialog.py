@@ -100,3 +100,4 @@ class NewWorkspaceDialog(QDialog):
     @property
     def workspace_location(self) -> Path:
         return Path(self.location_edit.text())
+

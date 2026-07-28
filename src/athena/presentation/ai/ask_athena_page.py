@@ -555,3 +555,4 @@ class AskAthenaPage(QWidget):
         self.conversation.set_model(
             model,
         )
+

@@ -14,3 +14,4 @@ ChunkId: TypeAlias = str
 EmbeddingVector: TypeAlias = list[float]
 
 DocumentPath: TypeAlias = Path
+

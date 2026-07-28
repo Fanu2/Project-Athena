@@ -16,3 +16,4 @@ class Answer:
     text: str
 
     citations: list[Citation] = field(default_factory=list)
+

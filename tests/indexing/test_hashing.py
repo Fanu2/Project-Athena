@@ -19,3 +19,4 @@ def test_different_files_different_hash(tmp_path):
     file2.write_text("Research")
 
     assert sha256_file(file1) != sha256_file(file2)
+

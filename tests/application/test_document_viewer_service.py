@@ -108,3 +108,4 @@ def test_metadata(document: Document) -> None:
     metadata = service.metadata()
 
     assert isinstance(metadata, dict)
+

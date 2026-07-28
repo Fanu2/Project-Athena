@@ -53,3 +53,4 @@ class DocumentRepository(ABC):
         title: str,
     ) -> list[IndexedDocument]:
         """Find documents by title."""
+

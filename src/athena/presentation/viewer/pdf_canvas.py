@@ -89,3 +89,4 @@ class PDFCanvas(QWidget):
             y,
             scaled,
         )
+

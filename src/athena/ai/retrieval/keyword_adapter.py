@@ -66,3 +66,4 @@ class KeywordAdapter:
         )
 
         return results
+

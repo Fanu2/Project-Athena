@@ -162,3 +162,4 @@ def test_empty_candidates_returns_empty_list(
     )
 
     assert result == []
+

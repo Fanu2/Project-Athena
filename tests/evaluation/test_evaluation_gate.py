@@ -1,4 +1,4 @@
-﻿"""
+"""
 Tests for evaluation gate facade.
 """
 
@@ -89,3 +89,4 @@ def test_evaluation_gate_block() -> None:
         "Top-5 accuracy degraded."
         in result.checks
     )
+

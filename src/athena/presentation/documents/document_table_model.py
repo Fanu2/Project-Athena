@@ -105,3 +105,4 @@ class DocumentTableModel(QAbstractTableModel):
         """Return the document at the given row."""
 
         return self._documents[row]
+

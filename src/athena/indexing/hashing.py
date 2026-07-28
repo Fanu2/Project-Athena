@@ -27,3 +27,4 @@ def sha256_file(path: Path) -> str:
             hasher.update(chunk)
 
     return hasher.hexdigest()
+

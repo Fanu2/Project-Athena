@@ -219,3 +219,4 @@ class DocumentLibraryPage(QWidget):
             self.status_label.setText("No workspace open")
         else:
             self.status_label.setText("0 document(s)")
+

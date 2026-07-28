@@ -50,3 +50,4 @@ class IntentDetector:
             matched_keywords=tuple(match.keyword for match in matches),
             normalized_query=normalized_query,
         )
+

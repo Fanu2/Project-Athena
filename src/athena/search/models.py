@@ -22,3 +22,4 @@ class SearchResult:
     text: str
 
     score: float | None = None
+

@@ -16,3 +16,4 @@ class EmbeddingRecord:
     model_name: str
     vector: list[float]
     created: datetime
+

@@ -84,3 +84,4 @@ def test_no_filters_returns_all():
 
     assert len(filtered) == 2
     assert filtered == documents
+

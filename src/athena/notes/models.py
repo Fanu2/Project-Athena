@@ -16,3 +16,4 @@ class Note:
     content: str
     created: datetime
     modified: datetime
+

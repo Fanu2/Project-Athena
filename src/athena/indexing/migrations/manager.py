@@ -60,3 +60,4 @@ class MigrationManager:
             return 0
 
         return int(row[0])
+

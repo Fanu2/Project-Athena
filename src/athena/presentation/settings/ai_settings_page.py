@@ -199,3 +199,4 @@ class AISettingsPage(QWidget):
             self.model_combo.setCurrentIndex(
                 index,
             )
+

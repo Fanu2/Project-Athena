@@ -57,3 +57,4 @@ class HomePage(QWidget):
         self.workspace_label.setText("No workspace is currently open.")
 
         self.path_label.clear()
+

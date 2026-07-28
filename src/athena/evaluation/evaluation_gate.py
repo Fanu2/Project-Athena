@@ -30,3 +30,4 @@ class EvaluationGate:
         return self._service.evaluate(
             decision,
         )
+

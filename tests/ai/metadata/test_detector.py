@@ -27,3 +27,4 @@ def test_detector_returns_empty_result():
 
     assert not result.found
     assert result.documents == ()
+

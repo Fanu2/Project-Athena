@@ -55,3 +55,4 @@ class BenchmarkSummary:
 
     fastest_latency_ms: float = 0.0
     slowest_latency_ms: float = 0.0
+

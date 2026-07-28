@@ -21,3 +21,4 @@ class Migration(ABC):
         connection: sqlite3.Connection,
     ) -> None:
         """Apply the migration."""
+

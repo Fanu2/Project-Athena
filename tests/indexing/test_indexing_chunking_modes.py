@@ -91,3 +91,4 @@ def test_explicit_adapter_overrides_settings(
     )
 
     assert service._chunking is adapter
+

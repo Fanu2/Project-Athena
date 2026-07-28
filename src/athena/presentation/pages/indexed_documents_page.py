@@ -57,3 +57,4 @@ class IndexedDocumentsPage(QWidget):
         """Return the embedded document browser."""
 
         return self._browser
+

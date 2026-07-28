@@ -116,3 +116,4 @@ class SearchResultsModel(QAbstractListModel):
             preview += " ..."
 
         return preview
+

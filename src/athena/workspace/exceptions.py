@@ -8,3 +8,4 @@ class WorkspaceExistsError(WorkspaceError):
 
 class InvalidWorkspaceError(WorkspaceError):
     """Folder is not a valid Athena workspace."""
+

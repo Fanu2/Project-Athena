@@ -98,3 +98,4 @@ def test_empty_text_is_paragraph():
     result = detect("")
 
     assert result == BlockType.PARAGRAPH
+

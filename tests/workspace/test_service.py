@@ -52,3 +52,4 @@ def test_invalid_workspace(tmp_path: Path):
 
     with pytest.raises(InvalidWorkspaceError):
         service.open_workspace(folder)
+

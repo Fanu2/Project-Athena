@@ -23,3 +23,4 @@ class AISettingsService:
     def save(self, settings: AISettings) -> None:
         """Save workspace AI settings."""
         self._storage.save(settings)
+

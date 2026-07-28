@@ -38,7 +38,7 @@ def test_generate_returns_string():
         slowest_latency_ms=41.0,
     )
 
-    report = reporter.generate(session, summary)
+    report = reporter.analyze(session, summary)
 
     assert isinstance(report, str)
 
@@ -47,7 +47,7 @@ def test_report_contains_title():
 
     reporter = MarkdownReporter()
 
-    report = reporter.generate(
+    report = reporter.analyze(
         BenchmarkSession(),
         BenchmarkSummary(),
     )
@@ -59,7 +59,7 @@ def test_report_contains_dataset():
 
     reporter = MarkdownReporter()
 
-    report = reporter.generate(
+    report = reporter.analyze(
         BenchmarkSession(dataset_name="athena_core_v1"),
         BenchmarkSummary(),
     )
@@ -71,7 +71,7 @@ def test_report_contains_metrics():
 
     reporter = MarkdownReporter()
 
-    report = reporter.generate(
+    report = reporter.analyze(
         BenchmarkSession(),
         BenchmarkSummary(
             top1_accuracy=0.95,
@@ -81,3 +81,4 @@ def test_report_contains_metrics():
 
     assert "95.00%" in report
     assert "25.00 ms" in report
+

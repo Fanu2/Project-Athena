@@ -66,3 +66,4 @@ class DocumentRepository(ABC):
         """Delete document."""
 
         raise NotImplementedError
+

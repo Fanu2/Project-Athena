@@ -18,3 +18,4 @@ class LLMSettings:
     base_url: str = "http://localhost:11434"
 
     timeout: int = 120
+

@@ -106,3 +106,4 @@ class ConversationWidget(QWidget):
         """Return the attached conversation model."""
 
         return self._model
+

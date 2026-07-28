@@ -36,3 +36,4 @@ class ConversationDelegate(
         )
 
         return size
+

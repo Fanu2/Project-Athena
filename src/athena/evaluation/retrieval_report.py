@@ -38,3 +38,4 @@ class RetrievalReport:
 
     results: list[RetrievalCandidate] = field(default_factory=list)
     metadata: dict[str, Any] = field(default_factory=dict)
+

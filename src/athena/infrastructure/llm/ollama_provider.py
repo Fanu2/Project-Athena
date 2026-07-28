@@ -23,7 +23,7 @@ class OllamaProvider(LLMProvider):
             timeout=timeout,
         )
 
-    def generate(
+    def analyze(
         self,
         prompt: str,
         configuration: AIConfiguration,
@@ -102,3 +102,4 @@ class OllamaProvider(LLMProvider):
         traceback: object,
     ) -> None:
         self.close()
+

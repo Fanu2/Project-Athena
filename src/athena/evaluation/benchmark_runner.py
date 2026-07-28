@@ -41,3 +41,4 @@ class BenchmarkRunner:
             retrieval_results=retrieval_results,
             elapsed_ms=elapsed_ms,
         )
+

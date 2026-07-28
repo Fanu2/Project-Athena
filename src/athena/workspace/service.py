@@ -74,3 +74,4 @@ class WorkspaceService:
         """Return True if path is a valid workspace."""
 
         return self._storage.is_workspace(path)
+

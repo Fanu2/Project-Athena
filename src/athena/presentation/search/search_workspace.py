@@ -184,3 +184,4 @@ class SearchWorkspace(QWidget):
         self.viewer.show_chunk(
             chunk,
         )
+

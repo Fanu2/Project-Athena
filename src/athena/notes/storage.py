@@ -78,3 +78,4 @@ class NoteStorage:
             )
             for item in data
         ]
+

@@ -93,3 +93,4 @@ class DocumentsTable(QTableView):
         self.document_activated.emit(
             document.path,
         )
+

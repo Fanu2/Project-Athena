@@ -87,3 +87,4 @@ def test_parser_handles_multi_page_document(
     pages = {block.page_number for block in blocks}
 
     assert pages == {1, 2}
+

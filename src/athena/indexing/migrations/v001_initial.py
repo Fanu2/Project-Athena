@@ -41,3 +41,4 @@ class V001Initial(Migration):
             ON chunks(document_id)
             """
         )
+

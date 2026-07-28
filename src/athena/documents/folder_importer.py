@@ -68,3 +68,4 @@ class FolderImporter:
         """
 
         return path.suffix.lower() in SUPPORTED_DOCUMENT_TYPES
+

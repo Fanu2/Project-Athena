@@ -23,3 +23,4 @@ class AthenaKernel:
             "version": self.VERSION,
             "services": self.services.names(),
         }
+

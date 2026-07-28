@@ -174,3 +174,4 @@ class IndexedDocument:
     page_count: int
 
     indexed_at: datetime
+

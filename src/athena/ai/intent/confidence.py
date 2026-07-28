@@ -39,3 +39,4 @@ class ConfidenceCalculator:
             confidence=confidence,
             scores=scores,
         )
+

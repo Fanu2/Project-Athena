@@ -38,3 +38,4 @@ def test_history_store_saves_summary(
     history = store.list_history()
 
     assert len(history) == 1
+

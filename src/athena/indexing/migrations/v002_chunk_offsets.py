@@ -45,3 +45,4 @@ class V002ChunkOffsets(Migration):
                 DEFAULT 0
                 """
             )
+

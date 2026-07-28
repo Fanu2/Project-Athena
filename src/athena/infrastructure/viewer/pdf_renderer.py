@@ -254,3 +254,4 @@ class PdfRenderer:
         """Close the document when leaving a context."""
 
         self.close()
+

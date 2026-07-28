@@ -118,3 +118,4 @@ class WorkspaceDocumentService:
         self._documents.remove_document(
             document_path,
         )
+

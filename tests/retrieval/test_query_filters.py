@@ -19,3 +19,4 @@ def test_file_types():
 def test_operations():
     assert "summarize" in OPERATIONS
     assert "compare" in OPERATIONS
+

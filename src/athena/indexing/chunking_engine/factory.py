@@ -40,3 +40,4 @@ class ChunkingAdapterFactory:
             return StructureChunkingAdapter()
 
         return LegacyChunkingAdapter()
+

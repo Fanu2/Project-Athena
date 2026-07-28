@@ -62,12 +62,12 @@ class BenchmarkService:
 
         diagnostics = self._diagnostics.analyze(session)
 
-        report = self._reporter.generate(
+        report = self._reporter.analyze(
             session,
             summary,
         )
 
-        diagnostics_report = self._diagnostics_reporter.generate(
+        diagnostics_report = self._diagnostics_reporter.analyze(
             diagnostics,
         )
 
@@ -94,3 +94,4 @@ class BenchmarkService:
             summary,
             results_directory / "benchmark_summary.json",
         )
+

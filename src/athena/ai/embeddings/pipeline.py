@@ -64,3 +64,4 @@ class EmbeddingPipeline:
             self.embed_chunk(
                 chunk,
             )
+

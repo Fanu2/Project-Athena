@@ -25,3 +25,4 @@ class DocumentMetadata:
 
     # Estimated reading time (minutes)
     estimated_reading_minutes: int
+

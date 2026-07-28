@@ -11,3 +11,4 @@ class IntegrationManager:
 
     def version(self):
         return self.VERSION
+

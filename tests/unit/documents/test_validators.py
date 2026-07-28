@@ -59,3 +59,4 @@ def test_list_documents_multiple(tmp_path):
     assert "a.txt" in names
     assert "b.md" in names
     assert "c.pdf" in names
+

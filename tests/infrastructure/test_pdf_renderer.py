@@ -123,3 +123,4 @@ def test_context_manager(sample_pdf: Path) -> None:
         assert renderer.is_open
 
     assert not renderer.is_open
+

@@ -20,3 +20,4 @@ def test_epub_extraction() -> None:
     assert result.text.strip()
     assert result.title
     assert result.page_count > 0
+

@@ -22,3 +22,4 @@ class PromptStrategy(ABC):
         Build the prompt presented to the language model.
         """
         raise NotImplementedError
+

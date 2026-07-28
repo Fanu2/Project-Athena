@@ -121,3 +121,4 @@ def test_load_returns_copy() -> None:
     loaded.clear()
 
     assert len(repository.load_chunks("doc-1")) == 1
+

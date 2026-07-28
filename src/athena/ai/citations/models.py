@@ -22,3 +22,4 @@ class Citation:
     end_offset: int
 
     score: float
+

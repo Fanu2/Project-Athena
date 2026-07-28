@@ -30,3 +30,4 @@ class ApplicationEvents(QObject):
 
 # Global singleton used throughout the application.
 events = ApplicationEvents()
+

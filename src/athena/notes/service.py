@@ -116,3 +116,4 @@ class NoteService:
         return list(
             self._notes.values(),
         )
+

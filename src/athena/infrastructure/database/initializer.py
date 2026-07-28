@@ -20,3 +20,4 @@ def initialize_database() -> None:
     """Create all database tables."""
 
     Base.metadata.create_all(bind=engine)
+

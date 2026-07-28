@@ -36,3 +36,4 @@ class Conversation:
     created: datetime = field(default_factory=datetime.now)
     modified: datetime = field(default_factory=datetime.now)
     messages: list[ConversationMessage] = field(default_factory=list)
+

@@ -106,3 +106,4 @@ class IntentResult:
     modifiers: tuple[str, ...] = field(default_factory=tuple)
 
     normalized_query: str = ""
+

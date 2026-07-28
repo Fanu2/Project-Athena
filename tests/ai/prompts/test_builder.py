@@ -44,3 +44,4 @@ def test_build_prompt() -> None:
     assert "What is Athena?" in prompt.user
     assert "Athena is an offline AI assistant." in prompt.user
     assert "offline AI research assistant" in prompt.system
+

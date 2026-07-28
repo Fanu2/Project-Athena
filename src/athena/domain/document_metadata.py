@@ -27,3 +27,4 @@ class DocumentMetadata:
     last_indexed: datetime | None = None
 
     metadata_version: int = 1
+

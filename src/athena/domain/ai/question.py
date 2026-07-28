@@ -12,3 +12,4 @@ class Question:
     """Represents a user's question."""
 
     text: str
+

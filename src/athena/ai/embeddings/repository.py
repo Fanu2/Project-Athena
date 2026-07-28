@@ -164,3 +164,4 @@ class EmbeddingRepository:
             )
             for row in rows
         ]
+

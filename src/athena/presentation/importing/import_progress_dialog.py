@@ -292,3 +292,4 @@ class ImportProgressDialog(QDialog):
                 0.0,
             ),
         )
+

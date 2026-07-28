@@ -57,3 +57,4 @@ class DocumentMetadataModel(Base):
         "DocumentModel",
         back_populates="document_metadata",
     )
+

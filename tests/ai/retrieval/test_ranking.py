@@ -66,3 +66,4 @@ def test_custom_weights() -> None:
     )
 
     assert result == pytest.approx(expected)
+

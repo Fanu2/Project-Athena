@@ -32,3 +32,4 @@ class ChunkingAdapter(ABC):
         """
 
         raise NotImplementedError
+

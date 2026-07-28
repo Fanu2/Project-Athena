@@ -41,3 +41,4 @@ def test_session(tmp_path):
         session.close()
         Base.metadata.drop_all(engine)
         engine.dispose()
+

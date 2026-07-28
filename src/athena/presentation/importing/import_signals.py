@@ -33,3 +33,4 @@ class ImportSignals(QObject):
 
     cancelled = Signal()
     """Import cancelled by user."""
+

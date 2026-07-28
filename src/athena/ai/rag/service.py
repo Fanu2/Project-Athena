@@ -120,7 +120,7 @@ class RAGService:
         # Generate response
         #
 
-        response = self._llm.generate(
+        response = self._llm.analyze(
             request,
         )
 
@@ -134,3 +134,4 @@ class RAGService:
             sources=context.sources,
             retrieval_results=results,
         )
+

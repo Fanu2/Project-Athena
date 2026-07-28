@@ -77,3 +77,4 @@ class DocumentStorage:
             )
 
         return documents
+

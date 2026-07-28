@@ -13,7 +13,7 @@ class LLMProvider(ABC):
     """Abstract base class for LLM providers."""
 
     @abstractmethod
-    def generate(
+    def analyze(
         self,
         prompt: str,
         configuration: AIConfiguration,
@@ -47,3 +47,4 @@ class LLMProvider(ABC):
             List of installed model names.
         """
         raise NotImplementedError
+

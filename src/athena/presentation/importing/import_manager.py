@@ -208,3 +208,4 @@ class ImportManager:
         )
 
         self._dialog.reject()
+

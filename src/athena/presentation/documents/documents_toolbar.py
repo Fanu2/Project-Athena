@@ -79,3 +79,4 @@ class DocumentsToolbar(QWidget):
         self.refresh_button.clicked.connect(
             self.refresh_requested.emit,
         )
+

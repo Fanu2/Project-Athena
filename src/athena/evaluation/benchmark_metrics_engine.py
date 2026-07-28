@@ -24,7 +24,7 @@ class BenchmarkMetricsEngine:
         value = Path(name).name.lower().strip()
 
         value = re.sub(
-            r"\.[a-z0-9]+$",
+            r".[a-z0-9]+$",
             "",
             value,
         )
@@ -177,4 +177,5 @@ class BenchmarkMetricsEngine:
             )
 
         return summary
+
 

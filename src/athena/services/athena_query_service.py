@@ -77,3 +77,4 @@ class AthenaQueryService:
         ]
 
         return any(pattern in text for pattern in workspace_patterns)
+

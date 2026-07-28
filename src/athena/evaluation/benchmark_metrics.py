@@ -28,7 +28,7 @@ class BenchmarkMetricsCalculator:
         name = Path(document_id).name.lower()
 
         name = re.sub(
-            r"\.[a-z0-9]+$",
+            r".[a-z0-9]+$",
             "",
             name,
         )
@@ -100,3 +100,4 @@ class BenchmarkMetricsCalculator:
                 metrics.mrr = 1.0 / rank
 
         return metrics
+

@@ -62,3 +62,4 @@ class RetrievalDiagnosticAnalyzer:
         return RetrievalAnalysisReport(
             findings=findings,
         )
+

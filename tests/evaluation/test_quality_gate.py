@@ -1,4 +1,4 @@
-﻿"""
+"""
 Tests for benchmark quality gate model.
 """
 
@@ -52,3 +52,4 @@ def test_quality_gate_block_prevents_release() -> None:
 
     assert result.status == QualityGateStatus.BLOCK
     assert result.can_release is False
+

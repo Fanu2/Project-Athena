@@ -59,3 +59,4 @@ class DoclingPDFExtractor(BaseExtractor):
             raise ExtractionError(
                 f"Failed to extract '{document.name}' using Docling.\n\n{type(exc).__name__}: {exc}"
             ) from exc
+

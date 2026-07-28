@@ -38,3 +38,4 @@ class ExtractedDocument:
     ) -> None:
         """Add a page to the document."""
         self.pages.append(page)
+

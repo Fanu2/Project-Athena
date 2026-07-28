@@ -24,3 +24,4 @@ class DocumentVersion:
     size: int
 
     created_at: datetime
+

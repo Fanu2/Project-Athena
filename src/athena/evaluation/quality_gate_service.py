@@ -44,3 +44,4 @@ class QualityGateService:
             message=("Benchmark regression blocks release."),
             checks=decision.reasons,
         )
+

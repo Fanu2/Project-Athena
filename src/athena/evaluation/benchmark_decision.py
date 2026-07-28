@@ -32,3 +32,4 @@ class BenchmarkDecision:
             self.status
             != BenchmarkDecisionStatus.BLOCK
         )
+

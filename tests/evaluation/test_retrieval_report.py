@@ -26,3 +26,4 @@ def test_create_retrieval_report():
     assert report.query == "sample query"
     assert report.candidate_count == 1
     assert report.results[0].final_score == 0.95
+

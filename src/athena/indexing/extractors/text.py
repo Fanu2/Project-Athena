@@ -54,3 +54,4 @@ class TextExtractor(BaseExtractor):
             ),
             page_count=1,
         )
+

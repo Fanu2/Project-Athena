@@ -43,7 +43,7 @@ class FakeEmbeddingService:
 class FakeLLMProvider(LLMProvider):
     """Fake LLM provider."""
 
-    def generate(
+    def analyze(
         self,
         request: LLMRequest,
     ) -> LLMResponse:
@@ -189,7 +189,7 @@ def test_complete_rag_pipeline(
         FakeLLMProvider(),
     )
 
-    answer = client.generate(
+    answer = client.analyze(
         LLMRequest(
             system_prompt=prompt.system,
             user_prompt=prompt.user,
@@ -197,3 +197,4 @@ def test_complete_rag_pipeline(
     )
 
     assert answer.text == "Athena is an offline AI research assistant."
+

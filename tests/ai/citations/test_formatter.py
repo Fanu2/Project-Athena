@@ -29,3 +29,4 @@ def test_format_citation() -> None:
     assert "1540" in formatted
     assert "2012" in formatted
     assert "Similarity 0.94" in formatted
+

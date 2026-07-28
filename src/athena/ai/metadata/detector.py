@@ -28,3 +28,4 @@ class MetadataDetector:
         return MetadataResult(
             documents=matches,
         )
+

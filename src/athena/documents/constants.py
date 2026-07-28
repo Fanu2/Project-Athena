@@ -9,3 +9,4 @@ SUPPORTED_DOCUMENT_TYPES = (
     ".epub",
     ".docx",
 )
+

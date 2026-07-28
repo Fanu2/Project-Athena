@@ -149,3 +149,4 @@ def test_empty_input_returns_empty_list():
     result = builder.build([])
 
     assert result == []
+

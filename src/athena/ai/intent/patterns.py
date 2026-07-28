@@ -106,3 +106,4 @@ INTENT_PATTERNS: dict[IntentType, tuple[str, ...]] = {
         "imagine",
     ),
 }
+

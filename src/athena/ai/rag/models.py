@@ -59,3 +59,4 @@ class RAGAnswer:
     retrieval_results: list[SemanticResult] = field(
         default_factory=list,
     )
+

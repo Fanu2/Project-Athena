@@ -88,3 +88,4 @@ class SqliteMetadataRepository(MetadataRepository):
         if model is not None:
             self._session.delete(model)
             self._session.commit()
+

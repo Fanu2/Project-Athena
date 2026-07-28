@@ -86,3 +86,4 @@ class SearchResultDelegate(QStyledItemDelegate):
         )
 
         painter.restore()
+

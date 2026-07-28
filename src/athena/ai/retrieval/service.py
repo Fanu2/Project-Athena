@@ -172,3 +172,4 @@ class RetrievalService:
             metadata,
             query,
         )
+

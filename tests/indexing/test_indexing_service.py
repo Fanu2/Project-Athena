@@ -71,3 +71,4 @@ def test_reindex_replaces_chunks(
     assert stored == second
 
     assert stored != first
+

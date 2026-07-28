@@ -29,3 +29,4 @@ def test_document_metadata_values():
     assert metadata.page_count == 12
     assert metadata.last_indexed == now
     assert metadata.metadata_version == 1
+

@@ -27,3 +27,4 @@ def test_table_model(qtbot):
     qtbot.addWidget(widget)
 
     assert widget.table.model() is widget.model
+

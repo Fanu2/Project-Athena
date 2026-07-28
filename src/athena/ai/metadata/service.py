@@ -24,3 +24,4 @@ class MetadataService:
         query: str,
     ) -> MetadataResult:
         return self._detector.detect(query)
+

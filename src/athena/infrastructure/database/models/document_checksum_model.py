@@ -41,3 +41,4 @@ class DocumentChecksumModel(Base):
         nullable=False,
         index=True,
     )
+

@@ -12,7 +12,7 @@ from athena.evaluation.benchmark_diagnostics_models import (
 class BenchmarkDiagnosticsReporter:
     """Generate a Markdown diagnostics report."""
 
-    def generate(
+    def analyze(
         self,
         diagnostics: BenchmarkDiagnostics,
     ) -> str:
@@ -62,3 +62,4 @@ class BenchmarkDiagnosticsReporter:
             lines.append("")
 
         return "\n".join(lines)
+

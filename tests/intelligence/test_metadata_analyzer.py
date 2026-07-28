@@ -30,3 +30,4 @@ def test_metadata_analyzer():
     assert metadata.line_count == 2
     assert metadata.page_count == 1
     assert metadata.estimated_reading_minutes == 1
+

@@ -17,3 +17,4 @@ class RetrievalResult:
     page: int
     text: str
     score: float
+

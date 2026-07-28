@@ -206,3 +206,4 @@ class DocumentViewerPage(QWidget):
 
         if self._service.previous_page():
             self._refresh()
+

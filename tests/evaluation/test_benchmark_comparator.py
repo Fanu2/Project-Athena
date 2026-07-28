@@ -118,3 +118,4 @@ def test_comparator_detects_latency_regression() -> None:
 
     assert result.degraded is True
     assert "Latency increased significantly." in result.warnings
+

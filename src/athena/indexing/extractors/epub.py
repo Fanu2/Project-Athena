@@ -82,3 +82,4 @@ class EPUBExtractor(BaseExtractor):
             pages=pages,
             page_count=len(pages),
         )
+

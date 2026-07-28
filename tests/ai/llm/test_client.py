@@ -13,7 +13,7 @@ from athena.ai.llm import LLMProvider
 class FakeProvider(LLMProvider):
     """Fake provider for testing."""
 
-    def generate(
+    def analyze(
         self,
         request: LLMRequest,
     ) -> LLMResponse:
@@ -31,7 +31,7 @@ def test_client_generates_response() -> None:
         FakeProvider(),
     )
 
-    response = client.generate(
+    response = client.analyze(
         LLMRequest(
             system_prompt="System",
             user_prompt="Question",
@@ -40,3 +40,4 @@ def test_client_generates_response() -> None:
 
     assert response.text == "Test response"
     assert response.model == "fake-model"
+

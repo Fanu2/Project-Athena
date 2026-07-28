@@ -107,3 +107,4 @@ class DocumentParser:
                 return detector.block_type
 
         return BlockType.PARAGRAPH
+

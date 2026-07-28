@@ -40,3 +40,4 @@ def test_write_and_read_workspace(tmp_path: Path):
     assert loaded.name == workspace.name
     assert loaded.version == workspace.version
     assert loaded.path == workspace.path
+

@@ -19,3 +19,4 @@ def test_default_llm_settings() -> None:
     assert settings.base_url == ("http://localhost:11434")
 
     assert settings.timeout == 120
+

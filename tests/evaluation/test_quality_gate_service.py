@@ -1,4 +1,4 @@
-﻿"""
+"""
 Tests for benchmark quality gate service.
 """
 
@@ -79,3 +79,4 @@ def test_quality_gate_service_block() -> None:
     assert result.status == QualityGateStatus.BLOCK
     assert result.can_release is False
     assert len(result.checks) == 2
+

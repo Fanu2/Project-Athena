@@ -69,3 +69,4 @@ class BenchmarkHistoryStore:
         return sorted(
             self._directory.glob("*.json"),
         )
+

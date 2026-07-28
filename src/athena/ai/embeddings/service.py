@@ -55,3 +55,4 @@ class EmbeddingService:
             list[list[float]],
             vectors.tolist(),
         )
+

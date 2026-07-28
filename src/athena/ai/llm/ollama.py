@@ -28,7 +28,7 @@ class OllamaProvider(LLMProvider):
 
         self._endpoint = endpoint
 
-    def generate(
+    def analyze(
         self,
         request: LLMRequest,
     ) -> LLMResponse:
@@ -104,3 +104,4 @@ class OllamaProvider(LLMProvider):
                 result.append(name)
 
         return result
+

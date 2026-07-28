@@ -24,3 +24,4 @@ class MetadataFilter:
             filtered.append(document)
 
         return filtered
+

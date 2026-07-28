@@ -63,3 +63,4 @@ class StructureChunkingAdapter(ChunkingAdapter):
             )
             for chunk in chunks
         ]
+

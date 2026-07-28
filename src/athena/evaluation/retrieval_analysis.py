@@ -43,3 +43,4 @@ class RetrievalAnalysisReport:
         """Return finding count."""
 
         return len(self.findings)
+

@@ -33,3 +33,4 @@ class IndexedDocumentService:
         return self._repository.find_by_title(
             title,
         )
+

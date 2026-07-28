@@ -147,3 +147,4 @@ def test_get_all_metadata(test_session):
     languages = {item.language for item in metadata}
 
     assert languages == {"en", "fr"}
+

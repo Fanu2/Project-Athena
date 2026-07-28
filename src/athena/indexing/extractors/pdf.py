@@ -63,3 +63,4 @@ class PDFExtractor(BaseExtractor):
             text="\n".join(pages),
             page_count=len(pages),
         )
+

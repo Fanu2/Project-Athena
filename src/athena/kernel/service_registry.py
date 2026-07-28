@@ -18,3 +18,4 @@ class ServiceRegistry:
 
     def names(self) -> list[str]:
         return sorted(self._services.keys())
+

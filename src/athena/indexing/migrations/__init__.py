@@ -9,3 +9,4 @@ from athena.indexing.migrations.manager import (
 __all__ = [
     "MigrationManager",
 ]
+

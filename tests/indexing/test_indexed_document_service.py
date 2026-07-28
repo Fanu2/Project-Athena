@@ -62,3 +62,4 @@ def test_search_by_title(tmp_path):
 
     assert len(results) == 1
     assert results[0].title == "Python Guide"
+

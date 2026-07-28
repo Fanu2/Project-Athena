@@ -30,3 +30,4 @@ def test_extract_docx(tmp_path):
     assert "Athena" in extracted.text
     assert "Offline AI Research Platform" in extracted.text
     assert extracted.page_count == 1
+

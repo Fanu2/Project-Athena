@@ -57,3 +57,4 @@ class BenchmarkExporter:
             ),
             encoding="utf-8",
         )
+

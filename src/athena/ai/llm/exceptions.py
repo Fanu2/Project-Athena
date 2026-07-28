@@ -13,3 +13,4 @@ class ProviderUnavailableError(LLMError):
 
 class GenerationError(LLMError):
     """Raised when text generation fails."""
+

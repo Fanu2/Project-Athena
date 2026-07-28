@@ -354,3 +354,4 @@ class ApplicationContext:
             )
 
         return self.current_workspace
+

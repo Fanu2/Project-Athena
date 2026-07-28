@@ -54,3 +54,4 @@ def test_filename_extension_ignored():
     result = matcher.match("Summarize Athena Design Notes.")
 
     assert len(result) == 1
+

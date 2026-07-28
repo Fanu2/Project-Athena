@@ -43,3 +43,4 @@ class LegacyChunkingAdapter(ChunkingAdapter):
             document,
             document_id=document_id,
         )
+

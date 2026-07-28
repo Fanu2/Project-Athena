@@ -59,3 +59,4 @@ def test_query_is_normalized():
     result = detector.detect("   SUMMARIZE   THIS document!! ")
 
     assert result.normalized_query == "summarize this document"
+

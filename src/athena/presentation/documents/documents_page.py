@@ -115,3 +115,4 @@ class DocumentsPage(QWidget):
         self.status_label.setText(
             text,
         )
+

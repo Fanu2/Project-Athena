@@ -106,3 +106,4 @@ class ImportWorker(QObject):
         }
 
         self.signals.finished.emit(summary)
+

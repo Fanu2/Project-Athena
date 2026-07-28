@@ -72,3 +72,4 @@ class BookmarkStorage:
             )
             for item in data
         ]
+

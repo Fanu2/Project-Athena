@@ -38,3 +38,4 @@ class BenchmarkDiagnostics:
     """Collection of diagnostics for a benchmark session."""
 
     diagnostics: list[RetrievalDiagnostic] = field(default_factory=list)
+

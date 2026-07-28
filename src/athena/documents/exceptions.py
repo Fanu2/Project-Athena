@@ -9,3 +9,4 @@ class DocumentError(Exception):
 
 class InvalidDocumentError(DocumentError):
     """Raised when a document fails validation."""
+

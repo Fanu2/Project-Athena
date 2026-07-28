@@ -97,3 +97,4 @@ class DocumentModel(Base):
         uselist=False,
         cascade="all, delete-orphan",
     )
+

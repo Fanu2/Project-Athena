@@ -66,3 +66,4 @@ class WorkspaceQueryService:
             sources=[],
             retrieval_results=[],
         )
+

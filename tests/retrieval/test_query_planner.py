@@ -35,3 +35,4 @@ def test_detect_language_and_file_type():
     assert intent.semantic_query == "summarize"
     assert intent.languages == ("Hindi",)
     assert intent.file_types == ("pdf",)
+

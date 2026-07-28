@@ -83,3 +83,4 @@ class PatternMatcher:
         """
         pattern = rf"\b{re.escape(keyword)}\b"
         return len(re.findall(pattern, query))
+

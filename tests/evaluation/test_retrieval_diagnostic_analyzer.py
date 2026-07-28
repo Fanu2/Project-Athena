@@ -1,4 +1,4 @@
-﻿"""
+"""
 Tests for retrieval diagnostic analyzer.
 """
 
@@ -118,3 +118,4 @@ def test_analyzer_empty_when_no_issues(
     )
 
     assert report.total_findings == 0
+

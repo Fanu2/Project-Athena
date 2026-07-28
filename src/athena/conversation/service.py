@@ -196,3 +196,4 @@ class ConversationService:
         )
 
         self._conversation.modified = datetime.now()
+

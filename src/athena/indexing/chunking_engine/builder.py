@@ -113,3 +113,4 @@ class ChunkBuilder:
         }
 
         return mapping.get(block_type, ChunkType.MIXED)
+

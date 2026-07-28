@@ -52,3 +52,4 @@ class DocumentIndexingAdapter:
         )
 
         return document
+

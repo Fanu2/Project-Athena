@@ -28,3 +28,4 @@ class Prompt:
     system: str
 
     user: str
+

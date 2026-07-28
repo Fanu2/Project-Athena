@@ -55,3 +55,4 @@ class DOCXExtractor(BaseExtractor):
             ),
             page_count=1,
         )
+

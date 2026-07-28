@@ -14,3 +14,4 @@ class DocumentChecksum:
     algorithm: str
 
     value: str
+

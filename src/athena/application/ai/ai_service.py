@@ -54,7 +54,7 @@ class AIService:
             evidence,
         )
 
-        response = self._provider.generate(
+        response = self._provider.analyze(
             prompt,
             self._configuration,
         )
@@ -63,3 +63,4 @@ class AIService:
             text=response,
             citations=[],
         )
+

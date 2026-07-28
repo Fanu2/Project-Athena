@@ -14,3 +14,4 @@ class ExtractedPage:
     page_number: int
 
     text: str
+

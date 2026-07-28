@@ -12,3 +12,4 @@ class Role(Enum):
 
     USER = auto()
     ASSISTANT = auto()
+

@@ -244,3 +244,4 @@ class DocumentTable(QWidget):
         """Return the underlying table widget."""
 
         return self._table
+

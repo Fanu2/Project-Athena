@@ -21,3 +21,4 @@ class Document:
     size: int
     created: datetime
     modified: datetime
+

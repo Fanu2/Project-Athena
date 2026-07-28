@@ -49,3 +49,4 @@ def test_load_document(tmp_path):
     assert loaded.document_id == "doc1"
     assert loaded.sha256 == "abc123"
     assert loaded.title == "Sample"
+

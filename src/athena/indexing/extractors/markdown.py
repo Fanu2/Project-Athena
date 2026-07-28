@@ -54,3 +54,4 @@ class MarkdownExtractor(BaseExtractor):
             ),
             page_count=1,
         )
+

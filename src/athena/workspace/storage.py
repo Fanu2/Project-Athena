@@ -58,3 +58,4 @@ class WorkspaceStorage:
     def is_workspace(path: Path) -> bool:
         """Return True if the directory contains a valid Athena workspace."""
         return (path / WORKSPACE_FILE).is_file()
+

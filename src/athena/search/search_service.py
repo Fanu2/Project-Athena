@@ -44,3 +44,4 @@ class SearchService:
             query=query,
             limit=limit,
         )
+

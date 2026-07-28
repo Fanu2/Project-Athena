@@ -1,4 +1,4 @@
-﻿"""
+"""
 Tests for retrieval analysis models.
 """
 
@@ -74,3 +74,4 @@ def test_retrieval_issue_types_are_defined() -> None:
         RetrievalIssueType.NOT_RETRIEVED.value
         == "not_retrieved"
     )
+

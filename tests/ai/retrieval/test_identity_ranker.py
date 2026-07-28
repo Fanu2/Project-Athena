@@ -1,4 +1,4 @@
-﻿from athena.ai.retrieval.identity_ranker import IdentityRanker
+from athena.ai.retrieval.identity_ranker import IdentityRanker
 
 
 def test_exact_document_match() -> None:
@@ -68,3 +68,4 @@ def test_implementation_query_prefers_repository_file() -> None:
     )
 
     assert repository_score > service_score
+

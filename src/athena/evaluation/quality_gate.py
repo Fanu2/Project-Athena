@@ -31,3 +31,4 @@ class QualityGateResult:
         """Return whether release is allowed."""
 
         return self.status != QualityGateStatus.BLOCK
+

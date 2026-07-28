@@ -29,3 +29,4 @@ class MetadataResult:
     @property
     def found(self) -> bool:
         return bool(self.documents)
+

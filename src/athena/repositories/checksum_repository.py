@@ -42,3 +42,4 @@ class ChecksumRepository(ABC):
         checksum: DocumentChecksum,
     ) -> None:
         """Delete a checksum."""
+

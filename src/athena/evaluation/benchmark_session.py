@@ -45,3 +45,4 @@ class BenchmarkSession:
             return 0.0
 
         return (self.finished_at - self.started_at).total_seconds() * 1000.0
+

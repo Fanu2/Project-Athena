@@ -90,3 +90,4 @@ class DocumentToolbar(QWidget):
         self.open_folder_button.setEnabled(
             enabled,
         )
+

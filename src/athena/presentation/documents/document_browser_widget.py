@@ -133,3 +133,4 @@ class DocumentBrowserWidget(QWidget):
         self,
     ) -> QLineEdit:
         return self._search
+

@@ -182,3 +182,4 @@ def index_document(
     )
 
     return len(chunks)
+

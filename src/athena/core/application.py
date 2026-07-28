@@ -18,3 +18,4 @@ class AthenaApplication(QApplication):
         self.setApplicationName("Athena")
         self.setApplicationVersion("0.1.0")
         self.setOrganizationName("Project Athena")
+

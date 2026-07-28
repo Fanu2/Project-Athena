@@ -1,4 +1,4 @@
-﻿"""
+"""
 Tests for benchmark decision engine.
 """
 
@@ -91,3 +91,4 @@ def test_decision_engine_returns_block() -> None:
     assert decision.allowed_to_freeze is False
 
     assert len(decision.reasons) == 2
+

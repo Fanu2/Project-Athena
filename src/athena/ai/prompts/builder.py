@@ -31,3 +31,4 @@ class PromptBuilder:
             system=SYSTEM_PROMPT,
             user=user_prompt,
         )
+

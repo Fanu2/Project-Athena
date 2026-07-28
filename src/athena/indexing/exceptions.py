@@ -25,3 +25,4 @@ class EmbeddingError(IndexingError):
 
 class StorageError(IndexingError):
     """Raised when index storage fails."""
+

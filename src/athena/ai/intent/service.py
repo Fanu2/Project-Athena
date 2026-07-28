@@ -35,3 +35,4 @@ class IntentService:
             Result of intent detection.
         """
         return self._detector.detect(query)
+
