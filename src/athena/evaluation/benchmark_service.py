@@ -16,6 +16,12 @@ from athena.evaluation.benchmark_export import BenchmarkExporter
 from athena.evaluation.benchmark_loader import BenchmarkLoader
 from athena.evaluation.benchmark_metrics_engine import BenchmarkMetricsEngine
 from athena.evaluation.benchmark_report import MarkdownReporter
+from athena.evaluation.benchmark_retrieval_report_builder import (
+    BenchmarkRetrievalReportBuilder,
+)
+from athena.evaluation.benchmark_retrieval_report_reporter import (
+    BenchmarkRetrievalReportReporter,
+)
 from athena.evaluation.benchmark_runner import BenchmarkRunner
 from athena.evaluation.benchmark_session import BenchmarkSession
 from athena.evaluation.benchmark_validator import BenchmarkValidator
@@ -28,11 +34,20 @@ class BenchmarkService:
         self,
         retrieval_service: RetrievalService,
     ) -> None:
+
         self._runner = BenchmarkRunner(retrieval_service)
+
         self._metrics = BenchmarkMetricsEngine()
+
         self._diagnostics = BenchmarkDiagnosticsEngine()
+
+        self._retrieval_builder = BenchmarkRetrievalReportBuilder()
+
         self._reporter = MarkdownReporter()
+
         self._diagnostics_reporter = BenchmarkDiagnosticsReporter()
+
+        self._retrieval_reporter = BenchmarkRetrievalReportReporter()
 
     def run(
         self,
@@ -49,9 +64,11 @@ class BenchmarkService:
             raise ValueError("\n".join(errors))
 
         session = BenchmarkSession()
+
         session.dataset_name = Path(dataset_path).name
 
         for question in questions:
+
             session.runs.append(
                 self._runner.run(question),
             )
@@ -62,7 +79,11 @@ class BenchmarkService:
 
         diagnostics = self._diagnostics.analyze(session)
 
-        report = self._reporter.analyze(
+        retrieval_report = self._retrieval_builder.build(
+            session.runs,
+        )
+
+        benchmark_report = self._reporter.analyze(
             session,
             summary,
         )
@@ -71,8 +92,14 @@ class BenchmarkService:
             diagnostics,
         )
 
+        retrieval_markdown = self._retrieval_reporter.analyze(
+            retrieval_report,
+        )
+
         results_directory = (
-            Path(output_directory) if output_directory else Path("benchmarks/results")
+            Path(output_directory)
+            if output_directory
+            else Path("benchmarks/results")
         )
 
         results_directory.mkdir(
@@ -81,7 +108,7 @@ class BenchmarkService:
         )
 
         BenchmarkExporter.export_markdown(
-            report,
+            benchmark_report,
             results_directory / "benchmark_report.md",
         )
 
@@ -90,8 +117,12 @@ class BenchmarkService:
             results_directory / "benchmark_diagnostics.md",
         )
 
+        BenchmarkExporter.export_markdown(
+            retrieval_markdown,
+            results_directory / "benchmark_retrieval_report.md",
+        )
+
         BenchmarkExporter.export_json(
             summary,
             results_directory / "benchmark_summary.json",
         )
-
