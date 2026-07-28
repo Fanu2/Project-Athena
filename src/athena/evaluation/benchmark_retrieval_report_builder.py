@@ -34,10 +34,10 @@ class BenchmarkRetrievalReportBuilder:
         for retrieval in retrievals:
 
             report = self._analysis.analyze(
-                query=retrieval.query,
-                strategy=retrieval.strategy,
-                latency_ms=retrieval.latency_ms,
-                results=retrieval.results,
+                query=retrieval.question.question,
+                strategy="retrieval",
+                latency_ms=retrieval.elapsed_ms,
+                results=retrieval.retrieval_results,
             )
 
             reports.append(report)

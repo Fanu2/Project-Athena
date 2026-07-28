@@ -29,3 +29,10 @@ class SemanticResult:
 
     document_name: str = ""
 
+    semantic_score: float = 0.0
+
+    keyword_score: float = 0.0
+
+    metadata_score: float = 0.0
+
+    identity_score: float = 0.0

@@ -86,7 +86,6 @@ class HybridRanker:
                     identity_score=identity_score,
                 ),
             )
-
             ranked.append(
                 SemanticResult(
                     chunk_id=result.chunk_id,
@@ -98,8 +97,13 @@ class HybridRanker:
                     end_offset=result.end_offset,
                     text=result.text,
                     score=final_score,
+                    semantic_score=result.score,
+                    keyword_score=keyword_score,
+                    metadata_score=metadata_score,
+                    identity_score=identity_score,
                 )
             )
+
 
         ranked.sort(
             key=lambda item: item.score,
@@ -126,4 +130,6 @@ class HybridRanker:
                 return document.confidence
 
         return 0.0
+
+
 

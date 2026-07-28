@@ -35,9 +35,9 @@ class RetrievalAnalysisEngine:
 
             candidate = RetrievalCandidate(
                 document_id=result.document_id,
-                title=result.title,
-                final_score=result.final_score,
-                semantic_score=getattr(result, "semantic_score", 0.0),
+                title=getattr(result, "document_title", getattr(result, "title", "")),
+                final_score=getattr(result, "score", getattr(result, "final_score", 0.0)),
+                semantic_score=getattr(result, "semantic_score", getattr(result, "score", getattr(result, "final_score", 0.0))),
                 keyword_score=getattr(result, "keyword_score", 0.0),
                 metadata_score=getattr(result, "metadata_score", 0.0),
                 identity_score=getattr(result, "identity_score", 0.0),
