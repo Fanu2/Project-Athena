@@ -22,11 +22,19 @@ class CitationService:
         citations: list[Citation] = []
 
         for evidence in evidence_records:
+
+            try:
+                document_id = UUID(
+                    evidence.document_id,
+                )
+            except ValueError:
+                document_id = UUID(
+                    int=0,
+                )
+
             citations.append(
                 Citation(
-                    document_id=UUID(
-                        evidence.document_id,
-                    ),
+                    document_id=document_id,
                     document_name=evidence.document_name,
                     page=evidence.page,
                     snippet=evidence.text,
