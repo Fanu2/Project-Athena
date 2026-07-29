@@ -285,3 +285,218 @@ Supported sources:
 The Knowledge Workspace does not communicate directly with language models.
 
 Instead, it reuses the existing A2 runtime.
+python tools\rewrite.py `
+  docs\architecture\05-Knowledge-Architecture.md `
+@'
+# 8. Search and Navigation Architecture
+
+Search is a core capability of Athena. Every persistent knowledge object should be discoverable through a unified search experience.
+
+---
+
+## Search Scope
+
+Unified search spans:
+
+- Knowledge Notes
+- Collections
+- Imported Documents
+- Conversations
+- Evidence References
+- Tags
+- Attachments
+
+Future versions may include:
+
+- Knowledge Graph nodes
+- Plugins
+- External knowledge providers
+
+---
+
+## Search Principles
+
+### Single Entry Point
+
+Users search once.
+
+Athena determines the appropriate sources and combines the results.
+
+### Evidence-Aware Results
+
+Knowledge Notes should display linked evidence and citations where available.
+
+### Incremental Results
+
+Results should appear progressively as data sources respond.
+
+### Ranking
+
+Ranking should consider:
+
+- textual relevance
+- semantic similarity
+- recency
+- favorites
+- user activity
+
+---
+
+## Navigation Model
+
+Workspace
+    ↓
+Collections
+    ↓
+Notes
+    ↓
+Evidence
+    ↓
+Documents
+
+Navigation should preserve context and support back/forward history.
+
+---
+
+## Future Capabilities
+
+- Saved searches
+- Smart collections
+- Semantic recommendations
+- Similar notes
+- Related evidence
+- Cross-workspace navigation
+
+---
+
+# 9. Governance
+
+Every implementation should satisfy the following rules before merge.
+
+## Architecture
+
+- Follow layered architecture.
+- No UI logic in services.
+- No business logic in repositories.
+- No direct database access from UI.
+
+## Data Integrity
+
+- Preserve evidence references.
+- Preserve citations.
+- Avoid duplicated knowledge.
+- Prefer references over copied content.
+
+## Testing
+
+Every new feature must include:
+
+- unit tests
+- integration tests (where appropriate)
+- regression validation
+
+No feature is complete without automated tests.
+
+## Documentation
+
+Architecture changes require updates to the corresponding document in `docs/architecture`.
+
+Documentation is part of the definition of done.
+
+## Versioning
+
+Each completed milestone should conclude with:
+
+- clean repository
+- passing test suite
+- documentation updated
+- freeze tag created
+
+---
+python tools\rewrite.py `
+  docs\architecture\05-Knowledge-Architecture.md `
+@'
+# 10. Implementation Roadmap
+
+The Knowledge Workspace will be implemented through small vertical slices.
+
+## A3.1 — Knowledge Notes
+
+Deliver:
+
+- Domain entities
+- Repository interfaces
+- SQLite persistence
+- Create/Edit/Delete notes
+- Markdown storage
+- Unit tests
+
+Freeze: A3.1-Freeze
+
+---
+
+## A3.2 — Collections
+
+Deliver:
+
+- Nested collections
+- Move notes
+- Collection management
+- Repository implementation
+- GUI
+
+Freeze: A3.2-Freeze
+
+---
+
+## A3.3 — Evidence Integration
+
+Deliver:
+
+- Attach evidence to notes
+- Preserve citations
+- View source documents
+- Evidence validation
+
+Freeze: A3.3-Freeze
+
+---
+
+## A3.4 — Knowledge Search
+
+Deliver:
+
+- Unified search
+- Filters
+- Ranking
+- Navigation
+
+Freeze: A3.4-Freeze
+
+---
+
+## A3.5 — Knowledge Workspace GUI
+
+Deliver:
+
+- Workspace page
+- Collection tree
+- Note editor
+- Markdown preview
+- Evidence panel
+
+Freeze: A3.5-Freeze
+
+---
+
+## Definition of Done
+
+A milestone is complete only when:
+
+- implementation complete
+- automated tests pass
+- GUI validated
+- documentation updated
+- repository clean
+- freeze tag created
+'
