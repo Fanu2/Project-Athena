@@ -25,6 +25,9 @@ ENV/
 .coverage
 htmlcov/
 
+# Integration test workspaces
+test_data/
+
 
 # ============================================================
 # Type checking
@@ -54,6 +57,10 @@ dist/
 # ============================================================
 
 benchmarks/results/
+
+# Athena workspace runtime data
+.athena/
+*.db
 
 
 # ============================================================
