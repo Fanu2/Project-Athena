@@ -428,6 +428,17 @@ class ApplicationContext:
             model_name=self.llm_settings.model,
         )
 
+        self.athena_query_service = AthenaQueryService(
+            rag_service=self.rag_service,
+            workspace_service=WorkspaceQueryService(
+                self.indexed_document_service,
+            ),
+        )
+
+        self.conversation_query_service = ConversationQueryService(
+            conversation_service=self.conversation_service,
+            query_service=self.athena_query_service,
+        )
         
 
         #
