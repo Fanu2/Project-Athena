@@ -19,3 +19,4 @@ class LLMSettings:
 
     timeout: int = 120
 
+    api_key: str = ""

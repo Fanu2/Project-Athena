@@ -1,0 +1,64 @@
+FILE: C:\Users\singh\Documents\Project-Athena\src\athena\ai\llm\ollama.py
+LINE: 20
+class OllamaProvider(LLMProvider):
+
+FILE: C:\Users\singh\Documents\Project-Athena\src\athena\ai\llm\providers\__init__.py
+LINE: 5
+from athena.ai.llm.providers.ollama import OllamaProvider
+
+FILE: C:\Users\singh\Documents\Project-Athena\src\athena\ai\llm\providers\__init__.py
+LINE: 8
+    "OllamaProvider",
+
+FILE: C:\Users\singh\Documents\Project-Athena\src\athena\ai\llm\providers\ollama.py
+LINE: 23
+class OllamaProvider(LLMProvider):
+
+FILE: C:\Users\singh\Documents\Project-Athena\src\athena\application\rag_demo.py
+LINE: 20
+    OllamaProvider,
+
+FILE: C:\Users\singh\Documents\Project-Athena\src\athena\application\rag_demo.py
+LINE: 106
+        OllamaProvider(),
+
+FILE: C:\Users\singh\Documents\Project-Athena\src\athena\core\application_context.py
+LINE: 20
+from athena.ai.llm.ollama import (
+
+FILE: C:\Users\singh\Documents\Project-Athena\src\athena\core\application_context.py
+LINE: 21
+    OllamaProvider,
+
+FILE: C:\Users\singh\Documents\Project-Athena\src\athena\core\application_context.py
+LINE: 280
+            llm_provider=OllamaProvider(),
+
+FILE: C:\Users\singh\Documents\Project-Athena\src\athena\infrastructure\llm\__init__.py
+LINE: 7
+from .ollama_provider import OllamaProvider
+
+FILE: C:\Users\singh\Documents\Project-Athena\src\athena\infrastructure\llm\__init__.py
+LINE: 12
+    "OllamaProvider",
+
+FILE: C:\Users\singh\Documents\Project-Athena\src\athena\infrastructure\llm\ollama_provider.py
+LINE: 13
+class OllamaProvider(LLMProvider):
+
+FILE: C:\Users\singh\Documents\Project-Athena\src\athena\infrastructure\llm\ollama_provider.py
+LINE: 95
+    def __enter__(self) -> "OllamaProvider":
+
+FILE: C:\Users\singh\Documents\Project-Athena\src\athena\presentation\settings\ai_settings_page.py
+LINE: 18
+from athena.ai.llm.ollama import OllamaProvider
+
+FILE: C:\Users\singh\Documents\Project-Athena\src\athena\presentation\settings\ai_settings_page.py
+LINE: 30
+        provider: OllamaProvider | None = None,
+
+FILE: C:\Users\singh\Documents\Project-Athena\src\athena\presentation\settings\ai_settings_page.py
+LINE: 36
+        self._provider = provider or OllamaProvider()
+

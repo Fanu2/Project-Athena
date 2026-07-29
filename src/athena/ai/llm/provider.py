@@ -1,5 +1,5 @@
 """
-LLM provider interface.
+Base interface for LLM providers.
 """
 
 from __future__ import annotations
@@ -7,51 +7,49 @@ from __future__ import annotations
 from abc import ABC
 from abc import abstractmethod
 
-from athena.ai.llm.models import LLMRequest
-from athena.ai.llm.models import LLMResponse
+from athena.ai.llm.models import (
+    LLMRequest,
+    LLMResponse,
+)
 
 
 class LLMProvider(ABC):
-    """Abstract LLM provider."""
+    """Abstract base class for LLM providers."""
 
     @property
     @abstractmethod
     def provider_name(self) -> str:
-        """
-        Unique provider identifier.
-
-        Examples:
-            "ollama"
-            "lmstudio"
-        """
-        raise NotImplementedError
+        """Return provider identifier."""
 
     @abstractmethod
     def analyze(
         self,
         request: LLMRequest,
     ) -> LLMResponse:
-        """
-        Generate a response.
-
-        Implemented by concrete providers.
-        """
-        raise NotImplementedError
+        """Generate a response."""
 
     def list_models(self) -> list[str]:
-        """
-        Return available models.
+        """Return available models."""
 
-        Providers supporting model discovery should override this.
-        """
-        raise NotImplementedError(
-            f"{self.provider_name} does not support model discovery."
-        )
+        return []
 
     def health(self) -> bool:
-        """
-        Return provider health.
+        """Return provider health."""
 
-        Providers may override this.
-        """
         return True
+
+    def validate_configuration(self) -> None:
+        """Validate provider configuration."""
+
+        return
+
+    def capabilities(self) -> dict[str, bool]:
+        """Return provider capabilities."""
+
+        return {
+            "chat": True,
+            "vision": False,
+            "embedding": False,
+            "streaming": False,
+            "tools": False,
+        }
