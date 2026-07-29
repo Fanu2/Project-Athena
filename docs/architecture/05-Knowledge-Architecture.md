@@ -199,4 +199,89 @@ Business rules belong exclusively in Application Services.
 - References preferred over duplication
 
 ---
-'@
+python tools\rewrite.py `
+  docs\architecture\05-Knowledge-Architecture.md `
+@'
+# 6. Application Services
+
+Application Services coordinate business workflows while keeping domain entities independent of infrastructure.
+
+They orchestrate repositories, AI services, indexing, retrieval, and persistence.
+
+---
+
+## Service Responsibilities
+
+### KnowledgeWorkspaceService
+
+Coordinates the overall Knowledge Workspace.
+
+Responsibilities:
+
+- create collections
+- move notes
+- archive notes
+- delete notes
+- search notes
+
+---
+
+### KnowledgeNoteService
+
+Responsible for note lifecycle.
+
+Operations:
+
+- create
+- update
+- delete
+- duplicate
+- favorite
+- archive
+- restore
+
+---
+
+### EvidenceService
+
+Responsible for attaching and validating evidence.
+
+Operations:
+
+- attach evidence
+- remove evidence
+- regenerate citations
+- validate references
+
+---
+
+### KnowledgeSearchService
+
+Provides unified search across:
+
+- notes
+- collections
+- documents
+- conversations
+- evidence
+
+---
+
+### KnowledgeImportService
+
+Promotes information into permanent knowledge.
+
+Supported sources:
+
+- AI conversations
+- imported documents
+- markdown
+- manual notes
+
+---
+
+# 7. AI Integration
+
+The Knowledge Workspace does not communicate directly with language models.
+
+Instead, it reuses the existing A2 runtime.
