@@ -43,6 +43,10 @@ class FakeEmbeddingService:
 class FakeLLMProvider(LLMProvider):
     """Fake LLM provider."""
 
+    @property
+    def provider_name(self) -> str:
+        return "fake"
+
     def analyze(
         self,
         request: LLMRequest,
@@ -197,4 +201,6 @@ def test_complete_rag_pipeline(
     )
 
     assert answer.text == "Athena is an offline AI research assistant."
+
+
 

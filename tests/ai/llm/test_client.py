@@ -13,6 +13,10 @@ from athena.ai.llm import LLMProvider
 class FakeProvider(LLMProvider):
     """Fake provider for testing."""
 
+    @property
+    def provider_name(self) -> str:
+        return "fake"
+
     def analyze(
         self,
         request: LLMRequest,
@@ -40,4 +44,3 @@ def test_client_generates_response() -> None:
 
     assert response.text == "Test response"
     assert response.model == "fake-model"
-

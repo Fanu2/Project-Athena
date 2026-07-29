@@ -31,6 +31,12 @@ class OllamaProvider(LLMProvider):
 
         self._settings = settings if settings is not None else LLMSettings()
 
+    @property
+    def provider_name(self) -> str:
+        """Return provider identifier."""
+
+        return "ollama"
+
     def analyze(
         self,
         request: LLMRequest,
@@ -52,16 +58,22 @@ class OllamaProvider(LLMProvider):
             )
 
         except requests.RequestException as exc:
-            raise ProviderUnavailableError("Ollama server is unavailable.") from exc
+            raise ProviderUnavailableError(
+                "Ollama server is unavailable."
+            ) from exc
 
         if response.status_code != 200:
-            raise GenerationError(f"Ollama request failed: {response.text}")
+            raise GenerationError(
+                f"Ollama request failed: {response.text}"
+            )
 
         try:
             data = response.json()
 
         except ValueError as exc:
-            raise GenerationError("Invalid JSON returned by Ollama.") from exc
+            raise GenerationError(
+                "Invalid JSON returned by Ollama."
+            ) from exc
 
         return LLMResponse(
             text=data.get(
@@ -74,3 +86,15 @@ class OllamaProvider(LLMProvider):
             ),
         )
 
+    def health(self) -> bool:
+        """Return provider health."""
+
+        try:
+            response = requests.get(
+                f"{self._settings.base_url}/api/tags",
+                timeout=self._settings.timeout,
+            )
+            return response.status_code == 200
+
+        except requests.RequestException:
+            return False

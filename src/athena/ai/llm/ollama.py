@@ -28,6 +28,12 @@ class OllamaProvider(LLMProvider):
 
         self._endpoint = endpoint
 
+    @property
+    def provider_name(self) -> str:
+        """Return provider identifier."""
+
+        return "ollama"
+
     def analyze(
         self,
         request: LLMRequest,
@@ -105,3 +111,12 @@ class OllamaProvider(LLMProvider):
 
         return result
 
+    def health(self) -> bool:
+        """Return provider health."""
+
+        try:
+            self.list_models()
+            return True
+
+        except requests.RequestException:
+            return False
