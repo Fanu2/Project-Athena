@@ -81,3 +81,49 @@ def test_preserve_conversation_id() -> None:
     assert restored.conversation_id == (
         conversation.conversation_id
     )
+
+
+def test_preserve_conversation_metadata() -> None:
+    from athena.ai.llm.conversation_metadata import (
+        ConversationMetadata,
+    )
+
+    serializer = ConversationSerializer()
+
+    conversation = Conversation(
+        title="Athena",
+    )
+
+    conversation.metadata = ConversationMetadata(
+        title="Research",
+        summary="RAG discussion",
+        topics=[
+            "rag",
+            "llm",
+        ],
+        tags=[
+            "ai",
+        ],
+        message_count=4,
+        model="qwen3:4b",
+    )
+
+    restored = serializer.from_dict(
+        serializer.to_dict(
+            conversation
+        )
+    )
+
+    assert restored.metadata is not None
+
+    assert restored.metadata.summary == (
+        "RAG discussion"
+    )
+
+    assert "rag" in (
+        restored.metadata.topics
+    )
+
+    assert restored.metadata.model == (
+        "qwen3:4b"
+    )

@@ -7,6 +7,9 @@ from __future__ import annotations
 from datetime import datetime
 
 from athena.ai.llm.conversation import Conversation
+from athena.ai.llm.conversation_metadata import (
+    ConversationMetadata,
+)
 from athena.ai.llm.message import Message
 
 
@@ -40,6 +43,20 @@ class ConversationSerializer:
                 }
                 for message in conversation.messages
             ],
+            "metadata": (
+                {
+                    "title": conversation.metadata.title,
+                    "summary": conversation.metadata.summary,
+                    "topics": conversation.metadata.topics,
+                    "tags": conversation.metadata.tags,
+                    "message_count": (
+                        conversation.metadata.message_count
+                    ),
+                    "model": conversation.metadata.model,
+                }
+                if conversation.metadata
+                else None
+            ),
         }
 
     def from_dict(
@@ -78,6 +95,39 @@ class ConversationSerializer:
                         )
                         if item.get("timestamp")
                         else None
+                    ),
+                )
+            )
+
+        metadata = data.get(
+            "metadata"
+        )
+
+        if metadata:
+            conversation.metadata = (
+                ConversationMetadata(
+                    title=metadata.get(
+                        "title",
+                        "",
+                    ),
+                    summary=metadata.get(
+                        "summary",
+                        "",
+                    ),
+                    topics=metadata.get(
+                        "topics",
+                        [],
+                    ),
+                    tags=metadata.get(
+                        "tags",
+                        [],
+                    ),
+                    message_count=metadata.get(
+                        "message_count",
+                        0,
+                    ),
+                    model=metadata.get(
+                        "model"
                     ),
                 )
             )

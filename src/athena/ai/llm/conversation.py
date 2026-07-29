@@ -8,6 +8,9 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from uuid import uuid4
 
+from athena.ai.llm.conversation_metadata import (
+    ConversationMetadata,
+)
 from athena.ai.llm.message import Message
 
 
@@ -36,6 +39,8 @@ class Conversation:
     messages: list[Message] = field(
         default_factory=list
     )
+
+    metadata: ConversationMetadata | None = None
 
     def add_message(
         self,
