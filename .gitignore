@@ -77,3 +77,11 @@ benchmarks/results/
 
 .DS_Store
 Thumbs.db
+
+# Local validation scripts
+test_application_context_runtime.py
+test_index_and_conversation.py
+test_real_application_conversation.py
+
+# Local test workspaces
+test_data/
