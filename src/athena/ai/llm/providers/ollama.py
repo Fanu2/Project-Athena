@@ -37,13 +37,17 @@ class OllamaProvider(LLMProvider):
         )
 
     @property
-    def provider_name(self) -> str:
+    def provider_name(
+        self,
+    ) -> str:
         """Return provider identifier."""
 
         return "ollama"
 
     @property
-    def metadata(self) -> ProviderMetadata:
+    def metadata(
+        self,
+    ) -> ProviderMetadata:
         """Return provider metadata."""
 
         return ProviderMetadata(
@@ -106,7 +110,52 @@ class OllamaProvider(LLMProvider):
             ),
         )
 
-    def health(self) -> bool:
+    def list_models(
+        self,
+    ) -> list[str]:
+        """Return installed Ollama models."""
+
+        try:
+            response = requests.get(
+                f"{self._settings.base_url}/api/tags",
+                timeout=self._settings.timeout,
+            )
+
+        except requests.RequestException as exc:
+            raise ProviderUnavailableError(
+                "Ollama server is unavailable."
+            ) from exc
+
+        if response.status_code != 200:
+            raise ProviderUnavailableError(
+                f"Ollama request failed: {response.text}"
+            )
+
+        try:
+            data = response.json()
+
+        except ValueError as exc:
+            raise ProviderUnavailableError(
+                "Invalid JSON returned by Ollama."
+            ) from exc
+
+        models = data.get(
+            "models",
+            [],
+        )
+
+        return [
+            model["name"]
+            for model in models
+            if isinstance(
+                model.get("name"),
+                str,
+            )
+        ]
+
+    def health(
+        self,
+    ) -> bool:
         """Return provider health."""
 
         try:
@@ -114,6 +163,7 @@ class OllamaProvider(LLMProvider):
                 f"{self._settings.base_url}/api/tags",
                 timeout=self._settings.timeout,
             )
+
             return response.status_code == 200
 
         except requests.RequestException:
