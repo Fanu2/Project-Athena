@@ -4,6 +4,7 @@ Model manager service.
 
 from __future__ import annotations
 
+from athena.ai.llm.metadata import ProviderMetadata
 from athena.ai.llm.model_info import ModelInfo
 from athena.ai.llm.model_registry import ModelRegistry
 from athena.ai.llm.provider_registry import ProviderRegistry
@@ -100,3 +101,24 @@ class ModelManager:
             )
 
         return discovered
+
+    def has_model(
+        self,
+        name: str,
+    ) -> bool:
+        """Return whether model exists."""
+
+        return self._models.exists(name)
+
+    def provider_metadata(
+        self,
+        model: ModelInfo,
+    ) -> ProviderMetadata:
+        """Return metadata for model provider."""
+
+        provider = self._providers.get(
+            model.provider
+        )
+
+        return provider.metadata
+
