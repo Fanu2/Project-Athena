@@ -9,6 +9,7 @@ import pytest
 from athena.ai.llm import ProviderFactory
 from athena.ai.llm.providers import (
     LMStudioProvider,
+    OpenAIProvider,
     OllamaProvider,
 )
 from athena.settings import LLMSettings
@@ -28,6 +29,14 @@ def test_create_lmstudio_provider() -> None:
     provider = factory.create("lmstudio")
 
     assert isinstance(provider, LMStudioProvider)
+
+
+def test_create_openai_provider() -> None:
+    factory = ProviderFactory()
+
+    provider = factory.create("openai")
+
+    assert isinstance(provider, OpenAIProvider)
 
 
 def test_create_from_settings() -> None:
@@ -61,4 +70,5 @@ def test_supported_providers() -> None:
     assert factory.supported_providers() == [
         "ollama",
         "lmstudio",
+        "openai",
     ]

@@ -7,6 +7,7 @@ from __future__ import annotations
 from athena.ai.llm.provider import LLMProvider
 from athena.ai.llm.providers import (
     LMStudioProvider,
+    OpenAIProvider,
     OllamaProvider,
 )
 from athena.settings import LLMSettings
@@ -22,7 +23,11 @@ class ProviderFactory:
     ) -> LLMProvider:
         """Create a provider."""
 
-        settings = settings if settings is not None else LLMSettings()
+        settings = (
+            settings
+            if settings is not None
+            else LLMSettings()
+        )
 
         name = (
             provider_name
@@ -36,6 +41,9 @@ class ProviderFactory:
         if name == "lmstudio":
             return LMStudioProvider(settings)
 
+        if name == "openai":
+            return OpenAIProvider(settings)
+
         raise ValueError(
             f"Unknown provider: {name}"
         )
@@ -46,4 +54,5 @@ class ProviderFactory:
         return [
             "ollama",
             "lmstudio",
+            "openai",
         ]
