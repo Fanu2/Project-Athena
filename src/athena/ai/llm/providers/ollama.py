@@ -10,6 +10,7 @@ from athena.ai.llm.exceptions import (
     GenerationError,
     ProviderUnavailableError,
 )
+from athena.ai.llm.metadata import ProviderMetadata
 from athena.ai.llm.models import (
     LLMRequest,
     LLMResponse,
@@ -29,13 +30,32 @@ class OllamaProvider(LLMProvider):
     ) -> None:
         """Initialize Ollama provider."""
 
-        self._settings = settings if settings is not None else LLMSettings()
+        self._settings = (
+            settings
+            if settings is not None
+            else LLMSettings()
+        )
 
     @property
     def provider_name(self) -> str:
         """Return provider identifier."""
 
         return "ollama"
+
+    @property
+    def metadata(self) -> ProviderMetadata:
+        """Return provider metadata."""
+
+        return ProviderMetadata(
+            name="ollama",
+            display_name="Ollama",
+            local=True,
+            requires_api_key=False,
+            supports_chat=True,
+            supports_streaming=False,
+            supports_tools=False,
+            supports_vision=False,
+        )
 
     def analyze(
         self,

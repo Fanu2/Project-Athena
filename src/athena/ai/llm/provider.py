@@ -7,6 +7,7 @@ from __future__ import annotations
 from abc import ABC
 from abc import abstractmethod
 
+from athena.ai.llm.metadata import ProviderMetadata
 from athena.ai.llm.models import (
     LLMRequest,
     LLMResponse,
@@ -42,6 +43,21 @@ class LLMProvider(ABC):
         """Validate provider configuration."""
 
         return
+
+    @property
+    def metadata(self) -> ProviderMetadata:
+        """Return provider metadata."""
+
+        return ProviderMetadata(
+            name=self.provider_name,
+            display_name=self.provider_name.title(),
+            local=True,
+            requires_api_key=False,
+            supports_chat=True,
+            supports_streaming=False,
+            supports_tools=False,
+            supports_vision=False,
+        )
 
     def capabilities(self) -> dict[str, bool]:
         """Return provider capabilities."""

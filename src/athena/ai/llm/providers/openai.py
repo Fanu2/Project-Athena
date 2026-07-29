@@ -4,6 +4,7 @@ OpenAI provider.
 
 from __future__ import annotations
 
+from athena.ai.llm.metadata import ProviderMetadata
 from athena.ai.llm.providers.openai_compatible import (
     OpenAICompatibleProvider,
 )
@@ -28,6 +29,21 @@ class OpenAIProvider(OpenAICompatibleProvider):
     @property
     def provider_name(self) -> str:
         return "openai"
+
+    @property
+    def metadata(self) -> ProviderMetadata:
+        """Return provider metadata."""
+
+        return ProviderMetadata(
+            name="openai",
+            display_name="OpenAI",
+            local=False,
+            requires_api_key=True,
+            supports_chat=True,
+            supports_streaming=True,
+            supports_tools=True,
+            supports_vision=True,
+        )
 
     def validate_configuration(self) -> None:
         super().validate_configuration()
