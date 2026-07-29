@@ -7,6 +7,9 @@ from __future__ import annotations
 from athena.ai.llm.knowledge_context import (
     KnowledgeContextProvider,
 )
+from athena.domain.ai.question import (
+    Question,
+)
 
 
 class RAGKnowledgeContext(
@@ -26,13 +29,23 @@ class RAGKnowledgeContext(
         self,
         query: str,
     ) -> list[str]:
-        """Retrieve knowledge from RAG."""
+        """Retrieve knowledge from Athena RAG."""
 
         results = self._retriever.retrieve(
-            query
+            Question(
+                text=query,
+            )
         )
 
         return [
-            result.content
+            getattr(
+                result,
+                "text",
+                getattr(
+                    result,
+                    "content",
+                    str(result),
+                ),
+            )
             for result in results
         ]

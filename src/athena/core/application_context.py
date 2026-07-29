@@ -11,31 +11,82 @@ from pathlib import Path
 from athena.ai.embeddings.repository import (
     EmbeddingRepository,
 )
+
 from athena.ai.embeddings.service import (
     EmbeddingService,
 )
+
 from athena.ai.intent.service import (
     IntentService,
 )
+
+from athena.ai.llm.conversation_context_enricher import (
+    ConversationContextEnricher,
+)
+
+from athena.ai.llm.conversation_execution_service import (
+    ConversationExecutionService,
+)
+
+from athena.ai.llm.execution_service import (
+    ExecutionService,
+)
+
 from athena.ai.llm.ollama import (
     OllamaProvider,
 )
+
+from athena.ai.llm.rag_knowledge_context import (
+    RAGKnowledgeContext,
+)
+
+from athena.ai.llm.runtime_bootstrap import (
+    LLMRuntimeBootstrap,
+)
+
+from athena.ai.llm.runtime_router import (
+    RuntimeRouter,
+)
+
+from athena.ai.metadata.service import (
+    MetadataService,
+)
+
 from athena.ai.rag.context_builder import (
     ContextBuilder,
 )
+
 from athena.ai.rag.service import (
     RAGService,
-)
-from athena.application.ai.retrieval_service import (
-    RetrievalService,
 )
 
 from athena.ai.retrieval.service import (
     RetrievalService as SemanticRetrievalService,
 )
 
-from athena.bookmarks.service import BookmarkService
-from athena.documents.service import DocumentService
+from athena.application.ai.retrieval_service import (
+    RetrievalService,
+)
+
+from athena.application.conversation.conversation_query_service import (
+    ConversationQueryService,
+)
+
+from athena.application.viewer import (
+    DocumentViewerService,
+)
+
+from athena.bookmarks.service import (
+    BookmarkService,
+)
+
+from athena.conversation.service import (
+    ConversationService,
+)
+
+from athena.documents.service import (
+    DocumentService,
+)
 
 from athena.indexing.repositories.sqlite import (
     SQLiteChunkRepository,
@@ -65,6 +116,10 @@ from athena.search.search_service import (
     SearchService,
 )
 
+from athena.services.athena_query_service import (
+    AthenaQueryService,
+)
+
 from athena.services.workspace_document_service import (
     WorkspaceDocumentService,
 )
@@ -73,31 +128,17 @@ from athena.services.workspace_query_service import (
     WorkspaceQueryService,
 )
 
-from athena.services.athena_query_service import (
-    AthenaQueryService,
-)
-
-from athena.application.viewer import (
-    DocumentViewerService,
-)
-
 from athena.settings import (
     AISettingsService,
     LLMSettings,
 )
-from athena.conversation.service import (
-    ConversationService,
+
+from athena.workspace.models import (
+    Workspace,
 )
 
-from athena.application.conversation.conversation_query_service import (
-    ConversationQueryService,
-)
-
-from athena.workspace.models import Workspace
-from athena.workspace.service import WorkspaceService
-
-from athena.ai.metadata.service import (
-    MetadataService,
+from athena.workspace.service import (
+    WorkspaceService,
 )
 
 
@@ -111,11 +152,15 @@ class ApplicationContext:
 
         self.indexing_service: IndexingService | None = None
 
-        self.indexed_document_service: IndexedDocumentService | None = None
+        self.indexed_document_service: (
+            IndexedDocumentService | None
+        ) = None
 
         self.search_service: SearchService | None = None
 
-        self.document_service: WorkspaceDocumentService | None = None
+        self.document_service: (
+            WorkspaceDocumentService | None
+        ) = None
 
         self.document_viewer_service = DocumentViewerService()
 
@@ -127,20 +172,73 @@ class ApplicationContext:
 
         self.current_workspace: Workspace | None = None
 
-        # Compatibility with GUI
-        self.ai_settings_service: AISettingsService | None = None
+        #
+        # Settings
+        #
 
-        # New settings model
-        self.llm_settings: LLMSettings | None = None
+        self.ai_settings_service: (
+            AISettingsService | None
+        ) = None
 
-        self.rag_service: RAGService | None = None
+        self.llm_settings: (
+            LLMSettings | None
+        ) = None
 
-        self.metadata_service: MetadataService | None = None
+        #
+        # AI services
+        #
 
-        self.athena_query_service: AthenaQueryService | None = None
-        self.conversation_query_service: ConversationQueryService | None = None
+        self.metadata_service: (
+            MetadataService | None
+        ) = None
 
-        self.conversation_service: ConversationService | None = None
+        self.retrieval_service: (
+            RetrievalService | None
+        ) = None
+
+        self.rag_service: (
+            RAGService | None
+        ) = None
+
+        #
+        # Query services
+        #
+
+        self.athena_query_service: (
+            AthenaQueryService | None
+        ) = None
+
+        self.conversation_query_service: (
+            ConversationQueryService | None
+        ) = None
+
+        #
+        # Conversation services
+        #
+
+        self.conversation_service: (
+            ConversationService | None
+        ) = None
+
+        self.conversation_execution_service: (
+            ConversationExecutionService | None
+        ) = None
+
+        #
+        # LLM runtime services (A2.22)
+        #
+
+        self.llm_runtime_bootstrap: (
+            LLMRuntimeBootstrap | None
+        ) = None
+
+        self.runtime_router: (
+            RuntimeRouter | None
+        ) = None
+
+        self.execution_service: (
+            ExecutionService | None
+        ) = None
 
     def open_workspace(
         self,
@@ -270,6 +368,53 @@ class ApplicationContext:
             semantic_retrieval_service=semantic_retrieval_service,
         )
 
+        #
+        # Conversation knowledge enrichment
+        #
+
+        knowledge_context = RAGKnowledgeContext(
+            self.retrieval_service,
+        )
+
+        conversation_enricher = ConversationContextEnricher(
+            knowledge_context,
+        )
+
+        #
+        # LLM runtime initialization
+        #
+
+        self.llm_runtime_bootstrap = (
+            LLMRuntimeBootstrap()
+        )
+
+        model_manager = (
+            self.llm_runtime_bootstrap.initialize()
+        )
+
+        self.runtime_router = RuntimeRouter(
+            model_manager=model_manager,
+        )
+
+        self.execution_service = ExecutionService(
+            router=self.runtime_router,
+        )
+
+        #
+        # Conversation execution
+        #
+
+        self.conversation_execution_service = (
+            ConversationExecutionService(
+                enricher=conversation_enricher,
+                executor=self.execution_service,
+            )
+        )
+
+        #
+        # RAG answer generation
+        #
+
         context_builder = ContextBuilder(
             document_service=document_service,
         )
@@ -283,17 +428,7 @@ class ApplicationContext:
             model_name=self.llm_settings.model,
         )
 
-        self.athena_query_service = AthenaQueryService(
-            rag_service=self.rag_service,
-            workspace_service=WorkspaceQueryService(
-                self.indexed_document_service,
-            ),
-        )
-
-        self.conversation_query_service = ConversationQueryService(
-            conversation_service=self.conversation_service,
-            query_service=self.athena_query_service,
-        )
+        
 
         #
         # User data

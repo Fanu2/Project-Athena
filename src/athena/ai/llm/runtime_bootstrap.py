@@ -7,9 +7,11 @@ from __future__ import annotations
 from athena.ai.llm.model_manager import (
     ModelManager,
 )
+
 from athena.ai.llm.provider_registry import (
     ProviderRegistry,
 )
+
 from athena.ai.llm.providers import (
     LMStudioProvider,
     OllamaProvider,
@@ -26,13 +28,23 @@ class LLMRuntimeBootstrap:
         self._providers = ProviderRegistry()
 
         self._models = ModelManager(
-            provider_registry=self._providers
+            provider_registry=self._providers,
         )
+
+        self._initialized = False
 
     def initialize(
         self,
     ) -> ModelManager:
-        """Register providers and discover models."""
+        """
+        Register providers and discover models.
+
+        Initialization is idempotent. Calling this method
+        multiple times will reuse the existing runtime.
+        """
+
+        if self._initialized:
+            return self._models
 
         self._providers.register(
             OllamaProvider()
@@ -48,6 +60,8 @@ class LLMRuntimeBootstrap:
 
         self._discover_models_safely()
 
+        self._initialized = True
+
         return self._models
 
     def _discover_models_safely(
@@ -58,7 +72,7 @@ class LLMRuntimeBootstrap:
         for provider_name in self._providers.names():
             try:
                 self._models.discover_provider_models(
-                    provider_name
+                    provider_name,
                 )
 
             except Exception:
@@ -72,3 +86,10 @@ class LLMRuntimeBootstrap:
 
         return self._providers
 
+    @property
+    def models(
+        self,
+    ) -> ModelManager:
+        """Return initialized model manager."""
+
+        return self._models
