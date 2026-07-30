@@ -16,9 +16,8 @@ hiddenimports = (
     + collect_submodules("tiktoken")
 )
 
-datas = [
-    ("assets", "assets"),
-]
+# Collect package data from installed libraries.
+datas = []
 
 datas += collect_data_files(
     "docling",
