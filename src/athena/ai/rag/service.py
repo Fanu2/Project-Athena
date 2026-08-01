@@ -24,6 +24,9 @@ from athena.ai.rag.prompt_builder import (
 from athena.application.ai.citation_service import (
     CitationService,
 )
+from athena.application.ai.citation_explanation_service import (
+    CitationExplanationService,
+)
 from athena.application.ai.retrieval_service import (
     RetrievalService,
 )
@@ -65,6 +68,10 @@ class RAGService:
 
         self._citation_service = CitationService()
 
+        self._citation_explanation_service = (
+            CitationExplanationService()
+        )
+
     def answer(
         self,
         question: str,
@@ -95,6 +102,13 @@ class RAGService:
 
         citations = self._citation_service.create_citations(
             evidence,
+        )
+
+        resolved_citations = (
+            self._citation_explanation_service.resolve(
+                citations,
+                evidence,
+            )
         )
 
         context = self._context_builder.build(
@@ -130,4 +144,5 @@ class RAGService:
             retrieval_results=results,
             evidence=evidence,
             citations=citations,
+            resolved_citations=resolved_citations,
         )

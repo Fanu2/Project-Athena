@@ -10,6 +10,7 @@ from pathlib import Path
 from athena.ai.retrieval.models import SemanticResult
 from athena.domain.ai.citation import Citation
 from athena.domain.ai.evidence_record import EvidenceRecord
+from athena.domain.ai.resolved_citation import ResolvedCitation
 
 
 @dataclass(slots=True)
@@ -48,7 +49,8 @@ class RAGAnswer:
     Generated answer together with retrieval evidence.
 
     This object is the primary output of the RAG pipeline and
-    powers chat, citations, and retrieval inspection.
+    powers chat, citations, retrieval inspection, and citation
+    intelligence.
     """
 
     answer: str
@@ -66,5 +68,9 @@ class RAGAnswer:
     )
 
     citations: list[Citation] = field(
+        default_factory=list,
+    )
+
+    resolved_citations: list[ResolvedCitation] = field(
         default_factory=list,
     )
