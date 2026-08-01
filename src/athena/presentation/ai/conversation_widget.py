@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (
 from athena.presentation.ai.conversation_model import (
     ConversationModel,
 )
+
 from athena.presentation.ai.conversation_delegate import (
     ConversationDelegate,
 )
@@ -27,6 +28,7 @@ class ConversationWidget(QWidget):
         parent: QWidget | None = None,
     ) -> None:
         """Initialize the conversation widget."""
+
         super().__init__(parent)
 
         self._model: ConversationModel | None = None
@@ -88,6 +90,14 @@ class ConversationWidget(QWidget):
             model,
         )
 
+        #
+        # Restore existing conversation
+        #
+
+        self.refresh()
+
+        self.list_view.viewport().update()
+
     def refresh(
         self,
     ) -> None:
@@ -100,10 +110,11 @@ class ConversationWidget(QWidget):
 
         self.list_view.scrollToBottom()
 
+        self.list_view.viewport().update()
+
     def model(
         self,
     ) -> ConversationModel | None:
         """Return the attached conversation model."""
 
         return self._model
-

@@ -2,25 +2,24 @@ from athena.knowledge.acquisition.pipeline.validation_pass import (
     ValidationPass,
 )
 
+from athena.knowledge.acquisition.domain.knowledge_candidate import (
+    KnowledgeCandidate,
+)
+
 from athena.knowledge.acquisition.domain.knowledge_context import (
     KnowledgeContext,
 )
 
 
-def test_validation_pass_name():
+def test_validation_accepts_candidate():
 
-    stage = ValidationPass()
-
-    assert stage.name == "validation"
-
-
-def test_validation_pass_execution():
-
-    stage = ValidationPass()
-
-    result = stage.execute(
-        KnowledgeContext(),
-        "candidate",
+    candidate = KnowledgeCandidate(
+        value="Athena"
     )
 
-    assert result == "candidate"
+    result = ValidationPass().execute(
+        KnowledgeContext(),
+        [candidate],
+    )
+
+    assert len(result) == 1

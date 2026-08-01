@@ -1,23 +1,28 @@
 """
 Athena Validation Pass
 
-Validates knowledge before canonical creation.
+Validates knowledge candidates
+before canonical creation.
 """
 
 from typing import Any
 
 from ..contracts.pipeline_stage import PipelineStage
 from ..domain.knowledge_context import KnowledgeContext
+from ..domain.knowledge_candidate import KnowledgeCandidate
+from ..domain.validation_result import ValidationResult
+from ..validators.default_validator import (
+    DefaultValidator,
+)
 
 
 class ValidationPass(PipelineStage):
     """
-    Knowledge validation compiler stage.
-
-    Initial implementation:
-    pass-through stage until validators
-    are connected.
+    Candidate validation stage.
     """
+
+    def __init__(self):
+        self._validator = DefaultValidator()
 
     @property
     def name(self) -> str:
@@ -28,8 +33,26 @@ class ValidationPass(PipelineStage):
         context: KnowledgeContext,
         input_data: Any,
     ) -> Any:
-        """
-        Execute validation stage.
-        """
 
-        return input_data
+        if not isinstance(
+            input_data,
+            list,
+        ):
+            return input_data
+
+        accepted = []
+
+        for candidate in input_data:
+
+            if (
+                isinstance(
+                    candidate,
+                    KnowledgeCandidate,
+                )
+                and self._validator.validate(
+                    candidate
+                )
+            ):
+                accepted.append(candidate)
+
+        return accepted

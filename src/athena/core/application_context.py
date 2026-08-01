@@ -141,6 +141,58 @@ from athena.workspace.service import (
     WorkspaceService,
 )
 
+from athena.knowledge.services.knowledge_compilation_service import (
+    KnowledgeCompilationService,
+)
+
+from athena.knowledge.acquisition.runtime.knowledge_runtime_factory import (
+    KnowledgeRuntimeFactory,
+)
+
+from athena.knowledge.repositories.sqlite_knowledge_repository import (
+    SQLiteKnowledgeRepository,
+)
+
+from athena.knowledge.repositories.sqlite_evidence_repository import (
+    SQLiteEvidenceRepository,
+)
+
+from athena.knowledge.repositories.sqlite_citation_repository import (
+    SQLiteCitationRepository,
+)
+
+from athena.knowledge.services.evidence_build_service import (
+    EvidenceBuildService,
+)
+
+from athena.knowledge.services.citation_build_service import (
+    CitationBuildService,
+)
+
+from athena.knowledge.acquisition.services.provider_manager import (
+    ProviderManager,
+)
+
+from athena.knowledge.acquisition.providers.docling_provider import (
+    DoclingProvider,
+)
+
+from athena.knowledge.services.knowledge_service import (
+    KnowledgeService,
+)
+
+from athena.knowledge.services.evidence_service import (
+    EvidenceService,
+)
+
+from athena.knowledge.services.citation_service import (
+    CitationService,
+)
+
+from athena.services.knowledge_workspace_service import (
+    KnowledgeWorkspaceService,
+)
+
 
 class ApplicationContext:
     """Owns application-wide services."""
@@ -150,27 +202,55 @@ class ApplicationContext:
 
         self.workspace_actions = WorkspaceActions()
 
+        #
+        # Workspace services
+        #
+
+        self.workspace_service = WorkspaceService()
+
+        self.current_workspace: Workspace | None = None
+
+        #
+        # Document services
+        #
+
         self.indexing_service: IndexingService | None = None
 
         self.indexed_document_service: (
             IndexedDocumentService | None
         ) = None
 
-        self.search_service: SearchService | None = None
-
         self.document_service: (
             WorkspaceDocumentService | None
         ) = None
 
-        self.document_viewer_service = DocumentViewerService()
+        self.document_viewer_service = (
+            DocumentViewerService()
+        )
+
+        #
+        # Search / organization services
+        #
+
+        self.search_service: SearchService | None = None
 
         self.bookmark_service: BookmarkService | None = None
 
         self.note_service: NoteService | None = None
 
-        self.workspace_service = WorkspaceService()
+        #
+        # Knowledge services
+        #
+        # Created after workspace database initialization
+        #
 
-        self.current_workspace: Workspace | None = None
+        self.knowledge_service: (
+            KnowledgeService | None
+        ) = None
+
+        self.knowledge_workspace_service: (
+            KnowledgeWorkspaceService | None
+        ) = None
 
         #
         # Settings
@@ -240,6 +320,8 @@ class ApplicationContext:
             ExecutionService | None
         ) = None
 
+        self.knowledge_compiler = None
+
     def open_workspace(
         self,
         workspace_path: Path,
@@ -266,6 +348,127 @@ class ApplicationContext:
         )
 
         #
+        # Knowledge runtime
+        #
+
+        knowledge_db = (
+            athena_directory / "knowledge.db"
+        )
+
+        #
+        # Knowledge Runtime
+        #
+
+        provider_manager = ProviderManager()
+
+        provider_manager.register(
+            DoclingProvider()
+        )
+
+
+        #
+        # Persistence repositories
+        #
+
+        knowledge_repository = (
+            SQLiteKnowledgeRepository(
+                str(knowledge_db)
+            )
+        )
+
+        evidence_repository = (
+            SQLiteEvidenceRepository(
+                str(knowledge_db)
+            )
+        )
+
+        citation_repository = (
+            SQLiteCitationRepository(
+                str(knowledge_db)
+            )
+        )
+
+
+        #
+        # Knowledge application services
+        #
+
+        self.knowledge_service = (
+            KnowledgeService(
+                knowledge_repository
+            )
+        )
+
+        evidence_service = (
+            EvidenceService(
+                evidence_repository
+            )
+        )
+
+        citation_service = (
+            CitationService(
+                citation_repository
+            )
+        )
+
+
+        #
+        # Knowledge Workspace API
+        #
+
+        self.knowledge_workspace_service = (
+            KnowledgeWorkspaceService(
+                self.knowledge_service,
+                evidence_service=evidence_service,
+                citation_service=citation_service,
+            )
+        )
+
+
+        #
+        # Knowledge compilation services
+        #
+
+        citation_builder = (
+            CitationBuildService(
+                citation_repository
+            )
+        )
+
+        evidence_builder = (
+            EvidenceBuildService(
+                evidence_repository
+            )
+        )
+
+
+        #
+        # Knowledge execution context
+        #
+
+        knowledge_context = (
+            KnowledgeRuntimeFactory(
+                provider_manager=provider_manager,
+                knowledge_repository=knowledge_repository,
+                evidence_repository=evidence_repository,
+                citation_repository=citation_repository,
+                evidence_build_service=evidence_builder,
+                citation_build_service=citation_builder,
+            )
+            .create_context()
+        )
+
+
+        #
+        # Document → Knowledge compilation
+        #
+
+        knowledge_compiler = (
+            KnowledgeCompilationService(
+                context=knowledge_context,
+            )
+        )
+        #
         # Conversation
         #
 
@@ -274,7 +477,6 @@ class ApplicationContext:
         self.conversation_service.load(
             athena_directory / "conversation.json",
         )
-
         #
         # Storage
         #
@@ -352,6 +554,8 @@ class ApplicationContext:
         self.document_service = WorkspaceDocumentService(
             document_service=document_service,
             indexing_service=self.indexing_service,
+            knowledge_compiler=knowledge_compiler,
+            knowledge_context=knowledge_context,
         )
 
         #
@@ -460,10 +664,19 @@ class ApplicationContext:
         # Save conversation
         #
 
-        if self.current_workspace is not None and self.conversation_service is not None:
+        if (
+            self.current_workspace is not None
+            and self.conversation_service is not None
+        ):
             self.conversation_service.save(
-                self.current_workspace.path / ".athena" / "conversation.json",
+                self.current_workspace.path
+                / ".athena"
+                / "conversation.json",
             )
+
+        #
+        # Document services
+        #
 
         self.document_service = None
 
@@ -473,20 +686,65 @@ class ApplicationContext:
 
         self.search_service = None
 
+        #
+        # Knowledge services
+        #
+
+        self.knowledge_service = None
+
+        self.knowledge_workspace_service = None
+
+        #
+        # User data services
+        #
+
         self.bookmark_service = None
 
         self.note_service = None
 
+        #
+        # AI services
+        #
+
         self.rag_service = None
 
+        self.retrieval_service = None
+
+        self.metadata_service = None
+
         self.athena_query_service = None
+
         self.conversation_query_service = None
+
+        #
+        # Settings
+        #
 
         self.ai_settings_service = None
 
         self.llm_settings = None
 
+        #
+        # Conversation services
+        #
+
+        self.conversation_execution_service = None
+
         self.conversation_service = None
+
+        #
+        # Runtime services
+        #
+
+        self.llm_runtime_bootstrap = None
+
+        self.runtime_router = None
+
+        self.execution_service = None
+
+        #
+        # Workspace
+        #
 
         self.current_workspace = None
 

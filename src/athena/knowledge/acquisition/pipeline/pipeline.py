@@ -19,17 +19,49 @@ from .index_pass import IndexPass
 def create_default_pipeline() -> PassManager:
     """
     Create standard Athena compiler pipeline.
+
+    Note:
+        RelationshipBuildPass is intentionally not part
+        of the default linear pipeline yet.
+
+        Relationship compilation requires branching
+        support because relationships are a parallel
+        knowledge artifact and should not replace the
+        main KnowledgeCandidate stream.
     """
 
     manager = PassManager()
 
-    manager.register(ImportPass())
-    manager.register(StructurePass())
-    manager.register(SemanticPass())
-    manager.register(RelationshipPass())
-    manager.register(ValidationPass())
-    manager.register(EnrichmentPass())
-    manager.register(BuildPass())
-    manager.register(IndexPass())
+    manager.register(
+        ImportPass()
+    )
+
+    manager.register(
+        StructurePass()
+    )
+
+    manager.register(
+        SemanticPass()
+    )
+
+    manager.register(
+        RelationshipPass()
+    )
+
+    manager.register(
+        ValidationPass()
+    )
+
+    manager.register(
+        EnrichmentPass()
+    )
+
+    manager.register(
+        BuildPass()
+    )
+
+    manager.register(
+        IndexPass()
+    )
 
     return manager

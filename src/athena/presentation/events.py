@@ -8,15 +8,30 @@ creating direct dependencies between pages.
 
 from __future__ import annotations
 
+from typing import Any
+
 from PySide6.QtCore import QObject, Signal
 
 
 class ApplicationEvents(QObject):
-    """Application-wide event dispatcher."""
+    """
+    Application-wide event dispatcher.
+
+    Events are shared between independent UI components.
+    """
 
     #: Emitted whenever one or more documents have been imported
     #: and indexing has completed successfully.
-    documents_imported = Signal()
+    #:
+    #: Payload:
+    #: {
+    #:     "total": int,
+    #:     "imported": int,
+    #:     "skipped": int,
+    #:     "failed": int,
+    #:     "elapsed": float,
+    #: }
+    documents_imported = Signal(dict)
 
     #: Emitted whenever one or more documents have been deleted.
     document_deleted = Signal()
@@ -30,4 +45,3 @@ class ApplicationEvents(QObject):
 
 # Global singleton used throughout the application.
 events = ApplicationEvents()
-

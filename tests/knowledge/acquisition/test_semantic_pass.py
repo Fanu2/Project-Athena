@@ -6,21 +6,36 @@ from athena.knowledge.acquisition.domain.knowledge_context import (
     KnowledgeContext,
 )
 
-
-def test_semantic_pass_name():
-
-    stage = SemanticPass()
-
-    assert stage.name == "semantic"
+from athena.knowledge.acquisition.domain.knowledge_representation import (
+    KnowledgeRepresentation,
+)
 
 
-def test_semantic_pass_execution():
+def test_semantic_pass_creates_candidate():
 
-    stage = SemanticPass()
-
-    result = stage.execute(
-        KnowledgeContext(),
-        "representation",
+    representation = KnowledgeRepresentation(
+        title="Athena Document",
     )
 
-    assert result == "representation"
+    from uuid import uuid4
+
+    representation.add_node(
+        uuid4()
+    )
+
+    result = SemanticPass().execute(
+        KnowledgeContext(),
+        representation,
+    )
+
+    assert len(result) == 1
+
+    assert (
+        result[0].value
+        == "Athena Document"
+    )
+
+    assert (
+        result[0].confidence
+        == 0.5
+    )

@@ -6,21 +6,45 @@ from athena.knowledge.acquisition.domain.knowledge_context import (
     KnowledgeContext,
 )
 
-
-def test_index_pass_name():
-
-    stage = IndexPass()
-
-    assert stage.name == "index"
+from athena.knowledge.acquisition.domain.knowledge_object import (
+    KnowledgeObject,
+)
 
 
-def test_index_pass_execution():
+class FakeIndexer:
 
-    stage = IndexPass()
+    def __init__(self):
+        self.called = 0
 
-    result = stage.execute(
-        KnowledgeContext(),
-        "knowledge object",
+    def index(
+        self,
+        knowledge,
+    ):
+        self.called += 1
+
+
+def test_index_pass_uses_indexer():
+
+    context = KnowledgeContext()
+
+    indexer = FakeIndexer()
+
+    context.add_service(
+        "knowledge_indexer",
+        indexer,
     )
 
-    assert result == "knowledge object"
+    objects = [
+        KnowledgeObject(
+            title="Athena"
+        )
+    ]
+
+    result = IndexPass().execute(
+        context,
+        objects,
+    )
+
+    assert len(result) == 1
+
+    assert indexer.called == 1

@@ -9,6 +9,9 @@ from typing import Any
 from .pass_manager import PassManager
 from ..pipeline.pipeline import create_default_pipeline
 from ..domain.knowledge_context import KnowledgeContext
+from ..domain.compilation_report import (
+    CompilationReport,
+)
 
 
 class KnowledgeAcquisitionEngine:
@@ -43,3 +46,56 @@ class KnowledgeAcquisitionEngine:
             context,
             input_data,
         )
+
+    def compile_with_report(
+        self,
+        input_data: Any,
+        context: KnowledgeContext | None = None,
+    ) -> tuple[Any, CompilationReport]:
+        """
+        Compile input and return execution report.
+        """
+
+        if context is None:
+            context = KnowledgeContext()
+
+        report = CompilationReport(
+            source=input_data,
+        )
+
+        try:
+
+            result = self.pass_manager.execute(
+                context,
+                input_data,
+            )
+
+            report.stages = (
+                self.pass_manager.execution_records.copy()
+            )
+
+            if isinstance(
+                result,
+                list,
+            ):
+                report.objects_created = len(result)
+
+            report.complete()
+
+            return result, report
+
+        except Exception as exc:
+
+            report.status = "failed"
+
+            report.error = (
+                f"{type(exc).__name__}: {exc}"
+            )
+
+            report.stages = (
+                self.pass_manager.execution_records.copy()
+            )
+
+            report.complete()
+
+            raise

@@ -1,23 +1,23 @@
 """
 Athena Structure Pass
 
-Transforms imported artifacts into
-Knowledge Representation Models.
+Creates structural knowledge nodes
+from Knowledge Representation Model.
 """
 
 from typing import Any
 
 from ..contracts.pipeline_stage import PipelineStage
 from ..domain.knowledge_context import KnowledgeContext
-from ..domain.knowledge_representation import KnowledgeRepresentation
+from ..domain.knowledge_representation import (
+    KnowledgeRepresentation,
+)
+from ..domain.knowledge_node import KnowledgeNode
 
 
 class StructurePass(PipelineStage):
     """
-    Builds structural representation.
-
-    Initial implementation:
-    creates a basic KRM container.
+    Builds structural nodes inside KRM.
     """
 
     @property
@@ -30,16 +30,29 @@ class StructurePass(PipelineStage):
         input_data: Any,
     ) -> Any:
         """
-        Convert input into structural representation.
+        Build document structure.
         """
 
-        if isinstance(
+        if not isinstance(
             input_data,
             KnowledgeRepresentation,
         ):
             return input_data
 
-        return KnowledgeRepresentation(
-            representation_type="generic",
-            title=str(input_data),
+        document_node = KnowledgeNode(
+            node_type="document",
+            content=input_data.title,
         )
+
+        document_node.add_metadata(
+            "representation_id",
+            str(
+                input_data.representation_id
+            ),
+        )
+
+        input_data.add_node(
+            document_node.node_id
+        )
+
+        return input_data

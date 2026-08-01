@@ -11,25 +11,15 @@ from athena.knowledge.acquisition.domain.knowledge_representation import (
 )
 
 
-def test_structure_pass_name():
+def test_structure_pass_creates_document_node():
 
-    stage = StructurePass()
+    representation = KnowledgeRepresentation(
+        title="Athena Document",
+    )
 
-    assert stage.name == "structure"
-
-
-def test_structure_pass_creates_representation():
-
-    stage = StructurePass()
-
-    result = stage.execute(
+    result = StructurePass().execute(
         KnowledgeContext(),
-        "test document",
+        representation,
     )
 
-    assert isinstance(
-        result,
-        KnowledgeRepresentation,
-    )
-
-    assert result.title == "test document"
+    assert len(result.nodes) == 1
