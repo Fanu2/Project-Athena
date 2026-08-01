@@ -1,5 +1,15 @@
 """
 RAG orchestration service.
+
+Coordinates:
+- intent detection
+- metadata analysis
+- retrieval
+- evidence extraction
+- citation creation
+- citation explanation
+- citation validation
+- LLM response generation
 """
 
 from __future__ import annotations
@@ -21,11 +31,14 @@ from athena.ai.rag.models import (
 from athena.ai.rag.prompt_builder import (
     PromptBuilder,
 )
+from athena.application.ai.citation_explanation_service import (
+    CitationExplanationService,
+)
 from athena.application.ai.citation_service import (
     CitationService,
 )
-from athena.application.ai.citation_explanation_service import (
-    CitationExplanationService,
+from athena.application.ai.citation_validation_service import (
+    CitationValidationService,
 )
 from athena.application.ai.retrieval_service import (
     RetrievalService,
@@ -36,7 +49,7 @@ from athena.domain.ai.question import (
 
 
 class RAGService:
-    """Coordinate retrieval, intent detection, and response generation."""
+    """Coordinate retrieval, citation intelligence, and response generation."""
 
     def __init__(
         self,
@@ -66,10 +79,18 @@ class RAGService:
 
         self._prompt_builder = PromptBuilder()
 
+        #
+        # Citation intelligence services
+        #
+
         self._citation_service = CitationService()
 
         self._citation_explanation_service = (
             CitationExplanationService()
+        )
+
+        self._citation_validation_service = (
+            CitationValidationService()
         )
 
     def answer(
@@ -79,6 +100,10 @@ class RAGService:
         """
         Generate an answer using retrieved document context.
         """
+
+        #
+        # Query analysis
+        #
 
         intent = self._intent_service.detect(
             question,
@@ -92,6 +117,10 @@ class RAGService:
             text=question,
         )
 
+        #
+        # Retrieval
+        #
+
         results = self._retrieval.retrieve(
             question_object,
         )
@@ -99,6 +128,10 @@ class RAGService:
         evidence = self._retrieval.retrieve_evidence(
             question_object,
         )
+
+        #
+        # Citation intelligence
+        #
 
         citations = self._citation_service.create_citations(
             evidence,
@@ -111,6 +144,17 @@ class RAGService:
             )
         )
 
+        citation_validations = [
+            self._citation_validation_service.validate(
+                citation,
+            )
+            for citation in citations
+        ]
+
+        #
+        # Context preparation
+        #
+
         context = self._context_builder.build(
             question,
             results,
@@ -121,6 +165,10 @@ class RAGService:
             context=context.context,
             intent=intent,
         )
+
+        #
+        # LLM generation
+        #
 
         request = LLMRequest(
             system_prompt=(
@@ -137,6 +185,10 @@ class RAGService:
             request,
         )
 
+        #
+        # Final RAG response
+        #
+
         return RAGAnswer(
             answer=response.text,
             model=response.model,
@@ -145,4 +197,5 @@ class RAGService:
             evidence=evidence,
             citations=citations,
             resolved_citations=resolved_citations,
+            citation_validations=citation_validations,
         )

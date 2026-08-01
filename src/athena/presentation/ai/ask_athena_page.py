@@ -35,6 +35,9 @@ from athena.presentation.ai.conversation_widget import (
 from athena.application.conversation.conversation_query_service import (
     ConversationQueryService,
 )
+from athena.presentation.ai.citation_widget import (
+    CitationWidget,
+)
 
 
 class AskAthenaPage(QWidget):
@@ -77,6 +80,12 @@ class AskAthenaPage(QWidget):
         #
 
         self.conversation = ConversationWidget()
+
+        #
+        # Citation Intelligence
+        #
+
+        self.citation_widget = CitationWidget()
 
         #
         # Sources
@@ -248,6 +257,18 @@ class AskAthenaPage(QWidget):
         )
 
         #
+        # Citation Intelligence
+        #
+
+        layout.addWidget(
+            QLabel("Citation Intelligence"),
+        )
+
+        layout.addWidget(
+            self.citation_widget,
+        )
+
+        #
         # Retrieved Passage
         #
 
@@ -311,6 +332,8 @@ class AskAthenaPage(QWidget):
         self.question.clear()
 
         self.sources.clear()
+
+        self.citation_widget.clear()
 
         if self._conversation_service is not None:
             self._conversation_service.clear()
@@ -415,6 +438,27 @@ class AskAthenaPage(QWidget):
             self.model_label.setText(
                 f"Model: {result.model}",
             )
+            #
+            # Citation Intelligence
+            #
+
+            if result.resolved_citations:
+
+                validation = None
+
+                if result.citation_validations:
+                    validation = (
+                        result.citation_validations[0]
+                    )
+
+                self.citation_widget.set_citation(
+                    result.resolved_citations[0],
+                    validation,
+                )
+
+            else:
+
+                self.citation_widget.clear()
 
             for index, (source, retrieval) in enumerate(
                 zip(

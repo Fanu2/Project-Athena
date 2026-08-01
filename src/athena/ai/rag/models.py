@@ -9,6 +9,7 @@ from pathlib import Path
 
 from athena.ai.retrieval.models import SemanticResult
 from athena.domain.ai.citation import Citation
+from athena.domain.ai.citation_validation import CitationValidation
 from athena.domain.ai.evidence_record import EvidenceRecord
 from athena.domain.ai.resolved_citation import ResolvedCitation
 
@@ -72,5 +73,9 @@ class RAGAnswer:
     )
 
     resolved_citations: list[ResolvedCitation] = field(
+        default_factory=list,
+    )
+
+    citation_validations: list[CitationValidation] = field(
         default_factory=list,
     )
