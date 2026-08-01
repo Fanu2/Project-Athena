@@ -259,6 +259,19 @@ class AskAthenaPage(QWidget):
             self.passage,
         )
 
+    def showEvent(
+        self,
+        event,
+    ) -> None:
+        """Refresh conversation when page becomes visible."""
+
+        super().showEvent(
+            event,
+        )
+
+        if self._conversation_service is not None:
+            self.conversation.refresh()
+
     def set_query_service(
         self,
         service: ConversationQueryService,
@@ -564,15 +577,29 @@ class AskAthenaPage(QWidget):
         self,
         service: ConversationService,
     ) -> None:
-        """Attach conversation service."""
+        """Attach conversation service and restore history."""
 
         self._conversation_service = service
+
+        #
+        # Create conversation model
+        #
 
         model = ConversationModel(
             service,
         )
 
+        #
+        # Attach model to widget
+        #
+
         self.conversation.set_model(
             model,
         )
+
+        #
+        # Restore persisted conversation
+        #
+
+        self.conversation.refresh()
 
