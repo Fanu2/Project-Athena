@@ -527,6 +527,21 @@ class MainWindow(QMainWindow):
     ) -> None:
         """Open a document in the viewer."""
 
+        if not path.exists():
+            self.status_bar.showMessage(
+                f"Document not found: {path}",
+            )
+            return
+
+        if path.suffix.lower() != ".pdf":
+            self.status_bar.showMessage(
+                (
+                    "Document viewer currently supports "
+                    "PDF documents only."
+                ),
+            )
+            return
+
         self.viewer.open_document(
             path,
             page=None,
@@ -541,7 +556,20 @@ class MainWindow(QMainWindow):
         path: Path,
         page: int,
     ) -> None:
-        """Open a cited source from Ask Athena."""
+        """
+        Open citation source document.
+        """
+
+        suffix = path.suffix.lower()
+
+        if suffix != ".pdf":
+            self.status_bar.showMessage(
+                (
+                    "Document viewer currently supports "
+                    "PDF documents only."
+                ),
+            )
+            return
 
         self.viewer.open_document(
             path,

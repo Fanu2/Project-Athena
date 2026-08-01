@@ -36,6 +36,7 @@ class CitationExplanationService:
             resolved.append(
                 ResolvedCitation(
                     document_name=citation.document_name,
+                    document_path=record.document_path,
                     page=citation.page,
                     snippet=citation.snippet,
                     score=citation.score,

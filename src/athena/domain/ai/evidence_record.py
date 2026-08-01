@@ -5,15 +5,21 @@ Evidence intelligence model.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 
 
 @dataclass(slots=True, frozen=True)
 class EvidenceRecord:
-    """Authoritative evidence unit used by retrieval, citation, and UI."""
+    """
+    Authoritative evidence unit used by retrieval,
+    citation, and document navigation.
+    """
 
     document_id: str
 
     document_name: str
+
+    document_path: Path
 
     chunk_id: str
 

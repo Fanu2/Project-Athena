@@ -5,11 +5,17 @@ Retrieval models.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 
 
 @dataclass(slots=True, frozen=True)
 class SemanticResult:
-    """Semantic search result."""
+    """
+    Semantic search result.
+
+    Carries retrieval evidence together with
+    source navigation metadata.
+    """
 
     chunk_id: str
 
@@ -29,6 +35,8 @@ class SemanticResult:
 
     document_name: str = ""
 
+    document_path: Path | None = None
+
     semantic_score: float = 0.0
 
     keyword_score: float = 0.0
@@ -38,5 +46,3 @@ class SemanticResult:
     identity_score: float = 0.0
 
     document_authority_score: float = 0.0
-
-

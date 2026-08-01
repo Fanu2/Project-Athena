@@ -87,6 +87,10 @@ class AskAthenaPage(QWidget):
 
         self.citation_widget = CitationWidget()
 
+        self.citation_widget.document_requested.connect(
+        self.document_requested.emit,
+    )
+
         #
         # Sources
         #
@@ -439,26 +443,22 @@ class AskAthenaPage(QWidget):
                 f"Model: {result.model}",
             )
             #
+            #
             # Citation Intelligence
             #
 
             if result.resolved_citations:
 
-                validation = None
-
-                if result.citation_validations:
-                    validation = (
-                        result.citation_validations[0]
-                    )
-
-                self.citation_widget.set_citation(
-                    result.resolved_citations[0],
-                    validation,
+                self.citation_widget.set_citations(
+                    result.resolved_citations,
+                    result.citation_validations,
                 )
 
             else:
 
                 self.citation_widget.clear()
+
+
 
             for index, (source, retrieval) in enumerate(
                 zip(

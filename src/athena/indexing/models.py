@@ -30,6 +30,7 @@ class ExtractedPage:
     """Text extracted from a single page."""
 
     page_number: int
+
     text: str
 
 
@@ -38,10 +39,15 @@ class ExtractedDocument:
     """Represents a fully extracted document."""
 
     document_id: str
+
     path: Path
+
     title: str
+
     text: str
+
     pages: tuple[ExtractedPage, ...]
+
     page_count: int
 
 
@@ -54,9 +60,13 @@ class BlockType(str, Enum):
     """Logical document block type."""
 
     HEADING = "heading"
+
     PARAGRAPH = "paragraph"
+
     LIST = "list"
+
     TABLE = "table"
+
     CODE = "code"
 
 
@@ -64,10 +74,15 @@ class ChunkType(str, Enum):
     """Final chunk classification."""
 
     PARAGRAPH = "paragraph"
+
     HEADING = "heading"
+
     LIST = "list"
+
     TABLE = "table"
+
     CODE = "code"
+
     MIXED = "mixed"
 
 
@@ -105,7 +120,9 @@ class ChunkCandidate:
     Produced by ChunkBuilder before metadata enrichment.
     """
 
-    blocks: list[DocumentBlock] = field(default_factory=list)
+    blocks: list[DocumentBlock] = field(
+        default_factory=list,
+    )
 
     text: str = ""
 
@@ -127,6 +144,15 @@ class ChunkCandidate:
 class DocumentChunk:
     """
     Final chunk stored in the vector index.
+
+    Source navigation metadata is optional because
+    older indexing workflows and tests create chunks
+    before document location resolution.
+
+    When available, document_path enables:
+    - citation navigation
+    - document viewer integration
+    - source resolution
     """
 
     chunk_id: str
@@ -142,6 +168,8 @@ class DocumentChunk:
     end_offset: int
 
     text: str
+
+    document_path: Path | None = None
 
     heading: str | None = None
 
@@ -174,4 +202,3 @@ class IndexedDocument:
     page_count: int
 
     indexed_at: datetime
-

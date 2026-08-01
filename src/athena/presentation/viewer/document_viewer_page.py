@@ -32,17 +32,28 @@ class DocumentViewerPage(QWidget):
         parent: QWidget | None = None,
     ) -> None:
         """Initialize the document viewer page."""
+
         super().__init__(parent)
 
         self._service: DocumentViewerService | None = None
 
         self.canvas = PDFCanvas()
 
-        self.previous_button = QPushButton("◀ Previous")
-        self.next_button = QPushButton("Next ▶")
+        self.previous_button = QPushButton(
+            "◀ Previous",
+        )
 
-        self.page_label = QLabel("Page 0 / 0")
-        self.status_label = QLabel("No document loaded")
+        self.next_button = QPushButton(
+            "Next ▶",
+        )
+
+        self.page_label = QLabel(
+            "Page 0 / 0",
+        )
+
+        self.status_label = QLabel(
+            "No document loaded",
+        )
 
         self._build_ui()
 
@@ -57,7 +68,9 @@ class DocumentViewerPage(QWidget):
     def _build_ui(self) -> None:
         """Create the page layout."""
 
-        layout = QVBoxLayout(self)
+        layout = QVBoxLayout(
+            self,
+        )
 
         toolbar = QHBoxLayout()
 
@@ -92,14 +105,16 @@ class DocumentViewerPage(QWidget):
         self,
         service: DocumentViewerService,
     ) -> None:
-        """Attach the viewer service."""
+        """Attach viewer service."""
 
         self._service = service
 
         self._refresh()
 
-    def clear_viewer_service(self) -> None:
-        """Detach the viewer service."""
+    def clear_viewer_service(
+        self,
+    ) -> None:
+        """Detach viewer service."""
 
         self._service = None
 
@@ -121,16 +136,17 @@ class DocumentViewerPage(QWidget):
         """
         Open a document.
 
-        Args:
-            path:
-                Path to the PDF document.
-
-            page:
-                Optional zero-based page number.
-                If omitted, the first page is shown.
+        Only supported viewer formats should
+        reach this page.
         """
 
         if self._service is None:
+            return
+
+        if not path.exists():
+            self.status_label.setText(
+                f"File not found: {path}",
+            )
             return
 
         self._service.open_document(
@@ -148,21 +164,40 @@ class DocumentViewerPage(QWidget):
         self,
         page: int,
     ) -> None:
-        """
-        Navigate to a specific page.
-        """
+        """Navigate safely to a page."""
 
         if self._service is None:
             return
+
+        if self._service.page_count <= 0:
+            return
+
+        #
+        # Citation pages may be stale.
+        # Clamp to valid range.
+        #
+
+        page = max(
+            1,
+            min(
+                page,
+                self._service.page_count,
+            ),
+        )
 
         self._service.go_to_page(
             page,
         )
 
-    def _refresh(self) -> None:
-        """Refresh the page display."""
+    def _refresh(
+        self,
+    ) -> None:
+        """Refresh page display."""
 
-        if self._service is None or not self._service.is_open:
+        if (
+            self._service is None
+            or not self._service.is_open
+        ):
             self.canvas.clear()
 
             self.page_label.setText(
@@ -182,15 +217,22 @@ class DocumentViewerPage(QWidget):
         )
 
         self.page_label.setText(
-            (f"Page {self._service.current_page + 1} / {self._service.page_count}")
+            (
+                f"Page "
+                f"{self._service.current_page + 1}"
+                f" / "
+                f"{self._service.page_count}"
+            ),
         )
 
         self.status_label.setText(
             "Ready",
         )
 
-    def next_page(self) -> None:
-        """Move to the next page."""
+    def next_page(
+        self,
+    ) -> None:
+        """Move to next page."""
 
         if self._service is None:
             return
@@ -198,12 +240,13 @@ class DocumentViewerPage(QWidget):
         if self._service.next_page():
             self._refresh()
 
-    def previous_page(self) -> None:
-        """Move to the previous page."""
+    def previous_page(
+        self,
+    ) -> None:
+        """Move to previous page."""
 
         if self._service is None:
             return
 
         if self._service.previous_page():
             self._refresh()
-

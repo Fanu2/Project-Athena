@@ -43,7 +43,10 @@ class ContextBuilder:
             start=1,
         ):
             document_name = result.document_name
-            document_path = Path()
+
+            document_path: Path | None = (
+                result.document_path
+            )
 
             if self._document_service is not None:
                 document = self._document_service.get_document(
@@ -55,7 +58,12 @@ class ContextBuilder:
                     document_path = document.path
 
             context_parts.append(
-                (f"Source {index}\nDocument: {document_name}\nPage: {result.page}\n{result.text}")
+                (
+                    f"Source {index}\n"
+                    f"Document: {document_name}\n"
+                    f"Page: {result.page}\n"
+                    f"{result.text}"
+                )
             )
 
             sources.append(
@@ -79,4 +87,3 @@ class ContextBuilder:
             context=context,
             sources=sources,
         )
-

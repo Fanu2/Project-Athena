@@ -109,6 +109,7 @@ class HybridRanker:
                     document_id=result.document_id,
                     document_name=result.document_name,
                     document_title=result.document_title,
+                    document_path=result.document_path,
                     page_number=result.page_number,
                     start_offset=result.start_offset,
                     end_offset=result.end_offset,

@@ -28,7 +28,9 @@ class RetrievalService:
         self,
         semantic_retrieval_service: SemanticRetrievalService,
     ) -> None:
-        self._semantic_retrieval_service = semantic_retrieval_service
+        self._semantic_retrieval_service = (
+            semantic_retrieval_service
+        )
 
         self._evidence_explainer = EvidenceExplainer()
 
@@ -61,6 +63,7 @@ class RetrievalService:
                 RetrievalResult(
                     document_id=item.document_id,
                     document_name=item.document_name,
+                    document_path=item.document_path,
                     page=item.page_number,
                     text=item.text,
                     score=item.score,
@@ -145,6 +148,7 @@ class RetrievalService:
                 EvidenceRecord(
                     document_id=item.document_id,
                     document_name=item.document_name,
+                    document_path=item.document_path,
                     chunk_id=item.chunk_id,
                     page=item.page_number,
                     text=item.text,

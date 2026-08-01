@@ -5,18 +5,28 @@ Resolved citation model.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 
 
 @dataclass(slots=True, frozen=True)
 class ResolvedCitation:
-    """Citation enriched with explanation."""
+    """
+    Citation enriched with explanation and navigation data.
+
+    This object is used by:
+    - Citation Intelligence UI
+    - Citation validation display
+    - Document navigation
+    """
 
     document_name: str
 
-    page: int
+    document_path: Path | None = None
 
-    snippet: str
+    page: int = 1
 
-    score: float
+    snippet: str = ""
+
+    score: float = 0.0
 
     reasons: tuple[str, ...] = ()

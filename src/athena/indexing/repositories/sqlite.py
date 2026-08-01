@@ -7,9 +7,9 @@ from __future__ import annotations
 import sqlite3
 from pathlib import Path
 
+from athena.indexing.migrations import MigrationManager
 from athena.indexing.models import DocumentChunk
 from athena.indexing.repositories.base import ChunkRepository
-from athena.indexing.migrations import MigrationManager
 
 
 class SQLiteChunkRepository(ChunkRepository):
@@ -33,10 +33,12 @@ class SQLiteChunkRepository(ChunkRepository):
     def _connect(self) -> sqlite3.Connection:
         """Return a database connection."""
 
-        return sqlite3.connect(self._database_path)
+        return sqlite3.connect(
+            self._database_path,
+        )
 
     def _initialize_database(self) -> None:
-        """Initialize or upgrade the database schema."""
+        """Initialize or upgrade database schema."""
 
         with self._connect() as connection:
             MigrationManager(
@@ -55,6 +57,7 @@ class SQLiteChunkRepository(ChunkRepository):
         document_id = chunks[0].document_id
 
         with self._connect() as connection:
+
             connection.execute(
                 "DELETE FROM chunks WHERE document_id = ?",
                 (document_id,),
@@ -65,18 +68,24 @@ class SQLiteChunkRepository(ChunkRepository):
                 INSERT INTO chunks (
                     chunk_id,
                     document_id,
+                    document_path,
                     chunk_index,
                     page_number,
                     start_offset,
                     end_offset,
                     text
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 [
                     (
                         chunk.chunk_id,
                         chunk.document_id,
+                        (
+                            str(chunk.document_path)
+                            if chunk.document_path
+                            else None
+                        ),
                         chunk.chunk_index,
                         chunk.page_number,
                         chunk.start_offset,
@@ -94,11 +103,13 @@ class SQLiteChunkRepository(ChunkRepository):
         """Load document chunks."""
 
         with self._connect() as connection:
+
             cursor = connection.execute(
                 """
                 SELECT
                     chunk_id,
                     document_id,
+                    document_path,
                     chunk_index,
                     page_number,
                     start_offset,
@@ -117,11 +128,16 @@ class SQLiteChunkRepository(ChunkRepository):
             DocumentChunk(
                 chunk_id=row[0],
                 document_id=row[1],
-                chunk_index=row[2],
-                page_number=row[3],
-                start_offset=row[4],
-                end_offset=row[5],
-                text=row[6],
+                document_path=(
+                    Path(row[2])
+                    if row[2]
+                    else None
+                ),
+                chunk_index=row[3],
+                page_number=row[4],
+                start_offset=row[5],
+                end_offset=row[6],
+                text=row[7],
             )
             for row in rows
         ]
@@ -133,11 +149,13 @@ class SQLiteChunkRepository(ChunkRepository):
         """Return a single chunk by ID."""
 
         with self._connect() as connection:
+
             cursor = connection.execute(
                 """
                 SELECT
                     chunk_id,
                     document_id,
+                    document_path,
                     chunk_index,
                     page_number,
                     start_offset,
@@ -157,11 +175,16 @@ class SQLiteChunkRepository(ChunkRepository):
         return DocumentChunk(
             chunk_id=row[0],
             document_id=row[1],
-            chunk_index=row[2],
-            page_number=row[3],
-            start_offset=row[4],
-            end_offset=row[5],
-            text=row[6],
+            document_path=(
+                Path(row[2])
+                if row[2]
+                else None
+            ),
+            chunk_index=row[3],
+            page_number=row[4],
+            start_offset=row[5],
+            end_offset=row[6],
+            text=row[7],
         )
 
     def delete_chunks(
@@ -171,6 +194,7 @@ class SQLiteChunkRepository(ChunkRepository):
         """Delete document chunks."""
 
         with self._connect() as connection:
+
             connection.execute(
                 """
                 DELETE FROM chunks
@@ -189,11 +213,13 @@ class SQLiteChunkRepository(ChunkRepository):
         """
 
         with self._connect() as connection:
+
             cursor = connection.execute(
                 """
                 SELECT
                     chunk_id,
                     document_id,
+                    document_path,
                     chunk_index,
                     page_number,
                     start_offset,
@@ -213,12 +239,16 @@ class SQLiteChunkRepository(ChunkRepository):
             DocumentChunk(
                 chunk_id=row[0],
                 document_id=row[1],
-                chunk_index=row[2],
-                page_number=row[3],
-                start_offset=row[4],
-                end_offset=row[5],
-                text=row[6],
+                document_path=(
+                    Path(row[2])
+                    if row[2]
+                    else None
+                ),
+                chunk_index=row[3],
+                page_number=row[4],
+                start_offset=row[5],
+                end_offset=row[6],
+                text=row[7],
             )
             for row in rows
         ]
-

@@ -13,7 +13,7 @@ ExtractedDocument
  ↓
 Chunking
  ↓
-Attach Athena Document ID
+Attach Athena Document ID + Source Path
  ↓
 Chunk Repository
  ↓
@@ -135,17 +135,24 @@ def index_document(
 
     #
     # Attach Athena document identity
+    # and navigation path
     #
 
     chunks = [
         DocumentChunk(
             chunk_id=chunk.chunk_id,
             document_id=str(document.id),
+            document_path=file_path,
             chunk_index=chunk.chunk_index,
             page_number=chunk.page_number,
             start_offset=chunk.start_offset,
             end_offset=chunk.end_offset,
             text=chunk.text,
+            heading=chunk.heading,
+            heading_path=chunk.heading_path,
+            chunk_type=chunk.chunk_type,
+            previous_chunk=chunk.previous_chunk,
+            next_chunk=chunk.next_chunk,
         )
         for chunk in chunks
     ]
@@ -182,4 +189,3 @@ def index_document(
     )
 
     return len(chunks)
-

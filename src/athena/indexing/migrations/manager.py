@@ -9,8 +9,13 @@ import sqlite3
 from athena.indexing.migrations.v001_initial import (
     V001Initial,
 )
+
 from athena.indexing.migrations.v002_chunk_offsets import (
     V002ChunkOffsets,
+)
+
+from athena.indexing.migrations.v003_add_document_path import (
+    V003AddDocumentPath,
 )
 
 
@@ -28,6 +33,7 @@ class MigrationManager:
         self._migrations = (
             V001Initial(),
             V002ChunkOffsets(),
+            V003AddDocumentPath(),
         )
 
     def upgrade(self) -> None:
@@ -36,6 +42,7 @@ class MigrationManager:
         current_version = self._schema_version()
 
         for migration in self._migrations:
+
             if migration.version <= current_version:
                 continue
 
@@ -43,7 +50,9 @@ class MigrationManager:
                 self._connection,
             )
 
-            self._connection.execute(f"PRAGMA user_version = {migration.version}")
+            self._connection.execute(
+                f"PRAGMA user_version = {migration.version}"
+            )
 
             self._connection.commit()
 
@@ -52,7 +61,9 @@ class MigrationManager:
     ) -> int:
         """Return the current database schema version."""
 
-        cursor = self._connection.execute("PRAGMA user_version")
+        cursor = self._connection.execute(
+            "PRAGMA user_version",
+        )
 
         row = cursor.fetchone()
 
@@ -60,4 +71,3 @@ class MigrationManager:
             return 0
 
         return int(row[0])
-
