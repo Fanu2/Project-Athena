@@ -1,8 +1,8 @@
 """
 AI Control Center page.
 
-Displays Athena AI runtime information
-and provider health status.
+Displays Athena AI runtime information,
+provider registry, and provider health status.
 """
 
 from __future__ import annotations
@@ -43,6 +43,12 @@ class AIControlCenterPage(QWidget):
             self._title,
         )
 
+        self._registry_label = QLabel()
+
+        self._layout.addWidget(
+            self._registry_label,
+        )
+
         self._providers_label = QLabel()
 
         self._layout.addWidget(
@@ -60,9 +66,57 @@ class AIControlCenterPage(QWidget):
     def refresh(self) -> None:
         """Refresh AI runtime information."""
 
+        self._refresh_provider_registry()
+
         self._refresh_provider_health()
 
         self._refresh_models()
+
+    def _refresh_provider_registry(self) -> None:
+        """Display registered AI providers."""
+
+        registry = (
+            self._context.get_provider_registry()
+        )
+
+        providers = registry.providers()
+
+        if not providers:
+            self._registry_label.setText(
+                "Provider Registry\n\n"
+                "No providers registered."
+            )
+            return
+
+        lines = [
+            "Provider Registry",
+            "",
+        ]
+
+        for provider in providers:
+            lines.extend(
+                [
+                    f"Provider: {provider.name}",
+                    f"ID: {provider.provider_id}",
+                    (
+                        "Endpoint: "
+                        f"{provider.endpoint or 'local'}"
+                    ),
+                    (
+                        "Capabilities: "
+                        + ", ".join(
+                            sorted(
+                                provider.capabilities
+                            )
+                        )
+                    ),
+                    "",
+                ]
+            )
+
+        self._registry_label.setText(
+            "\n".join(lines),
+        )
 
     def _refresh_provider_health(self) -> None:
         """Display aggregated provider health."""

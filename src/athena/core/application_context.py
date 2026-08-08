@@ -48,6 +48,11 @@ from athena.ai.llm.runtime_router import (
     RuntimeRouter,
 )
 
+from athena.ai.providers.provider import Provider
+from athena.ai.providers.provider_registry import (
+    ProviderRegistry,
+)
+
 from athena.ai.metadata.service import (
     MetadataService,
 )
@@ -307,24 +312,28 @@ class ApplicationContext:
         ) = None
 
         #
-        # LLM runtime services (A2.22)
+        # LLM runtime services (A2.22 / A17.4)
         #
 
         self.llm_runtime_bootstrap: (
             LLMRuntimeBootstrap | None
         ) = None
 
+        self.model_manager: (
+            ModelManager | None
+        ) = None
+
+        self.provider_registry: (
+            ProviderRegistry | None
+        ) = None
+
         self.runtime_router: (
             RuntimeRouter | None
         ) = None
 
-        self.model_manager: ModelManager | None = None
-
         self.execution_service: (
             ExecutionService | None
         ) = None
-
-        self.knowledge_compiler = None
 
     def open_workspace(
         self,
@@ -577,18 +586,6 @@ class ApplicationContext:
         )
 
         #
-        # Conversation knowledge enrichment
-        #
-
-        knowledge_context = RAGKnowledgeContext(
-            self.retrieval_service,
-        )
-
-        conversation_enricher = ConversationContextEnricher(
-            knowledge_context,
-        )
-
-        #
         # LLM runtime initialization
         #
 
@@ -600,6 +597,16 @@ class ApplicationContext:
             self.llm_runtime_bootstrap.initialize()
         )
 
+        #
+        # AI provider registry initialization
+        #
+
+        self.provider_registry = (
+            ProviderRegistry()
+        )
+
+        self._register_default_providers()
+
         self.runtime_router = RuntimeRouter(
             model_manager=self.model_manager,
         )
@@ -609,12 +616,26 @@ class ApplicationContext:
         )
 
         #
+        # Conversation knowledge enrichment
+        #
+
+        knowledge_context = RAGKnowledgeContext(
+            self.retrieval_service,
+        )
+
+        self.conversation_enricher = (
+            ConversationContextEnricher(
+                knowledge_context,
+            )
+        )
+
+        #
         # Conversation execution
         #
 
         self.conversation_execution_service = (
             ConversationExecutionService(
-                enricher=conversation_enricher,
+                enricher=self.conversation_enricher,
                 executor=self.execution_service,
             )
         )
@@ -744,6 +765,9 @@ class ApplicationContext:
 
         self.llm_runtime_bootstrap = None
 
+        self.model_manager = None
+
+
         self.runtime_router = None
 
         self.execution_service = None
@@ -762,6 +786,31 @@ class ApplicationContext:
 
         return self.runtime_router.get_provider_health()
 
+    def _register_default_providers(self) -> None:
+        """Register available AI providers."""
+
+        if self.provider_registry is None:
+            return
+
+        self.provider_registry.register(
+            Provider(
+                provider_id="ollama",
+                name="Ollama",
+                endpoint="http://localhost:11434",
+                capabilities={
+                    "chat",
+                    "embedding",
+                },
+            )
+        )
+
+    def get_provider_registry(self) -> ProviderRegistry:
+        """Return AI provider registry."""
+
+        if self.provider_registry is None:
+            self.provider_registry = ProviderRegistry()
+
+        return self.provider_registry
 
     @property
     def workspace(self) -> Workspace:
