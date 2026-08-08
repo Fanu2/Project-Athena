@@ -19,17 +19,28 @@ class ModelValidator:
     ) -> bool:
         """Return whether model supports capability."""
 
+        capabilities = model.capabilities
+
         if capability == "chat":
-            return metadata.supports_chat
+            return capabilities.chat
 
         if capability == "streaming":
-            return metadata.supports_streaming
+            return capabilities.streaming
 
         if capability == "tools":
-            return metadata.supports_tools
+            return capabilities.tools
 
         if capability == "vision":
-            return metadata.supports_vision
+            return capabilities.vision
+
+        if capability == "embedding":
+            return capabilities.embeddings
+
+        if capability == "reasoning":
+            return capabilities.reasoning
+
+        if capability == "reranking":
+            return capabilities.reranking
 
         raise ValueError(
             f"Unknown capability: {capability}"
