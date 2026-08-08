@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import pytest
 
+from athena.ai.llm.capabilities import ModelCapabilities
 from athena.ai.llm.model_info import ModelInfo
 from athena.ai.llm.model_registry import ModelRegistry
 
@@ -59,6 +60,32 @@ def test_models_by_provider() -> None:
 
     assert len(models) == 1
     assert models[0].name == "qwen3:4b"
+
+
+def test_models_by_capability() -> None:
+    registry = ModelRegistry()
+
+    registry.register(
+        ModelInfo(
+            name="qwen3:4b",
+            provider="ollama",
+        )
+    )
+
+    registry.register(
+        ModelInfo(
+            name="llava",
+            provider="ollama",
+            capabilities=ModelCapabilities(
+                vision=True,
+            ),
+        )
+    )
+
+    models = registry.by_capability("vision")
+
+    assert len(models) == 1
+    assert models[0].name == "llava"
 
 
 def test_active_model() -> None:

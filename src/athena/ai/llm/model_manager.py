@@ -6,6 +6,8 @@ from __future__ import annotations
 
 from athena.ai.llm.metadata import ProviderMetadata
 from athena.ai.llm.model_info import ModelInfo
+from athena.ai.llm.model_profiles import DEFAULT_MODEL_PROFILES
+from athena.ai.llm.model_profile import ModelProfile
 from athena.ai.llm.model_registry import ModelRegistry
 from athena.ai.llm.provider_registry import ProviderRegistry
 
@@ -45,6 +47,16 @@ class ModelManager:
 
         return self._models.models()
 
+    def models_by_capability(
+        self,
+        capability: str,
+    ) -> list[ModelInfo]:
+        """Return models supporting capability."""
+
+        return self._models.by_capability(
+            capability
+        )
+
     def get_model(
         self,
         name: str,
@@ -65,6 +77,20 @@ class ModelManager:
         """Return active model."""
 
         return self._models.active()
+
+    def get_profile(
+        self,
+        capability: str,
+    ) -> ModelProfile:
+        """Return default profile for capability."""
+
+        for profile in DEFAULT_MODEL_PROFILES:
+            if profile.capability == capability:
+                return profile
+
+        raise ValueError(
+            f"No model profile for capability: {capability}"
+        )
 
     def discover_provider_models(
         self,
@@ -121,4 +147,3 @@ class ModelManager:
         )
 
         return provider.metadata
-

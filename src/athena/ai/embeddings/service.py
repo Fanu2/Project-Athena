@@ -6,7 +6,26 @@ Converts text into vector embeddings.
 
 from __future__ import annotations
 
+import os
 from typing import cast
+
+# Prevent ML libraries from creating aggressive worker pools
+# inside the Qt application process.
+
+os.environ.setdefault(
+    "TOKENIZERS_PARALLELISM",
+    "false",
+)
+
+os.environ.setdefault(
+    "OMP_NUM_THREADS",
+    "1",
+)
+
+os.environ.setdefault(
+    "MKL_NUM_THREADS",
+    "1",
+)
 
 from sentence_transformers import SentenceTransformer
 
@@ -33,6 +52,7 @@ class EmbeddingService:
         vector = self._model.encode(
             text,
             normalize_embeddings=True,
+            show_progress_bar=False,
         )
 
         return cast(
@@ -49,10 +69,11 @@ class EmbeddingService:
         vectors = self._model.encode(
             texts,
             normalize_embeddings=True,
+            show_progress_bar=False,
+            batch_size=1,
         )
 
         return cast(
             list[list[float]],
             vectors.tolist(),
         )
-

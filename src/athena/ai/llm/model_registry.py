@@ -83,6 +83,39 @@ class ModelRegistry:
             if model.provider == provider
         ]
 
+    def by_capability(
+        self,
+        capability: str,
+    ) -> list[ModelInfo]:
+        """Return models supporting capability."""
+
+        capability_map = {
+            "chat": "chat",
+            "streaming": "streaming",
+            "tools": "tools",
+            "vision": "vision",
+            "embedding": "embeddings",
+            "reasoning": "reasoning",
+            "reranking": "reranking",
+        }
+
+        attribute = capability_map.get(
+            capability
+        )
+
+        if attribute is None:
+            return []
+
+        return [
+            model
+            for model in self._models.values()
+            if getattr(
+                model.capabilities,
+                attribute,
+                False,
+            )
+        ]
+
     def set_active(
         self,
         name: str,

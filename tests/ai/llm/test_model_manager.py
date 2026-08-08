@@ -1,5 +1,5 @@
 """
-Tests for ModelManager.
+Tests for ModelManager service.
 """
 
 from __future__ import annotations
@@ -10,11 +10,23 @@ import pytest
 
 from athena.ai.llm.model_info import ModelInfo
 from athena.ai.llm.model_manager import ModelManager
+from athena.ai.llm.model_registry import ModelRegistry
 from athena.ai.llm.provider_registry import ProviderRegistry
 
 
+def create_manager() -> ModelManager:
+    """Create test model manager."""
+
+    return ModelManager(
+        model_registry=ModelRegistry(),
+        provider_registry=ProviderRegistry(),
+    )
+
+
 def test_register_model() -> None:
-    manager = ModelManager()
+    """Register and retrieve model."""
+
+    manager = create_manager()
 
     model = ModelInfo(
         name="qwen3:4b",
@@ -23,99 +35,63 @@ def test_register_model() -> None:
 
     manager.register_model(model)
 
+    assert manager.has_model("qwen3:4b")
     assert manager.get_model("qwen3:4b") == model
 
 
-def test_active_model_switch() -> None:
-    manager = ModelManager()
+def test_models_by_capability() -> None:
+    """Return models matching capability."""
+
+    manager = create_manager()
 
     manager.register_model(
         ModelInfo(
-            name="qwen3:4b",
+            name="llava",
             provider="ollama",
         )
     )
 
-    manager.register_model(
-        ModelInfo(
-            name="gpt-5",
-        provider="openai",
-        )
-    )
+    models = manager.models()
 
-    manager.set_active_model("gpt-5")
-
-    assert manager.active_model().name == "gpt-5"
+    assert len(models) == 1
+    assert models[0].name == "llava"
 
 
-def test_models_listing() -> None:
-    manager = ModelManager()
+def test_get_chat_profile() -> None:
+    """Return chat profile."""
 
-    manager.register_model(
-        ModelInfo(
-            name="qwen3:4b",
-            provider="ollama",
-        )
-    )
+    manager = create_manager()
 
-    assert len(manager.models()) == 1
+    profile = manager.get_profile("chat")
+
+    assert profile.model_name == "qwen3:4b"
+    assert profile.provider == "ollama"
 
 
-def test_discover_provider_models() -> None:
-    provider_registry = ProviderRegistry()
+def test_get_vision_profile() -> None:
+    """Return vision profile."""
 
-    provider = Mock()
-    provider.provider_name = "ollama"
-    provider.list_models.return_value = [
-        "qwen3:4b",
-        "llama3",
-    ]
+    manager = create_manager()
 
-    provider_registry.register(provider)
+    profile = manager.get_profile("vision")
 
-    manager = ModelManager(
-        provider_registry=provider_registry,
-    )
-
-    models = manager.discover_provider_models("ollama")
-
-    assert len(models) == 2
-    assert models[0].provider == "ollama"
+    assert profile.model_name == "llava"
 
 
-def test_discover_all_models() -> None:
-    provider_registry = ProviderRegistry()
+def test_get_embedding_profile() -> None:
+    """Return embedding profile."""
 
-    ollama = Mock()
-    ollama.provider_name = "ollama"
-    ollama.list_models.return_value = [
-        "qwen3:4b",
-    ]
+    manager = create_manager()
 
-    openai = Mock()
-    openai.provider_name = "openai"
-    openai.list_models.return_value = [
-        "gpt-5",
-    ]
+    profile = manager.get_profile("embedding")
 
-    provider_registry.register(ollama)
-    provider_registry.register(openai)
-
-    manager = ModelManager(
-        provider_registry=provider_registry,
-    )
-
-    models = manager.discover_all_models()
-
-    assert len(models) == 2
-    assert models[0].provider in [
-        "ollama",
-        "openai",
-    ]
+    assert profile.model_name == "nomic-embed-text"
 
 
-def test_missing_provider_discovery() -> None:
-    manager = ModelManager()
+def test_missing_profile() -> None:
+    """Reject unknown capability profile."""
 
-    with pytest.raises(KeyError):
-        manager.discover_provider_models("unknown")
+    manager = create_manager()
+
+    with pytest.raises(ValueError):
+        manager.get_profile("unknown")

@@ -8,6 +8,7 @@ from unittest.mock import Mock
 
 import pytest
 
+from athena.ai.llm.capabilities import ModelCapabilities
 from athena.ai.llm.model_info import ModelInfo
 from athena.ai.llm.model_manager import ModelManager
 from athena.ai.llm.provider_registry import ProviderRegistry
@@ -44,13 +45,6 @@ def create_manager() -> ModelManager:
         create_provider("ollama")
     )
 
-    providers.register(
-        create_provider(
-            "openai",
-            vision=True,
-        )
-    )
-
     manager = ModelManager(
         provider_registry=providers,
     )
@@ -59,13 +53,29 @@ def create_manager() -> ModelManager:
         ModelInfo(
             name="qwen3:4b",
             provider="ollama",
+            capabilities=ModelCapabilities(
+                chat=True,
+            ),
         )
     )
 
     manager.register_model(
         ModelInfo(
-            name="gpt-5",
-            provider="openai",
+            name="llava",
+            provider="ollama",
+            capabilities=ModelCapabilities(
+                vision=True,
+            ),
+        )
+    )
+
+    manager.register_model(
+        ModelInfo(
+            name="nomic-embed-text",
+            provider="ollama",
+            capabilities=ModelCapabilities(
+                embeddings=True,
+            ),
         )
     )
 
@@ -79,11 +89,12 @@ def test_route_preferred_model() -> None:
 
     result = router.route(
         RuntimeRequest(
-            preferred_model="gpt-5",
+            preferred_model="llava",
+            capability="vision",
         )
     )
 
-    assert result.name == "gpt-5"
+    assert result.name == "llava"
 
 
 def test_route_active_model_fallback() -> None:
@@ -124,3 +135,31 @@ def test_route_rejects_unsupported_capability() -> None:
                 capability="vision",
             )
         )
+
+
+def test_route_finds_capable_fallback_model() -> None:
+    router = RuntimeRouter(
+        create_manager()
+    )
+
+    result = router.route(
+        RuntimeRequest(
+            capability="vision",
+        )
+    )
+
+    assert result.name == "llava"
+
+
+def test_route_finds_embedding_model() -> None:
+    router = RuntimeRouter(
+        create_manager()
+    )
+
+    result = router.route(
+        RuntimeRequest(
+            capability="embedding",
+        )
+    )
+
+    assert result.name == "nomic-embed-text"

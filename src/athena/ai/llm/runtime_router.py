@@ -48,7 +48,8 @@ class RuntimeRouter:
             request.capability,
         ):
             raise ValueError(
-                f"Model does not support capability: {request.capability}"
+                f"Model does not support capability: "
+                f"{request.capability}"
             )
 
         return model
@@ -57,8 +58,10 @@ class RuntimeRouter:
         self,
         request: RuntimeRequest,
     ) -> ModelInfo:
-        """Select model without capability validation."""
+        """Select model using capability-aware routing."""
 
+        # Explicit model selection always wins.
+        # Capability validation happens in route().
         if request.preferred_model is not None:
             if self._models.has_model(
                 request.preferred_model
@@ -69,7 +72,48 @@ class RuntimeRouter:
 
             if not request.allow_fallback:
                 raise ValueError(
-                    f"Requested model unavailable: {request.preferred_model}"
+                    f"Requested model unavailable: "
+                    f"{request.preferred_model}"
                 )
 
-        return self._models.active_model()
+        # Prefer active model if compatible.
+        active = self._models.active_model()
+
+        if self._supports_capability(
+            active,
+            request.capability,
+        ):
+            return active
+
+        # Discover compatible fallback models.
+        if request.allow_fallback:
+            candidates = self._models.models_by_capability(
+                request.capability
+            )
+
+            if candidates:
+                return candidates[-1]
+
+        return active
+
+    def _supports_capability(
+        self,
+        model: ModelInfo,
+        capability: str,
+    ) -> bool:
+        """Return whether model supports capability."""
+
+        capability_map = {
+            "chat": model.capabilities.chat,
+            "streaming": model.capabilities.streaming,
+            "tools": model.capabilities.tools,
+            "vision": model.capabilities.vision,
+            "embedding": model.capabilities.embeddings,
+            "reasoning": model.capabilities.reasoning,
+            "reranking": model.capabilities.reranking,
+        }
+
+        if capability not in capability_map:
+            return False
+
+        return capability_map[capability]
