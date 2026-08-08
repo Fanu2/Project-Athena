@@ -1,7 +1,8 @@
 """
 AI Control Center page.
 
-Displays Athena AI runtime information.
+Displays Athena AI runtime information
+and provider health status.
 """
 
 from __future__ import annotations
@@ -12,6 +13,9 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from athena.ai.providers.provider_health_group import (
+    ProviderHealthGroup,
+)
 from athena.core.application_context import ApplicationContext
 
 
@@ -39,6 +43,12 @@ class AIControlCenterPage(QWidget):
             self._title,
         )
 
+        self._providers_label = QLabel()
+
+        self._layout.addWidget(
+            self._providers_label,
+        )
+
         self._models_label = QLabel()
 
         self._layout.addWidget(
@@ -50,11 +60,79 @@ class AIControlCenterPage(QWidget):
     def refresh(self) -> None:
         """Refresh AI runtime information."""
 
+        self._refresh_provider_health()
+
+        self._refresh_models()
+
+    def _refresh_provider_health(self) -> None:
+        """Display aggregated provider health."""
+
+        health = (
+            self._context.get_provider_health()
+        )
+
+        if not health:
+            self._providers_label.setText(
+                "AI Providers\n\n"
+                "No provider information available."
+            )
+            return
+
+        groups = (
+            ProviderHealthGroup.from_health(
+                health,
+            )
+        )
+
+        lines = [
+            "AI Providers",
+            "",
+        ]
+
+        for provider in groups:
+
+            lines.extend(
+                [
+                    f"Provider: {provider.provider_id}",
+                    f"Status: {provider.status}",
+                    "",
+                    "Models:",
+                ]
+            )
+
+            for model in provider.models:
+                lines.append(
+                    f"  • {model}"
+                )
+
+            lines.extend(
+                [
+                    "",
+                    (
+                        "Capabilities: "
+                        + ", ".join(
+                            sorted(
+                                provider.capabilities
+                            )
+                        )
+                    ),
+                    "",
+                ]
+            )
+
+        self._providers_label.setText(
+            "\n".join(lines),
+        )
+
+    def _refresh_models(self) -> None:
+        """Display installed models."""
+
         manager = self._context.model_manager
 
         if manager is None:
             self._models_label.setText(
-                "Model Manager unavailable\n"
+                "Installed Models\n\n"
+                "Model Manager unavailable.\n"
                 "Open a workspace to initialize AI runtime."
             )
             return

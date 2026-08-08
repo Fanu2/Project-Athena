@@ -8,6 +8,10 @@ from athena.ai.llm.model_info import ModelInfo
 from athena.ai.llm.model_manager import ModelManager
 from athena.ai.llm.model_validator import ModelValidator
 from athena.ai.llm.runtime_request import RuntimeRequest
+from athena.ai.providers.provider_health import ProviderHealth
+from athena.ai.providers.provider_health_service import (
+    ProviderHealthService,
+)
 
 
 class RuntimeRouter:
@@ -17,6 +21,7 @@ class RuntimeRouter:
         self,
         model_manager: ModelManager | None = None,
         validator: ModelValidator | None = None,
+        health_service: ProviderHealthService | None = None,
     ) -> None:
         """Initialize router."""
 
@@ -30,6 +35,12 @@ class RuntimeRouter:
             validator
             if validator is not None
             else ModelValidator()
+        )
+
+        self._health_service = (
+            health_service
+            if health_service is not None
+            else ProviderHealthService()
         )
 
     def route(
@@ -53,6 +64,41 @@ class RuntimeRouter:
             )
 
         return model
+
+    def get_provider_health(
+        self,
+    ) -> list[ProviderHealth]:
+        """
+        Return health information for available providers.
+
+        Initial implementation reports registered models.
+        Runtime probing will be added in later A17.3 stages.
+        """
+
+        health = []
+
+        for model in self._models.models():
+            health.append(
+                self._health_service.check_provider(
+                    provider_id=model.provider,
+                    model=model.name,
+                    capabilities=tuple(
+                        capability
+                        for capability, enabled in {
+                            "chat": model.capabilities.chat,
+                            "streaming": model.capabilities.streaming,
+                            "tools": model.capabilities.tools,
+                            "vision": model.capabilities.vision,
+                            "embedding": model.capabilities.embeddings,
+                            "reasoning": model.capabilities.reasoning,
+                            "reranking": model.capabilities.reranking,
+                        }.items()
+                        if enabled
+                    ),
+                )
+            )
+
+        return health
 
     def _select_model(
         self,

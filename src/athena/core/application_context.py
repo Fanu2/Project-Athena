@@ -661,6 +661,8 @@ class ApplicationContext:
             athena_directory / "notes.json",
         )
 
+    
+
     def close_workspace(self) -> None:
         """Release workspace-specific services."""
 
@@ -751,6 +753,15 @@ class ApplicationContext:
         #
 
         self.current_workspace = None
+
+    def get_provider_health(self):
+        """Return AI provider health information."""
+
+        if self.runtime_router is None:
+            return []
+
+        return self.runtime_router.get_provider_health()
+
 
     @property
     def workspace(self) -> Workspace:
