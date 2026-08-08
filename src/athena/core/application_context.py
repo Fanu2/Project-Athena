@@ -193,6 +193,8 @@ from athena.services.knowledge_workspace_service import (
     KnowledgeWorkspaceService,
 )
 
+from athena.ai.llm.model_manager import ModelManager
+
 
 class ApplicationContext:
     """Owns application-wide services."""
@@ -315,6 +317,8 @@ class ApplicationContext:
         self.runtime_router: (
             RuntimeRouter | None
         ) = None
+
+        self.model_manager: ModelManager | None = None
 
         self.execution_service: (
             ExecutionService | None
@@ -592,12 +596,12 @@ class ApplicationContext:
             LLMRuntimeBootstrap()
         )
 
-        model_manager = (
+        self.model_manager = (
             self.llm_runtime_bootstrap.initialize()
         )
 
         self.runtime_router = RuntimeRouter(
-            model_manager=model_manager,
+            model_manager=self.model_manager,
         )
 
         self.execution_service = ExecutionService(

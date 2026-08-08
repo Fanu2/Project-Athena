@@ -89,7 +89,7 @@ class MainWindow(QMainWindow):
         self.ask_athena: AskAthenaPage
         self.page_stack: QStackedWidget
         self.ai_control_center: AIControlCenterPage
-        self.ai_control_center = AIControlCenterPage()
+        self.ai_control_center = AIControlCenterPage(context,)
         self.status_bar: QStatusBar
         self.toolbar: QToolBar
         self.document_actions: DocumentActions
@@ -378,6 +378,10 @@ class MainWindow(QMainWindow):
             workspace.path,
         )
 
+        # Refresh AI Control Center after runtime initialization
+        if self.ai_control_center is not None:
+            self.ai_control_center.refresh()
+
         document_service = self.context.document_service
 
         if document_service is not None:
@@ -389,8 +393,10 @@ class MainWindow(QMainWindow):
                 document_service.document_service,
             )
 
-        # NEW: Connect Indexed Documents page to the newly created service
-        indexed_document_service = self.context.indexed_document_service
+        # Connect Indexed Documents page to the newly created service
+        indexed_document_service = (
+            self.context.indexed_document_service
+        )
 
         if indexed_document_service is not None:
             self.indexed_documents.set_document_service(
@@ -415,7 +421,9 @@ class MainWindow(QMainWindow):
                 bookmark_service,
             )
 
-        query_service = self.context.conversation_query_service
+        query_service = (
+            self.context.conversation_query_service
+        )
 
         if query_service is not None:
             self.ask_athena.set_query_service(
