@@ -55,6 +55,12 @@ from athena.presentation.viewer import (
 from athena.presentation.settings import AISettingsPage
 
 from athena.presentation.events import events
+from athena.presentation.ai.ask_athena_page import (
+    AskAthenaPage,
+)
+from athena.presentation.ai.ai_control_center_page import (
+    AIControlCenterPage,
+)
 
 
 class MainWindow(QMainWindow):
@@ -82,6 +88,8 @@ class MainWindow(QMainWindow):
         self.search: SearchWorkspace
         self.ask_athena: AskAthenaPage
         self.page_stack: QStackedWidget
+        self.ai_control_center: AIControlCenterPage
+        self.ai_control_center = AIControlCenterPage()
         self.status_bar: QStatusBar
         self.toolbar: QToolBar
         self.document_actions: DocumentActions
@@ -211,6 +219,10 @@ class MainWindow(QMainWindow):
         self.page_stack.addWidget(
             self.ask_athena,
         )
+        
+        self.page_stack.addWidget(
+			self.ai_control_center,
+		)
 
         self.page_stack.addWidget(
             self.settings,
@@ -260,6 +272,10 @@ class MainWindow(QMainWindow):
         self.navigation.ai_selected.connect(
             self.show_ai,
         )
+        
+        self.navigation.ai_control_center_selected.connect(
+			self.show_ai_control_center,
+		)
 
         self.documents.table.document_activated.connect(
             self._open_document_viewer,
@@ -320,6 +336,13 @@ class MainWindow(QMainWindow):
 
         self.page_stack.setCurrentWidget(
             self.ask_athena,
+        )
+        
+    def show_ai_control_center(self) -> None:
+        """Show AI Control Center page."""
+
+        self.page_stack.setCurrentWidget(
+            self.ai_control_center,
         )
 
     def _create_status_bar(self) -> None:

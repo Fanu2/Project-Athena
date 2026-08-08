@@ -17,6 +17,7 @@ class NavigationWidget(QListWidget):
     search_selected = Signal()
     bookmarks_selected = Signal()
     ai_selected = Signal()
+    ai_control_center_selected = Signal()
     settings_selected = Signal()
 
     def __init__(self) -> None:
@@ -32,6 +33,7 @@ class NavigationWidget(QListWidget):
         self.addItem("🔍 Search")
         self.addItem("⭐ Bookmarks")
         self.addItem("🤖 Ask Athena")
+        self.addItem("🧠 AI Control Center")
         self.addItem("⚙ Settings")
 
         self.setCurrentRow(0)
@@ -66,5 +68,7 @@ class NavigationWidget(QListWidget):
                 self.ai_selected.emit()
 
             case 6:
-                self.settings_selected.emit()
+                self.ai_control_center_selected.emit()
 
+            case 7:
+                self.settings_selected.emit()
