@@ -14,9 +14,19 @@ from athena.knowledge.intelligence.document_profile import (
     DocumentProfile,
 )
 
+from athena.knowledge.intelligence.document_structure import (
+    DocumentStructureNode,
+)
+
+from athena.knowledge.intelligence.structure_analyzer import (
+    StructureAnalyzer,
+)
+
 
 __all__ = [
     "DocumentAnalyzer",
     "DocumentIntelligenceService",
     "DocumentProfile",
+    "DocumentStructureNode",
+    "StructureAnalyzer",
 ]
