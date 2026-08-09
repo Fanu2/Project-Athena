@@ -4,16 +4,16 @@
         "path": "/home/jasvir/Projects/Project-Athena"
     },
     "statistics": {
-        "source_files": 811,
+        "source_files": 834,
         "packages": 0,
-        "modules": 811,
-        "classes": 500,
-        "functions": 585,
-        "methods": 1169,
-        "imports": 2852
+        "modules": 834,
+        "classes": 514,
+        "functions": 604,
+        "methods": 1186,
+        "imports": 2978
     },
     "dependency_graph": {
-        "edges": 2403
+        "edges": 2520
     },
     "complexity": [
         {
@@ -69,29 +69,29 @@
     ],
     "documentation": {
         "modules": {
-            "documented": 542,
-            "total": 811,
-            "coverage": 66.83
+            "documented": 567,
+            "total": 834,
+            "coverage": 67.99
         },
         "classes": {
-            "documented": 468,
-            "total": 500,
-            "coverage": 93.6
+            "documented": 482,
+            "total": 514,
+            "coverage": 93.77
         },
         "functions": {
-            "documented": 194,
-            "total": 585,
-            "coverage": 33.16
+            "documented": 215,
+            "total": 604,
+            "coverage": 35.6
         },
         "methods": {
-            "documented": 894,
-            "total": 1169,
+            "documented": 907,
+            "total": 1186,
             "coverage": 76.48
         },
         "overall": {
-            "documented": 2098,
-            "total": 3065,
-            "coverage": 68.45
+            "documented": 2171,
+            "total": 3138,
+            "coverage": 69.18
         }
     }
 }

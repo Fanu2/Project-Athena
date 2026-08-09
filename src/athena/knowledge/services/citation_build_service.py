@@ -4,6 +4,8 @@ Athena Citation Build Service
 Creates citation records from evidence.
 """
 
+from __future__ import annotations
+
 from athena.knowledge.acquisition.domain.evidence_record import (
     EvidenceRecord,
 )
@@ -61,8 +63,20 @@ class CitationBuildService:
             },
         )
 
+        return self.build_record(
+            citation,
+        )
+
+    def build_record(
+        self,
+        citation: CitationRecord,
+    ) -> CitationRecord:
+        """
+        Persist an existing citation record.
+        """
+
         self._repository.save(
-            citation
+            citation,
         )
 
         return citation

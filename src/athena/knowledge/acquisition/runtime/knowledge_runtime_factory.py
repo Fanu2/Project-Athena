@@ -4,6 +4,10 @@ Athena Knowledge Runtime Factory
 Creates fully configured AKC execution contexts.
 """
 
+from __future__ import annotations
+
+from typing import Any
+
 from ..domain.knowledge_context import (
     KnowledgeContext,
 )
@@ -25,32 +29,21 @@ class KnowledgeRuntimeFactory:
         citation_repository=None,
         evidence_build_service=None,
         citation_build_service=None,
+        document_evidence_service=None,
     ) -> None:
 
         self._services = {
-            "provider_manager":
-                provider_manager,
-
-            "knowledge_repository":
-                knowledge_repository,
-
-            "knowledge_indexer":
-                knowledge_indexer,
-
-            "relationship_repository":
-                relationship_repository,
-
-            "evidence_repository":
-                evidence_repository,
-
-            "citation_repository":
-                citation_repository,
-
-            "evidence_build_service":
-                evidence_build_service,
-
-            "citation_build_service":
-                citation_build_service,
+            "provider_manager": provider_manager,
+            "knowledge_repository": knowledge_repository,
+            "knowledge_indexer": knowledge_indexer,
+            "relationship_repository": relationship_repository,
+            "evidence_repository": evidence_repository,
+            "citation_repository": citation_repository,
+            "evidence_build_service": evidence_build_service,
+            "citation_build_service": citation_build_service,
+            "document_evidence_service": (
+                document_evidence_service
+            ),
         }
 
     def create_context(
@@ -62,6 +55,40 @@ class KnowledgeRuntimeFactory:
 
         context = KnowledgeContext()
 
+        self._register_services(
+            context,
+        )
+
+        return context
+
+    def create_document_context(
+        self,
+        document: Any,
+    ) -> KnowledgeContext:
+        """
+        Create AKC context for a document.
+
+        Adds document runtime data required by
+        Document Intelligence.
+        """
+
+        context = self.create_context()
+
+        context.add_service(
+            "document",
+            document,
+        )
+
+        return context
+
+    def _register_services(
+        self,
+        context: KnowledgeContext,
+    ) -> None:
+        """
+        Register runtime services.
+        """
+
         for name, service in (
             self._services.items()
         ):
@@ -72,5 +99,3 @@ class KnowledgeRuntimeFactory:
                     name,
                     service,
                 )
-
-        return context

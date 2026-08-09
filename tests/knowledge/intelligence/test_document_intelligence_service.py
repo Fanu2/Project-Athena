@@ -75,6 +75,16 @@ def test_service_generates_complete_intelligence() -> None:
         == 1
     )
 
+    assert (
+        len(result.evidence)
+        == 1
+    )
+
+    assert (
+        result.evidence[0].content
+        == "Athena Document"
+    )
+
 
 def test_service_preserves_document_metadata() -> None:
     """Service keeps source metadata."""
@@ -96,4 +106,9 @@ def test_service_preserves_document_metadata() -> None:
     assert (
         result.profile.metadata["file_size"]
         == 2048
+    )
+
+    assert (
+        result.evidence[0].metadata["file_type"]
+        == "pdf"
     )

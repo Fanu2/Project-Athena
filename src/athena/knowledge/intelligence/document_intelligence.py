@@ -18,6 +18,10 @@ from athena.knowledge.intelligence.document_structure import (
     DocumentStructureNode,
 )
 
+from athena.knowledge.intelligence.evidence_profile import (
+    EvidenceProfile,
+)
+
 
 @dataclass(slots=True)
 class DocumentIntelligence:
@@ -30,3 +34,5 @@ class DocumentIntelligence:
     metadata: DocumentMetadataProfile
 
     structure: list[DocumentStructureNode]
+
+    evidence: list[EvidenceProfile]

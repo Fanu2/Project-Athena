@@ -2,7 +2,8 @@
 Workspace document service.
 
 Coordinates document management,
-indexing, and knowledge compilation.
+indexing, document intelligence,
+and knowledge compilation.
 """
 
 from __future__ import annotations
@@ -25,6 +26,10 @@ from athena.knowledge.services.knowledge_compilation_service import (
     KnowledgeCompilationService,
 )
 
+from athena.knowledge.intelligence.document_intelligence_service import (
+    DocumentIntelligenceService,
+)
+
 
 class WorkspaceDocumentService:
     """
@@ -33,6 +38,7 @@ class WorkspaceDocumentService:
     Coordinates:
     - document storage
     - indexing
+    - document intelligence
     - knowledge compilation
     """
 
@@ -41,6 +47,7 @@ class WorkspaceDocumentService:
         document_service: DocumentService,
         indexing_service: IndexingService,
         knowledge_compiler: KnowledgeCompilationService | None = None,
+        intelligence_service: DocumentIntelligenceService | None = None,
         knowledge_context: KnowledgeContext | None = None,
         runtime_factory: KnowledgeRuntimeFactory | None = None,
     ) -> None:
@@ -55,6 +62,14 @@ class WorkspaceDocumentService:
         self._knowledge_compiler = (
             knowledge_compiler
         )
+
+        self._intelligence = (
+            intelligence_service
+            if intelligence_service is not None
+            else DocumentIntelligenceService()
+        )
+
+        self._runtime_factory = runtime_factory
 
         if knowledge_context is not None:
 
@@ -101,9 +116,7 @@ class WorkspaceDocumentService:
         Return all documents.
         """
 
-        return (
-            self._documents.list_documents()
-        )
+        return self._documents.list_documents()
 
     def import_document(
         self,
@@ -126,6 +139,17 @@ class WorkspaceDocumentService:
         )
 
         #
+        # Athena Document Intelligence
+        #
+
+        print(
+            "DOCUMENT INTELLIGENCE ACTIVE:",
+            type(
+                self._intelligence,
+            ).__name__,
+        )
+
+        #
         # Athena Knowledge Compilation
         #
 
@@ -134,26 +158,38 @@ class WorkspaceDocumentService:
             print(
                 "AKC COMPILER ACTIVE:",
                 type(
-                    self._knowledge_compiler
+                    self._knowledge_compiler,
                 ).__name__,
             )
 
             print(
                 "AKC KNOWLEDGE REPOSITORY:",
                 self._knowledge_context.get_service(
-                    "knowledge_repository"
+                    "knowledge_repository",
                 ),
             )
 
+            compile_context = (
+                self._knowledge_context
+            )
+
+            if self._runtime_factory is not None:
+
+                compile_context = (
+                    self._runtime_factory.create_document_context(
+                        str(document_path),
+                    )
+                )
+
             self._knowledge_compiler.compile_document(
                 str(document_path),
-                self._knowledge_context,
+                compile_context,
             )
 
         else:
 
             print(
-                "AKC COMPILER NOT CONFIGURED"
+                "AKC COMPILER NOT CONFIGURED",
             )
 
         return document_path

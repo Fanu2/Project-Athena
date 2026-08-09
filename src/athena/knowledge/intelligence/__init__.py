@@ -34,6 +34,22 @@ from athena.knowledge.intelligence.document_intelligence import (
     DocumentIntelligence,
 )
 
+from athena.knowledge.intelligence.evidence_profile import (
+    EvidenceProfile,
+)
+
+from athena.knowledge.intelligence.evidence_analyzer import (
+    EvidenceAnalyzer,
+)
+
+from athena.knowledge.intelligence.evidence_adapter import (
+    EvidenceAdapter,
+)
+
+from athena.knowledge.intelligence.citation_adapter import (
+    CitationAdapter,
+)
+
 
 __all__ = [
     "DocumentAnalyzer",
@@ -44,4 +60,8 @@ __all__ = [
     "DocumentMetadataProfile",
     "MetadataAnalyzer",
     "DocumentIntelligence",
+    "EvidenceProfile",
+    "EvidenceAnalyzer",
+    "EvidenceAdapter",
+    "CitationAdapter",
 ]

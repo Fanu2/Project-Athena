@@ -26,6 +26,10 @@ from athena.knowledge.intelligence.structure_analyzer import (
     StructureAnalyzer,
 )
 
+from athena.knowledge.intelligence.evidence_analyzer import (
+    EvidenceAnalyzer,
+)
+
 
 class DocumentIntelligenceService:
     """
@@ -37,6 +41,7 @@ class DocumentIntelligenceService:
         analyzer: DocumentAnalyzer | None = None,
         structure_analyzer: StructureAnalyzer | None = None,
         metadata_analyzer: MetadataAnalyzer | None = None,
+        evidence_analyzer: EvidenceAnalyzer | None = None,
     ) -> None:
         """Initialize service."""
 
@@ -58,6 +63,12 @@ class DocumentIntelligenceService:
             else MetadataAnalyzer()
         )
 
+        self._evidence = (
+            evidence_analyzer
+            if evidence_analyzer is not None
+            else EvidenceAnalyzer()
+        )
+
     def analyze(
         self,
         document: Document,
@@ -77,5 +88,8 @@ class DocumentIntelligenceService:
             ),
             structure=self._structure.analyze(
                 representation,
+            ),
+            evidence=self._evidence.analyze(
+                document,
             ),
         )

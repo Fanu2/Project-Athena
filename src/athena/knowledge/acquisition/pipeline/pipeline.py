@@ -7,6 +7,7 @@ Creates the default AKC execution pipeline.
 from ..engine.pass_manager import PassManager
 
 from .import_pass import ImportPass
+from .intelligence_pass import IntelligencePass
 from .structure_pass import StructurePass
 from .semantic_pass import SemanticPass
 from .relationship_pass import RelationshipPass
@@ -34,6 +35,10 @@ def create_default_pipeline() -> PassManager:
 
     manager.register(
         ImportPass()
+    )
+
+    manager.register(
+        IntelligencePass()
     )
 
     manager.register(

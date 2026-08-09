@@ -1,9 +1,11 @@
 """
 Athena Evidence Build Service
 
-Creates evidence records from
-compiled knowledge objects.
+Creates and stores evidence records from
+knowledge objects and document intelligence.
 """
+
+from __future__ import annotations
 
 from athena.knowledge.acquisition.domain.evidence_record import (
     EvidenceRecord,
@@ -70,8 +72,22 @@ class EvidenceBuildService:
             },
         )
 
+        return self.build_record(
+            evidence,
+        )
+
+    def build_record(
+        self,
+        evidence: EvidenceRecord,
+    ) -> EvidenceRecord:
+        """
+        Persist an existing evidence record.
+
+        Used by Document Intelligence adapters.
+        """
+
         self._repository.save(
-            evidence
+            evidence,
         )
 
         return evidence
