@@ -4,19 +4,15 @@ LLM runtime bootstrap.
 
 from __future__ import annotations
 
-from athena.ai.llm.model_manager import (
-    ModelManager,
-)
-
-from athena.ai.llm.provider_registry import (
-    ProviderRegistry,
-)
-
+from athena.ai.llm.model_manager import ModelManager
+from athena.ai.llm.provider_registry import ProviderRegistry
 from athena.ai.llm.providers import (
     LMStudioProvider,
     OllamaProvider,
+    OpenAICompatibleProvider,
     OpenAIProvider,
 )
+from athena.settings import LLMSettings
 
 
 class LLMRuntimeBootstrap:
@@ -58,6 +54,16 @@ class LLMRuntimeBootstrap:
             OpenAIProvider()
         )
 
+        self._providers.register(
+            OpenAICompatibleProvider(
+                settings=LLMSettings(
+                    provider="llama-cpp-local",
+                    model="Qwen3.5-2B-Q4_K_M.gguf",
+                    base_url="http://localhost:11434",
+                )
+            )
+        )
+
         self._discover_models_safely()
 
         self._initialized = True
@@ -67,7 +73,7 @@ class LLMRuntimeBootstrap:
     def _discover_models_safely(
         self,
     ) -> None:
-        """Discover available models without failing."""
+        """Discover models without failing."""
 
         for provider_name in self._providers.names():
             try:
@@ -77,6 +83,8 @@ class LLMRuntimeBootstrap:
 
             except Exception:
                 continue
+
+        self._models._models.select_best_model()
 
     @property
     def providers(

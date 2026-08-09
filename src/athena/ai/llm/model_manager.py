@@ -4,6 +4,7 @@ Model manager service.
 
 from __future__ import annotations
 
+from athena.ai.llm.capabilities import ModelCapabilities
 from athena.ai.llm.metadata import ProviderMetadata
 from athena.ai.llm.model_info import ModelInfo
 from athena.ai.llm.model_profiles import DEFAULT_MODEL_PROFILES
@@ -34,15 +35,39 @@ class ModelManager:
             else ProviderRegistry()
         )
 
+    def _infer_capabilities(
+        self,
+        model_name: str,
+    ) -> ModelCapabilities:
+        """Infer model capabilities."""
+
+        name = model_name.lower()
+
+        return ModelCapabilities(
+            chat=True,
+            vision=(
+                "llava" in name
+                or "vision" in name
+            ),
+            embeddings=(
+                "embed" in name
+            ),
+            local=True,
+        )
+
     def register_model(
         self,
         model: ModelInfo,
     ) -> None:
         """Register a model."""
 
-        self._models.register(model)
+        self._models.register(
+            model,
+        )
 
-    def models(self) -> list[ModelInfo]:
+    def models(
+        self,
+    ) -> list[ModelInfo]:
         """Return available models."""
 
         return self._models.models()
@@ -54,7 +79,7 @@ class ModelManager:
         """Return models supporting capability."""
 
         return self._models.by_capability(
-            capability
+            capability,
         )
 
     def get_model(
@@ -63,7 +88,9 @@ class ModelManager:
     ) -> ModelInfo:
         """Return model."""
 
-        return self._models.get(name)
+        return self._models.get(
+            name,
+        )
 
     def set_active_model(
         self,
@@ -71,9 +98,13 @@ class ModelManager:
     ) -> None:
         """Set active model."""
 
-        self._models.set_active(name)
+        self._models.set_active(
+            name,
+        )
 
-    def active_model(self) -> ModelInfo:
+    def active_model(
+        self,
+    ) -> ModelInfo:
         """Return active model."""
 
         return self._models.active()
@@ -98,23 +129,40 @@ class ModelManager:
     ) -> list[ModelInfo]:
         """Discover models from provider."""
 
-        provider = self._providers.get(provider_name)
+        provider = self._providers.get(
+            provider_name,
+        )
+
+        try:
+            provider_models = provider.list_models()
+
+        except Exception:
+            return []
 
         models = [
             ModelInfo(
                 name=name,
                 provider=provider_name,
+                capabilities=(
+                    self._infer_capabilities(name)
+                ),
             )
-            for name in provider.list_models()
+            for name in provider_models
         ]
 
         for model in models:
-            if not self._models.exists(model.name):
-                self._models.register(model)
+            if not self._models.exists(
+                model.name,
+            ):
+                self._models.register(
+                    model,
+                )
 
         return models
 
-    def discover_all_models(self) -> list[ModelInfo]:
+    def discover_all_models(
+        self,
+    ) -> list[ModelInfo]:
         """Discover models from all providers."""
 
         discovered: list[ModelInfo] = []
@@ -122,9 +170,11 @@ class ModelManager:
         for provider_name in self._providers.names():
             discovered.extend(
                 self.discover_provider_models(
-                    provider_name
+                    provider_name,
                 )
             )
+
+        self._models.select_best_model()
 
         return discovered
 
@@ -134,7 +184,9 @@ class ModelManager:
     ) -> bool:
         """Return whether model exists."""
 
-        return self._models.exists(name)
+        return self._models.exists(
+            name,
+        )
 
     def provider_metadata(
         self,
@@ -143,7 +195,7 @@ class ModelManager:
         """Return metadata for model provider."""
 
         provider = self._providers.get(
-            model.provider
+            model.provider,
         )
 
         return provider.metadata

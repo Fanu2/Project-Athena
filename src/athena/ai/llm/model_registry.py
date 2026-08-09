@@ -66,10 +66,14 @@ class ModelRegistry:
 
         return name in self._models
 
-    def models(self) -> list[ModelInfo]:
+    def models(
+        self,
+    ) -> list[ModelInfo]:
         """Return all models."""
 
-        return list(self._models.values())
+        return list(
+            self._models.values()
+        )
 
     def by_provider(
         self,
@@ -100,7 +104,7 @@ class ModelRegistry:
         }
 
         attribute = capability_map.get(
-            capability
+            capability,
         )
 
         if attribute is None:
@@ -116,6 +120,32 @@ class ModelRegistry:
             )
         ]
 
+    def select_best_model(
+        self,
+    ) -> None:
+        """Select the best default model."""
+
+        if not self._models:
+            self._active = None
+            return
+
+        candidates = list(
+            self._models.values()
+        )
+
+        candidates.sort(
+            key=lambda model: (
+                model.capabilities.chat,
+                model.capabilities.reasoning,
+                not model.capabilities.vision,
+                not model.capabilities.embeddings,
+                model.context_window,
+            ),
+            reverse=True,
+        )
+
+        self._active = candidates[0].name
+
     def set_active(
         self,
         name: str,
@@ -127,7 +157,9 @@ class ModelRegistry:
 
         self._active = name
 
-    def active(self) -> ModelInfo:
+    def active(
+        self,
+    ) -> ModelInfo:
         """Return active model."""
 
         if self._active is None:
