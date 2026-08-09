@@ -27,6 +27,10 @@ class EvidenceRecord:
 
     text: str
 
+    #
+    # Retrieval ranking signals
+    #
+
     semantic_score: float = 0.0
 
     keyword_score: float = 0.0
@@ -37,6 +41,24 @@ class EvidenceRecord:
 
     document_authority_score: float = 0.0
 
+    #
+    # Final ranking result
+    #
+
     final_score: float = 0.0
 
+    #
+    # Human-readable explanation
+    #
+
     ranking_reasons: tuple[str, ...] = ()
+
+    #
+    # A19 Retrieval Intelligence metadata
+    #
+
+    retrieval_strategy: str = "hybrid"
+
+    ranking_profile: str = "default"
+
+    planner_confidence: float = 0.0

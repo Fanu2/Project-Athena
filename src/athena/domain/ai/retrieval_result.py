@@ -14,8 +14,9 @@ class RetrievalResult:
     """
     One retrieved document passage.
 
-    Carries retrieval scoring information and
-    optional source navigation metadata.
+    Carries retrieval scoring information,
+    source navigation metadata, and retrieval
+    intelligence context.
     """
 
     document_id: UUID
@@ -30,6 +31,10 @@ class RetrievalResult:
 
     document_path: Path | None = None
 
+    #
+    # Ranking signals
+    #
+
     semantic_score: float = 0.0
 
     keyword_score: float = 0.0
@@ -39,3 +44,13 @@ class RetrievalResult:
     identity_score: float = 0.0
 
     document_authority_score: float = 0.0
+
+    #
+    # A19 Retrieval Intelligence metadata
+    #
+
+    retrieval_strategy: str = "hybrid"
+
+    ranking_profile: str = "default"
+
+    planner_confidence: float = 0.0

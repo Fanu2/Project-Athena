@@ -15,8 +15,15 @@ class EvidenceExplainer:
         metadata_score: float,
         identity_score: float,
         document_authority_score: float,
+        strategy: str | None = None,
+        ranking_profile: str | None = None,
     ) -> tuple[str, ...]:
-        """Generate ranking reasons."""
+        """
+        Generate ranking reasons.
+
+        Additional retrieval context is optional to
+        preserve existing callers.
+        """
 
         reasons: list[str] = []
 
@@ -43,6 +50,16 @@ class EvidenceExplainer:
         if document_authority_score >= 0.5:
             reasons.append(
                 "High document authority"
+            )
+
+        if ranking_profile:
+            reasons.append(
+                f"Ranking profile applied: {ranking_profile}"
+            )
+
+        if strategy:
+            reasons.append(
+                f"Retrieval strategy: {strategy}"
             )
 
         if not reasons:
