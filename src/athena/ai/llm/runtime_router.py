@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from athena.ai.llm.model_info import ModelInfo
 from athena.ai.llm.model_manager import ModelManager
+from athena.ai.llm.model_scorer import ModelScoringService
 from athena.ai.llm.model_validator import ModelValidator
 from athena.ai.llm.runtime_request import RuntimeRequest
 from athena.ai.providers.health_status import HealthStatus
@@ -23,6 +24,7 @@ class RuntimeRouter:
         model_manager: ModelManager | None = None,
         validator: ModelValidator | None = None,
         health_service: ProviderHealthService | None = None,
+        scorer: ModelScoringService | None = None,
     ) -> None:
         """Initialize router."""
 
@@ -44,13 +46,21 @@ class RuntimeRouter:
             else ProviderHealthService()
         )
 
+        self._scorer = (
+            scorer
+            if scorer is not None
+            else ModelScoringService()
+        )
+
     def route(
         self,
         request: RuntimeRequest,
     ) -> ModelInfo:
         """Select compatible model for request."""
 
-        model = self._select_model(request)
+        model = self._select_model(
+            request,
+        )
 
         metadata = self._models.provider_metadata(
             model,
@@ -80,18 +90,8 @@ class RuntimeRouter:
                 self._health_service.check_provider(
                     provider_id=model.provider,
                     model=model.name,
-                    capabilities=tuple(
-                        capability
-                        for capability, enabled in {
-                            "chat": model.capabilities.chat,
-                            "streaming": model.capabilities.streaming,
-                            "tools": model.capabilities.tools,
-                            "vision": model.capabilities.vision,
-                            "embedding": model.capabilities.embeddings,
-                            "reasoning": model.capabilities.reasoning,
-                            "reranking": model.capabilities.reranking,
-                        }.items()
-                        if enabled
+                    capabilities=self._capabilities(
+                        model,
                     ),
                 )
             )
@@ -102,9 +102,8 @@ class RuntimeRouter:
         self,
         request: RuntimeRequest,
     ) -> ModelInfo:
-        """Select model using capability-aware routing."""
+        """Select model using routing intelligence."""
 
-        # Explicit model selection always wins.
         if request.preferred_model is not None:
             if self._models.has_model(
                 request.preferred_model,
@@ -119,31 +118,27 @@ class RuntimeRouter:
                     f"{request.preferred_model}"
                 )
 
-        # Find compatible candidates.
         if request.allow_fallback:
             candidates = self._models.models_by_capability(
                 request.capability,
             )
 
             if candidates:
-                healthy_candidates = (
+                healthy = (
                     self._filter_healthy_candidates(
                         candidates,
                     )
                 )
 
-                if healthy_candidates:
+                if healthy:
                     return self._rank_candidates(
-                        healthy_candidates,
+                        healthy,
                     )[0]
 
-                # If health probing fails completely,
-                # preserve previous fallback behavior.
                 return self._rank_candidates(
                     candidates,
                 )[0]
 
-        # Use active model as final fallback.
         return self._models.active_model()
 
     def _filter_healthy_candidates(
@@ -158,18 +153,8 @@ class RuntimeRouter:
             health = self._health_service.check_provider(
                 provider_id=model.provider,
                 model=model.name,
-                capabilities=tuple(
-                    capability
-                    for capability, enabled in {
-                        "chat": model.capabilities.chat,
-                        "streaming": model.capabilities.streaming,
-                        "tools": model.capabilities.tools,
-                        "vision": model.capabilities.vision,
-                        "embedding": model.capabilities.embeddings,
-                        "reasoning": model.capabilities.reasoning,
-                        "reranking": model.capabilities.reranking,
-                    }.items()
-                    if enabled
+                capabilities=self._capabilities(
+                    model,
                 ),
             )
 
@@ -182,17 +167,30 @@ class RuntimeRouter:
         self,
         candidates: list[ModelInfo],
     ) -> list[ModelInfo]:
-        """Rank compatible routing candidates."""
+        """Rank candidates using scoring service."""
 
-        return sorted(
+        return self._scorer.rank(
             candidates,
-            key=lambda model: (
-                model.capabilities.reasoning,
-                model.capabilities.chat,
-                model.capabilities.local,
-                model.context_window,
-            ),
-            reverse=True,
+        )
+
+    def _capabilities(
+        self,
+        model: ModelInfo,
+    ) -> tuple[str, ...]:
+        """Return enabled model capabilities."""
+
+        return tuple(
+            capability
+            for capability, enabled in {
+                "chat": model.capabilities.chat,
+                "streaming": model.capabilities.streaming,
+                "tools": model.capabilities.tools,
+                "vision": model.capabilities.vision,
+                "embedding": model.capabilities.embeddings,
+                "reasoning": model.capabilities.reasoning,
+                "reranking": model.capabilities.reranking,
+            }.items()
+            if enabled
         )
 
     def _supports_capability(
