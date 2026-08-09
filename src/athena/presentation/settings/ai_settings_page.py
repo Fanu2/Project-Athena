@@ -15,7 +15,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from athena.ai.llm.ollama import OllamaProvider
+from athena.ai.llm.provider import LLMProvider
 from athena.settings import (
     AISettings,
     AISettingsService,
@@ -27,13 +27,18 @@ class AISettingsPage(QWidget):
 
     def __init__(
         self,
-        provider: OllamaProvider | None = None,
+        provider: LLMProvider | None = None,
     ) -> None:
         """Initialize the AI Settings page."""
 
         super().__init__()
 
-        self._provider = provider or OllamaProvider()
+        if provider is None:
+            raise RuntimeError(
+                "AI provider must be supplied."
+            )
+
+        self._provider = provider
         self._settings_service: AISettingsService | None = None
 
         self._create_ui()
@@ -99,15 +104,9 @@ class AISettingsPage(QWidget):
             self.cancel_button,
         )
 
-        layout.addLayout(
-            button_layout,
-        )
+        layout.addLayout(button_layout)
 
         layout.addStretch()
-
-        self.save_button.clicked.connect(
-            self._save_settings,
-        )
 
         self.save_button.clicked.connect(
             self._save_settings,
@@ -121,16 +120,8 @@ class AISettingsPage(QWidget):
             self._refresh_models,
         )
 
-        self.save_button.clicked.connect(
-            self._save_settings,
-        )
-
-        self.cancel_button.clicked.connect(
-            self._cancel_changes,
-        )
-
     def _load_models(self) -> None:
-        """Load installed Ollama models."""
+        """Load available provider models."""
 
         self.model_combo.clear()
 
@@ -185,7 +176,7 @@ class AISettingsPage(QWidget):
         self._load_settings()
 
     def _refresh_models(self) -> None:
-        """Refresh installed Ollama models."""
+        """Refresh available provider models."""
 
         current_model = self.model_combo.currentText()
 
@@ -199,4 +190,3 @@ class AISettingsPage(QWidget):
             self.model_combo.setCurrentIndex(
                 index,
             )
-

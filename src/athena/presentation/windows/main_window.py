@@ -176,11 +176,22 @@ class MainWindow(QMainWindow):
         self.indexed_documents = IndexedDocumentsPage(  # NEW
             self.context.indexed_document_service,  # NEW
         )  # NEW
+
         self.search = SearchWorkspace()
         self.bookmarks = BookmarkPage()
         self.ask_athena = AskAthenaPage()
-        self.settings = AISettingsPage()
+
+        self.settings = AISettingsPage(
+            provider=(
+                self.context
+                .llm_runtime_bootstrap
+                .providers
+                .default()
+            ),
+        )
+
         self.viewer = DocumentViewerPage()
+
         self.viewer.set_viewer_service(
             self.context.document_viewer_service,
         )

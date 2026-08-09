@@ -598,7 +598,7 @@ class ApplicationContext:
         )
 
         #
-        # AI provider registry initialization
+        # AI provider registry initialization (A17.4)
         #
 
         self.provider_registry = (
@@ -607,9 +607,17 @@ class ApplicationContext:
 
         self._register_default_providers()
 
+        #
+        # Runtime routing
+        #
+
         self.runtime_router = RuntimeRouter(
             model_manager=self.model_manager,
         )
+
+        #
+        # LLM execution
+        #
 
         self.execution_service = ExecutionService(
             router=self.runtime_router,
@@ -651,12 +659,15 @@ class ApplicationContext:
         self.rag_service = RAGService(
             retrieval_service=self.retrieval_service,
             context_builder=context_builder,
-            llm_provider=OllamaProvider(),
+            llm_provider=(
+                self.llm_runtime_bootstrap
+                .providers
+                .default()
+            ),
             intent_service=intent_service,
             metadata_service=self.metadata_service,
             model_name=self.llm_settings.model,
         )
-
         self.athena_query_service = AthenaQueryService(
             rag_service=self.rag_service,
             workspace_service=WorkspaceQueryService(
@@ -797,9 +808,29 @@ class ApplicationContext:
                 provider_id="ollama",
                 name="Ollama",
                 endpoint="http://localhost:11434",
+                models=[
+                    "llama:latest",
+                    "qwen3:4b",
+                    "nomic-embed-text:latest",
+                    "qwen2.5:1.5b",
+                ],
                 capabilities={
                     "chat",
                     "embedding",
+                },
+                model_capabilities={
+                    "llama:latest": {
+                        "chat",
+                    },
+                    "qwen3:4b": {
+                        "chat",
+                    },
+                    "qwen2.5:1.5b": {
+                        "chat",
+                    },
+                    "nomic-embed-text:latest": {
+                        "embedding",
+                    },
                 },
             )
         )
