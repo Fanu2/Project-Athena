@@ -1,18 +1,40 @@
 """
 LLM runtime bootstrap.
+
+Initializes:
+- LLM execution providers
+- Model manager
+- Runtime provider registry
 """
 
 from __future__ import annotations
 
-from athena.ai.llm.model_manager import ModelManager
-from athena.ai.llm.provider_registry import ProviderRegistry
+from athena.ai.llm.model_manager import (
+    ModelManager,
+)
+
+from athena.ai.llm.provider_registry import (
+    ProviderRegistry,
+)
+
 from athena.ai.llm.providers import (
     LMStudioProvider,
     OllamaProvider,
     OpenAICompatibleProvider,
     OpenAIProvider,
 )
-from athena.settings import LLMSettings
+
+from athena.ai.providers.provider_adapter import (
+    ProviderAdapter,
+)
+
+from athena.ai.providers.provider_registry import (
+    ProviderRegistry as RuntimeProviderRegistry,
+)
+
+from athena.settings import (
+    LLMSettings,
+)
 
 
 class LLMRuntimeBootstrap:
@@ -21,7 +43,23 @@ class LLMRuntimeBootstrap:
     def __init__(self) -> None:
         """Initialize runtime."""
 
+        #
+        # LLM execution providers
+        #
+
         self._providers = ProviderRegistry()
+
+        #
+        # Athena runtime provider platform
+        #
+
+        self._runtime_providers = (
+            RuntimeProviderRegistry()
+        )
+
+        #
+        # Model management
+        #
 
         self._models = ModelManager(
             provider_registry=self._providers,
@@ -35,31 +73,32 @@ class LLMRuntimeBootstrap:
         """
         Register providers and discover models.
 
-        Initialization is idempotent. Calling this method
-        multiple times will reuse the existing runtime.
+        Initialization is idempotent.
         """
 
         if self._initialized:
             return self._models
 
-        self._providers.register(
+        self._register_provider(
             OllamaProvider()
         )
 
-        self._providers.register(
+        self._register_provider(
             LMStudioProvider()
         )
 
-        self._providers.register(
+        self._register_provider(
             OpenAIProvider()
         )
 
-        self._providers.register(
+        self._register_provider(
             OpenAICompatibleProvider(
                 settings=LLMSettings(
                     provider="llama-cpp-local",
                     model="Qwen3.5-2B-Q4_K_M.gguf",
-                    base_url="http://localhost:11434",
+                    base_url=(
+                        "http://localhost:11434"
+                    ),
                 )
             )
         )
@@ -70,12 +109,33 @@ class LLMRuntimeBootstrap:
 
         return self._models
 
+    def _register_provider(
+        self,
+        provider,
+    ) -> None:
+        """
+        Register execution provider
+        and runtime provider metadata.
+        """
+
+        self._providers.register(
+            provider,
+        )
+
+        self._runtime_providers.register(
+            ProviderAdapter.from_llm_provider(
+                provider,
+            )
+        )
+
     def _discover_models_safely(
         self,
     ) -> None:
         """Discover models without failing."""
 
-        for provider_name in self._providers.names():
+        for provider_name in (
+            self._providers.names()
+        ):
             try:
                 self._models.discover_provider_models(
                     provider_name,
@@ -90,9 +150,17 @@ class LLMRuntimeBootstrap:
     def providers(
         self,
     ) -> ProviderRegistry:
-        """Return provider registry."""
+        """Return LLM execution provider registry."""
 
         return self._providers
+
+    @property
+    def runtime_providers(
+        self,
+    ) -> RuntimeProviderRegistry:
+        """Return Athena runtime provider registry."""
+
+        return self._runtime_providers
 
     @property
     def models(

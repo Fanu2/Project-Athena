@@ -54,11 +54,6 @@ class AISettingsPage(QWidget):
 
         super().__init__()
 
-        if provider is None:
-            raise RuntimeError(
-                "AI provider must be supplied."
-            )
-
         self._provider = provider
 
         self._health_service = (
@@ -72,6 +67,20 @@ class AISettingsPage(QWidget):
         ) = None
 
         self._create_ui()
+
+        self._load_models()
+
+        self._refresh_provider_status()
+
+        self._update_model_information()
+
+    def set_provider(
+        self,
+        provider: LLMProvider,
+    ) -> None:
+        """Attach AI provider after runtime initialization."""
+
+        self._provider = provider
 
         self._load_models()
 
@@ -206,6 +215,12 @@ class AISettingsPage(QWidget):
 
         self.model_combo.clear()
 
+        if self._provider is None:
+            self.model_combo.addItem(
+                "AI runtime not initialized",
+            )
+            return
+
         try:
             models = sorted(
                 self._provider.list_models(),
@@ -222,6 +237,9 @@ class AISettingsPage(QWidget):
 
     def _get_selected_model(self):
         """Return selected model information."""
+
+        if self._provider is None:
+            return None
 
         model_name = (
             self.model_combo.currentText()
@@ -260,6 +278,12 @@ class AISettingsPage(QWidget):
         self,
     ) -> None:
         """Refresh provider health."""
+
+        if self._provider is None:
+            self.provider_status.update_health(
+                [],
+            )
+            return
 
         health = []
 

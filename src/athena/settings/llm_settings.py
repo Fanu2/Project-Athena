@@ -9,13 +9,17 @@ from dataclasses import dataclass
 
 @dataclass(slots=True, frozen=True)
 class LLMSettings:
-    """Configuration for LLM providers."""
+    """
+    Configuration for LLM providers.
+    """
 
     provider: str = "ollama"
 
-    model: str = "gemma3:4b"
+    model: str = "qwen2.5:1.5b"
 
-    base_url: str = "http://localhost:11434"
+    base_url: str = (
+        "http://localhost:11434"
+    )
 
     timeout: int = 120
 

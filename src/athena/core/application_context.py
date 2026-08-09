@@ -204,6 +204,7 @@ from athena.ai.llm.model_manager import ModelManager
 class ApplicationContext:
     """Owns application-wide services."""
 
+    
     def __init__(self) -> None:
         """Initialize application services."""
 
@@ -797,11 +798,15 @@ class ApplicationContext:
 
         return self.runtime_router.get_provider_health()
 
-    def _register_default_providers(self) -> None:
-        """Register available AI providers."""
+    def _register_default_providers(
+        self,
+    ) -> None:
+        """
+        Register built-in AI providers.
+        """
 
         if self.provider_registry is None:
-            return
+            self.provider_registry = ProviderRegistry()
 
         self.provider_registry.register(
             Provider(
@@ -835,11 +840,15 @@ class ApplicationContext:
             )
         )
 
-    def get_provider_registry(self) -> ProviderRegistry:
+    def get_provider_registry(
+        self,
+    ) -> ProviderRegistry:
         """Return AI provider registry."""
 
         if self.provider_registry is None:
             self.provider_registry = ProviderRegistry()
+
+            self._register_default_providers()
 
         return self.provider_registry
 

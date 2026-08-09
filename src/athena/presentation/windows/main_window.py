@@ -182,13 +182,9 @@ class MainWindow(QMainWindow):
         self.ask_athena = AskAthenaPage()
 
         self.settings = AISettingsPage(
-            provider=(
-                self.context
-                .llm_runtime_bootstrap
-                .providers
-                .default()
-            ),
-        )
+            provider=None,
+        )     
+            
 
         self.viewer = DocumentViewerPage()
 
@@ -388,6 +384,17 @@ class MainWindow(QMainWindow):
         self.context.open_workspace(
             workspace.path,
         )
+
+        if (
+            self.context.llm_runtime_bootstrap
+            is not None
+        ):
+            self.settings.set_provider(
+                self.context
+                .llm_runtime_bootstrap
+                .providers
+                .default()
+            )
 
         # Refresh AI Control Center after runtime initialization
         if self.ai_control_center is not None:

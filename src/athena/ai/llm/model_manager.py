@@ -10,7 +10,9 @@ from athena.ai.llm.model_info import ModelInfo
 from athena.ai.llm.model_profiles import DEFAULT_MODEL_PROFILES
 from athena.ai.llm.model_profile import ModelProfile
 from athena.ai.llm.model_registry import ModelRegistry
-from athena.ai.llm.provider_registry import ProviderRegistry
+from athena.ai.providers.provider_registry import (
+    ProviderRegistry,
+)
 
 
 class ModelManager:
@@ -39,20 +41,77 @@ class ModelManager:
         self,
         model_name: str,
     ) -> ModelCapabilities:
-        """Infer model capabilities."""
+        """
+        Infer model capabilities.
+
+        Fallback only.
+        Provider metadata has priority.
+        """
 
         name = model_name.lower()
 
         return ModelCapabilities(
             chat=True,
+            embeddings=(
+                "embed" in name
+            ),
             vision=(
                 "llava" in name
                 or "vision" in name
             ),
-            embeddings=(
-                "embed" in name
-            ),
             local=True,
+        )
+
+    def _provider_model_capabilities(
+        self,
+        provider,
+        model_name: str,
+    ) -> ModelCapabilities:
+        """
+        Resolve model capabilities.
+
+        Priority:
+        1. Provider model mapping
+        2. Provider defaults
+        3. Name inference fallback
+        """
+
+        if hasattr(
+            provider,
+            "capabilities_for_model",
+        ):
+            capabilities = (
+                provider.capabilities_for_model(
+                    model_name,
+                )
+            )
+
+            if capabilities:
+                return ModelCapabilities(
+                    chat="chat" in capabilities,
+                    streaming=(
+                        "streaming" in capabilities
+                    ),
+                    tools=(
+                        "tools" in capabilities
+                    ),
+                    vision=(
+                        "vision" in capabilities
+                    ),
+                    embeddings=(
+                        "embedding" in capabilities
+                    ),
+                    reasoning=(
+                        "reasoning" in capabilities
+                    ),
+                    reranking=(
+                        "reranking" in capabilities
+                    ),
+                    local=True,
+                )
+
+        return self._infer_capabilities(
+            model_name,
         )
 
     def register_model(
@@ -133,24 +192,34 @@ class ModelManager:
             provider_name,
         )
 
+        if provider is None:
+            return []
+
         try:
             provider_models = provider.list_models()
 
         except Exception:
             return []
 
-        models = [
-            ModelInfo(
+        models: list[ModelInfo] = []
+
+        for name in provider_models:
+
+            model = ModelInfo(
                 name=name,
                 provider=provider_name,
                 capabilities=(
-                    self._infer_capabilities(name)
+                    self._provider_model_capabilities(
+                        provider,
+                        name,
+                    )
                 ),
             )
-            for name in provider_models
-        ]
 
-        for model in models:
+            models.append(
+                model,
+            )
+
             if not self._models.exists(
                 model.name,
             ):
