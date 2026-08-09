@@ -20,6 +20,8 @@ def create_provider(
     name: str,
     vision: bool = False,
 ) -> Mock:
+    """Create mock provider."""
+
     provider = Mock()
 
     provider.provider_name = name
@@ -39,6 +41,8 @@ def create_provider(
 
 
 def create_manager() -> ModelManager:
+    """Create test model manager."""
+
     providers = ProviderRegistry()
 
     providers.register(
@@ -55,6 +59,8 @@ def create_manager() -> ModelManager:
             provider="ollama",
             capabilities=ModelCapabilities(
                 chat=True,
+                reasoning=True,
+                local=True,
             ),
         )
     )
@@ -65,6 +71,7 @@ def create_manager() -> ModelManager:
             provider="ollama",
             capabilities=ModelCapabilities(
                 vision=True,
+                local=True,
             ),
         )
     )
@@ -75,6 +82,7 @@ def create_manager() -> ModelManager:
             provider="ollama",
             capabilities=ModelCapabilities(
                 embeddings=True,
+                local=True,
             ),
         )
     )
@@ -163,3 +171,64 @@ def test_route_finds_embedding_model() -> None:
     )
 
     assert result.name == "nomic-embed-text"
+
+
+def test_route_prefers_reasoning_model() -> None:
+    router = RuntimeRouter(
+        create_manager()
+    )
+
+    result = router.route(
+        RuntimeRequest(
+            capability="chat",
+        )
+    )
+
+    assert result.name == "qwen3:4b"
+
+
+def test_route_ranking_is_not_registry_order_dependent() -> None:
+    providers = ProviderRegistry()
+
+    providers.register(
+        create_provider("ollama")
+    )
+
+    manager = ModelManager(
+        provider_registry=providers,
+    )
+
+    manager.register_model(
+        ModelInfo(
+            name="basic-chat",
+            provider="ollama",
+            capabilities=ModelCapabilities(
+                chat=True,
+                local=True,
+            ),
+        )
+    )
+
+    manager.register_model(
+        ModelInfo(
+            name="reasoning-model",
+            provider="ollama",
+            capabilities=ModelCapabilities(
+                chat=True,
+                reasoning=True,
+                local=True,
+            ),
+        )
+    )
+
+    router = RuntimeRouter(
+        manager
+    )
+
+    result = router.route(
+        RuntimeRequest(
+            capability="chat",
+        )
+    )
+
+    assert result.name == "reasoning-model"

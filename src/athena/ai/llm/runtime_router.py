@@ -51,7 +51,9 @@ class RuntimeRouter:
 
         model = self._select_model(request)
 
-        metadata = self._models.provider_metadata(model)
+        metadata = self._models.provider_metadata(
+            model,
+        )
 
         if not self._validator.validate_capability(
             model,
@@ -72,10 +74,10 @@ class RuntimeRouter:
         Return health information for available providers.
 
         Initial implementation reports registered models.
-        Runtime probing will be added in later A17.3 stages.
+        Runtime probing will be added in later stages.
         """
 
-        health = []
+        health: list[ProviderHealth] = []
 
         for model in self._models.models():
             health.append(
@@ -107,13 +109,12 @@ class RuntimeRouter:
         """Select model using capability-aware routing."""
 
         # Explicit model selection always wins.
-        # Capability validation happens in route().
         if request.preferred_model is not None:
             if self._models.has_model(
-                request.preferred_model
+                request.preferred_model,
             ):
                 return self._models.get_model(
-                    request.preferred_model
+                    request.preferred_model,
                 )
 
             if not request.allow_fallback:
@@ -122,25 +123,39 @@ class RuntimeRouter:
                     f"{request.preferred_model}"
                 )
 
-        # Prefer active model if compatible.
-        active = self._models.active_model()
-
-        if self._supports_capability(
-            active,
-            request.capability,
-        ):
-            return active
-
-        # Discover compatible fallback models.
+        # Rank all compatible models first.
+        # This avoids registry ordering deciding the winner.
         if request.allow_fallback:
             candidates = self._models.models_by_capability(
-                request.capability
+                request.capability,
             )
 
             if candidates:
-                return candidates[-1]
+                return self._rank_candidates(
+                    candidates,
+                )[0]
+
+        # Use active model as final fallback.
+        active = self._models.active_model()
 
         return active
+
+    def _rank_candidates(
+        self,
+        candidates: list[ModelInfo],
+    ) -> list[ModelInfo]:
+        """Rank compatible routing candidates."""
+
+        return sorted(
+            candidates,
+            key=lambda model: (
+                model.capabilities.reasoning,
+                model.capabilities.chat,
+                model.capabilities.local,
+                model.context_window,
+            ),
+            reverse=True,
+        )
 
     def _supports_capability(
         self,
