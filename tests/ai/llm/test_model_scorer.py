@@ -6,6 +6,9 @@ from __future__ import annotations
 
 from athena.ai.llm.capabilities import ModelCapabilities
 from athena.ai.llm.model_info import ModelInfo
+from athena.ai.llm.model_policies import (
+    DEEP_REASONING_POLICY,
+)
 from athena.ai.llm.model_scorer import ModelScoringService
 from athena.ai.llm.runtime_metrics import RuntimeMetric
 from athena.ai.llm.runtime_metrics_store import (
@@ -138,4 +141,33 @@ def test_failed_runtime_metrics_reduce_advantage() -> None:
         scorer.score(model).health_score
         <
         5.0
+    )
+
+
+def test_policy_increases_reasoning_score() -> None:
+    scorer = ModelScoringService()
+
+    model = ModelInfo(
+        name="reasoning",
+        provider="ollama",
+        capabilities=ModelCapabilities(
+            chat=True,
+            reasoning=True,
+            local=True,
+        ),
+    )
+
+    normal_score = scorer.score(
+        model,
+    )
+
+    policy_score = scorer.score(
+        model,
+        DEEP_REASONING_POLICY,
+    )
+
+    assert (
+        policy_score.total
+        >
+        normal_score.total
     )

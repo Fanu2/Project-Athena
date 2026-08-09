@@ -124,15 +124,15 @@ class RuntimeRouter:
             )
 
             if candidates:
-                healthy = (
+                healthy_candidates = (
                     self._filter_healthy_candidates(
                         candidates,
                     )
                 )
 
-                if healthy:
+                if healthy_candidates:
                     return self._rank_candidates(
-                        healthy,
+                        healthy_candidates,
                     )[0]
 
                 return self._rank_candidates(

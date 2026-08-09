@@ -9,13 +9,11 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True, slots=True)
 class RoutingScore:
-    """Score assigned to a model candidate."""
+    """Score breakdown for model routing."""
 
     model: str
 
     capability_score: float = 0.0
-
-    health_score: float = 0.0
 
     quality_score: float = 0.0
 
@@ -23,14 +21,19 @@ class RoutingScore:
 
     context_score: float = 0.0
 
+    health_score: float = 0.0
+
+    policy_score: float = 0.0
+
     @property
     def total(self) -> float:
-        """Return total routing score."""
+        """Return combined routing score."""
 
         return (
             self.capability_score
-            + self.health_score
             + self.quality_score
             + self.local_score
             + self.context_score
+            + self.health_score
+            + self.policy_score
         )
