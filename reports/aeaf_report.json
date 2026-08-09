@@ -4,22 +4,22 @@
         "path": "/home/jasvir/Projects/Project-Athena"
     },
     "statistics": {
-        "source_files": 780,
+        "source_files": 811,
         "packages": 0,
-        "modules": 780,
-        "classes": 482,
-        "functions": 555,
-        "methods": 1112,
-        "imports": 2724
+        "modules": 811,
+        "classes": 500,
+        "functions": 585,
+        "methods": 1169,
+        "imports": 2852
     },
     "dependency_graph": {
-        "edges": 2292
+        "edges": 2403
     },
     "complexity": [
         {
             "name": "open_workspace",
             "kind": "function",
-            "score": 336
+            "score": 359
         },
         {
             "name": "generate",
@@ -52,6 +52,11 @@
             "score": 139
         },
         {
+            "name": "_create_ui",
+            "kind": "function",
+            "score": 138
+        },
+        {
             "name": "index_document",
             "kind": "function",
             "score": 133
@@ -59,39 +64,34 @@
         {
             "name": "__init__",
             "kind": "function",
-            "score": 125
-        },
-        {
-            "name": "main",
-            "kind": "function",
-            "score": 120
+            "score": 131
         }
     ],
     "documentation": {
         "modules": {
-            "documented": 520,
-            "total": 780,
-            "coverage": 66.67
+            "documented": 542,
+            "total": 811,
+            "coverage": 66.83
         },
         "classes": {
-            "documented": 450,
-            "total": 482,
-            "coverage": 93.36
+            "documented": 468,
+            "total": 500,
+            "coverage": 93.6
         },
         "functions": {
-            "documented": 174,
-            "total": 555,
-            "coverage": 31.35
+            "documented": 194,
+            "total": 585,
+            "coverage": 33.16
         },
         "methods": {
-            "documented": 838,
-            "total": 1112,
-            "coverage": 75.36
+            "documented": 894,
+            "total": 1169,
+            "coverage": 76.48
         },
         "overall": {
-            "documented": 1982,
-            "total": 2929,
-            "coverage": 67.67
+            "documented": 2098,
+            "total": 3065,
+            "coverage": 68.45
         }
     }
 }

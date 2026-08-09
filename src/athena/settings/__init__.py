@@ -17,6 +17,8 @@ class AISettings:
 
     default_model: str = "gemma3:4b"
 
+    routing_policy: str = "Balanced"
+
 
 class AISettingsService:
     """Workspace AI settings storage."""
@@ -44,6 +46,10 @@ class AISettingsService:
                 "default_model",
                 "gemma3:4b",
             ),
+            routing_policy=data.get(
+                "routing_policy",
+                "Balanced",
+            ),
         )
 
     def save(
@@ -60,7 +66,12 @@ class AISettingsService:
         self._path.write_text(
             json.dumps(
                 {
-                    "default_model": settings.default_model,
+                    "default_model": (
+                        settings.default_model
+                    ),
+                    "routing_policy": (
+                        settings.routing_policy
+                    ),
                 },
                 indent=4,
             ),
@@ -73,4 +84,3 @@ __all__ = [
     "AISettings",
     "AISettingsService",
 ]
-
