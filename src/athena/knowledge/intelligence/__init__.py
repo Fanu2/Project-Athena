@@ -22,6 +22,18 @@ from athena.knowledge.intelligence.structure_analyzer import (
     StructureAnalyzer,
 )
 
+from athena.knowledge.intelligence.document_metadata_profile import (
+    DocumentMetadataProfile,
+)
+
+from athena.knowledge.intelligence.metadata_analyzer import (
+    MetadataAnalyzer,
+)
+
+from athena.knowledge.intelligence.document_intelligence import (
+    DocumentIntelligence,
+)
+
 
 __all__ = [
     "DocumentAnalyzer",
@@ -29,4 +41,7 @@ __all__ = [
     "DocumentProfile",
     "DocumentStructureNode",
     "StructureAnalyzer",
+    "DocumentMetadataProfile",
+    "MetadataAnalyzer",
+    "DocumentIntelligence",
 ]

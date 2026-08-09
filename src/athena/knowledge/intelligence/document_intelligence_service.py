@@ -1,7 +1,5 @@
 """
 Document intelligence application service.
-
-Coordinates document analysis workflows.
 """
 
 from __future__ import annotations
@@ -16,22 +14,29 @@ from athena.knowledge.intelligence.document_analyzer import (
     DocumentAnalyzer,
 )
 
-from athena.knowledge.intelligence.document_profile import (
-    DocumentProfile,
+from athena.knowledge.intelligence.document_intelligence import (
+    DocumentIntelligence,
+)
+
+from athena.knowledge.intelligence.metadata_analyzer import (
+    MetadataAnalyzer,
+)
+
+from athena.knowledge.intelligence.structure_analyzer import (
+    StructureAnalyzer,
 )
 
 
 class DocumentIntelligenceService:
     """
-    Application boundary for document intelligence.
-
-    Coordinates intelligence generation while
-    keeping domain models independent.
+    Orchestrates document intelligence analysis.
     """
 
     def __init__(
         self,
         analyzer: DocumentAnalyzer | None = None,
+        structure_analyzer: StructureAnalyzer | None = None,
+        metadata_analyzer: MetadataAnalyzer | None = None,
     ) -> None:
         """Initialize service."""
 
@@ -41,18 +46,36 @@ class DocumentIntelligenceService:
             else DocumentAnalyzer()
         )
 
+        self._structure = (
+            structure_analyzer
+            if structure_analyzer is not None
+            else StructureAnalyzer()
+        )
+
+        self._metadata = (
+            metadata_analyzer
+            if metadata_analyzer is not None
+            else MetadataAnalyzer()
+        )
+
     def analyze(
         self,
         document: Document,
         representation: KnowledgeRepresentation,
-    ) -> DocumentProfile:
+    ) -> DocumentIntelligence:
         """
-        Analyze a document.
-
-        Returns enriched document intelligence.
+        Generate complete document intelligence.
         """
 
-        return self._analyzer.analyze(
-            document,
-            representation,
+        return DocumentIntelligence(
+            profile=self._analyzer.analyze(
+                document,
+                representation,
+            ),
+            metadata=self._metadata.analyze(
+                document,
+            ),
+            structure=self._structure.analyze(
+                representation,
+            ),
         )
