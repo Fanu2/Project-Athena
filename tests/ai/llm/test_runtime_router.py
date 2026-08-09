@@ -14,6 +14,7 @@ from athena.ai.llm.model_manager import ModelManager
 from athena.ai.llm.provider_registry import ProviderRegistry
 from athena.ai.llm.runtime_request import RuntimeRequest
 from athena.ai.llm.runtime_router import RuntimeRouter
+from athena.ai.providers.health_status import HealthStatus
 
 
 def create_provider(
@@ -232,3 +233,49 @@ def test_route_ranking_is_not_registry_order_dependent() -> None:
     )
 
     assert result.name == "reasoning-model"
+
+
+def test_route_skips_offline_models() -> None:
+    """Offline models should not win routing."""
+
+    health_service = Mock()
+
+    def check_provider(**kwargs):
+        health = Mock()
+
+        if kwargs["model"] == "offline-model":
+            health.status = HealthStatus.OFFLINE
+        else:
+            health.status = HealthStatus.ONLINE
+
+        return health
+
+    health_service.check_provider.side_effect = (
+        check_provider
+    )
+
+    manager = create_manager()
+
+    manager.register_model(
+        ModelInfo(
+            name="offline-model",
+            provider="ollama",
+            capabilities=ModelCapabilities(
+                chat=True,
+                local=True,
+            ),
+        )
+    )
+
+    router = RuntimeRouter(
+        manager,
+        health_service=health_service,
+    )
+
+    result = router.route(
+        RuntimeRequest(
+            capability="chat",
+        )
+    )
+
+    assert result.name != "offline-model"

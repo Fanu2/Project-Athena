@@ -8,6 +8,7 @@ from athena.ai.llm.model_info import ModelInfo
 from athena.ai.llm.model_manager import ModelManager
 from athena.ai.llm.model_validator import ModelValidator
 from athena.ai.llm.runtime_request import RuntimeRequest
+from athena.ai.providers.health_status import HealthStatus
 from athena.ai.providers.provider_health import ProviderHealth
 from athena.ai.providers.provider_health_service import (
     ProviderHealthService,
@@ -70,12 +71,7 @@ class RuntimeRouter:
     def get_provider_health(
         self,
     ) -> list[ProviderHealth]:
-        """
-        Return health information for available providers.
-
-        Initial implementation reports registered models.
-        Runtime probing will be added in later stages.
-        """
+        """Return health information for providers."""
 
         health: list[ProviderHealth] = []
 
@@ -123,22 +119,64 @@ class RuntimeRouter:
                     f"{request.preferred_model}"
                 )
 
-        # Rank all compatible models first.
-        # This avoids registry ordering deciding the winner.
+        # Find compatible candidates.
         if request.allow_fallback:
             candidates = self._models.models_by_capability(
                 request.capability,
             )
 
             if candidates:
+                healthy_candidates = (
+                    self._filter_healthy_candidates(
+                        candidates,
+                    )
+                )
+
+                if healthy_candidates:
+                    return self._rank_candidates(
+                        healthy_candidates,
+                    )[0]
+
+                # If health probing fails completely,
+                # preserve previous fallback behavior.
                 return self._rank_candidates(
                     candidates,
                 )[0]
 
         # Use active model as final fallback.
-        active = self._models.active_model()
+        return self._models.active_model()
 
-        return active
+    def _filter_healthy_candidates(
+        self,
+        candidates: list[ModelInfo],
+    ) -> list[ModelInfo]:
+        """Return only online candidates."""
+
+        healthy: list[ModelInfo] = []
+
+        for model in candidates:
+            health = self._health_service.check_provider(
+                provider_id=model.provider,
+                model=model.name,
+                capabilities=tuple(
+                    capability
+                    for capability, enabled in {
+                        "chat": model.capabilities.chat,
+                        "streaming": model.capabilities.streaming,
+                        "tools": model.capabilities.tools,
+                        "vision": model.capabilities.vision,
+                        "embedding": model.capabilities.embeddings,
+                        "reasoning": model.capabilities.reasoning,
+                        "reranking": model.capabilities.reranking,
+                    }.items()
+                    if enabled
+                ),
+            )
+
+            if health.status == HealthStatus.ONLINE:
+                healthy.append(model)
+
+        return healthy
 
     def _rank_candidates(
         self,
