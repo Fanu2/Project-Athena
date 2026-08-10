@@ -27,13 +27,17 @@ class ConversationWidget(QWidget):
         self,
         parent: QWidget | None = None,
     ) -> None:
-        """Initialize the conversation widget."""
+        """Initialize conversation widget."""
 
-        super().__init__(parent)
+        super().__init__(
+            parent,
+        )
 
         self._model: ConversationModel | None = None
 
-        self.list_view = QListView()
+        self.list_view = QListView(
+            self,
+        )
 
         self._delegate = ConversationDelegate(
             self.list_view,
@@ -59,8 +63,29 @@ class ConversationWidget(QWidget):
             False,
         )
 
+        self.list_view.setSpacing(
+            8,
+        )
+
         self.list_view.setAlternatingRowColors(
-            True,
+            False,
+        )
+
+        self.list_view.setVerticalScrollMode(
+            QAbstractItemView.ScrollMode.ScrollPerPixel,
+        )
+
+        self.list_view.setStyleSheet(
+            """
+            QListView {
+                border: none;
+                background: transparent;
+            }
+
+            QListView::item {
+                padding: 4px;
+            }
+            """
         )
 
         layout = QVBoxLayout(
@@ -68,9 +93,13 @@ class ConversationWidget(QWidget):
         )
 
         layout.setContentsMargins(
-            0,
-            0,
-            0,
+            6,
+            6,
+            6,
+            6,
+        )
+
+        layout.setSpacing(
             0,
         )
 
@@ -78,11 +107,12 @@ class ConversationWidget(QWidget):
             self.list_view,
         )
 
+
     def set_model(
         self,
         model: ConversationModel,
     ) -> None:
-        """Attach a conversation model."""
+        """Attach conversation model."""
 
         self._model = model
 
@@ -90,18 +120,13 @@ class ConversationWidget(QWidget):
             model,
         )
 
-        #
-        # Restore existing conversation
-        #
-
         self.refresh()
 
-        self.list_view.viewport().update()
 
     def refresh(
         self,
     ) -> None:
-        """Refresh the displayed conversation."""
+        """Refresh conversation display."""
 
         if self._model is None:
             return
@@ -112,9 +137,10 @@ class ConversationWidget(QWidget):
 
         self.list_view.viewport().update()
 
+
     def model(
         self,
     ) -> ConversationModel | None:
-        """Return the attached conversation model."""
+        """Return attached model."""
 
         return self._model

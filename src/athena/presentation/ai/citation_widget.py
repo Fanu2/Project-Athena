@@ -8,6 +8,7 @@ from pathlib import Path
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import (
+    QGroupBox,
     QLabel,
     QListWidget,
     QPushButton,
@@ -26,29 +27,50 @@ from athena.domain.ai.resolved_citation import (
 
 
 class CitationWidget(QWidget):
-    """Display multiple citations with intelligence details."""
+    """
+    Display citation intelligence details.
+    """
 
     document_requested = Signal(
         Path,
         int,
     )
 
+
     def __init__(
         self,
         parent: QWidget | None = None,
     ) -> None:
-        """Initialize citation widget."""
+        """
+        Initialize citation widget.
+        """
 
-        super().__init__(parent)
+        super().__init__(
+            parent,
+        )
 
         self._citations: list[ResolvedCitation] = []
 
         self._validations: list[CitationValidation] = []
 
+
+        #
+        # Citation list
+        #
+
         self.citation_list = QListWidget()
 
+        self.citation_list.setAlternatingRowColors(
+            True,
+        )
+
+
+        #
+        # Intelligence summary
+        #
+
         self.source_label = QLabel(
-            "Source: -",
+            "📄 Source: -",
         )
 
         self.page_label = QLabel(
@@ -56,16 +78,26 @@ class CitationWidget(QWidget):
         )
 
         self.score_label = QLabel(
-            "Score: -",
+            "Confidence: -",
         )
 
         self.validation_label = QLabel(
             "Validation: -",
         )
 
+
+        #
+        # Actions
+        #
+
         self.open_button = QPushButton(
             "Open Source Document",
         )
+
+
+        #
+        # Evidence details
+        #
 
         self.details = QPlainTextEdit()
 
@@ -73,41 +105,81 @@ class CitationWidget(QWidget):
             True,
         )
 
+        self.details.setLineWrapMode(
+            QPlainTextEdit.LineWrapMode.WidgetWidth,
+        )
+
+        self.details.setPlaceholderText(
+            "Citation evidence will appear here...",
+        )
+
+
+        #
+        # Layout
+        #
+
+        citations_box = QGroupBox(
+            "Citations",
+        )
+
+        citations_layout = QVBoxLayout(
+            citations_box,
+        )
+
+        citations_layout.addWidget(
+            self.citation_list,
+        )
+
+
+        intelligence_box = QGroupBox(
+            "Citation Intelligence",
+        )
+
+        intelligence_layout = QVBoxLayout(
+            intelligence_box,
+        )
+
+        intelligence_layout.addWidget(
+            self.source_label,
+        )
+
+        intelligence_layout.addWidget(
+            self.page_label,
+        )
+
+        intelligence_layout.addWidget(
+            self.score_label,
+        )
+
+        intelligence_layout.addWidget(
+            self.validation_label,
+        )
+
+        intelligence_layout.addWidget(
+            self.open_button,
+        )
+
+        intelligence_layout.addWidget(
+            self.details,
+        )
+
+
         layout = QVBoxLayout(
             self,
         )
 
         layout.addWidget(
-            QLabel("Citations"),
+            citations_box,
         )
 
         layout.addWidget(
-            self.citation_list,
+            intelligence_box,
         )
 
-        layout.addWidget(
-            self.source_label,
-        )
 
-        layout.addWidget(
-            self.page_label,
-        )
-
-        layout.addWidget(
-            self.score_label,
-        )
-
-        layout.addWidget(
-            self.validation_label,
-        )
-
-        layout.addWidget(
-            self.open_button,
-        )
-
-        layout.addWidget(
-            self.details,
-        )
+        #
+        # Signals
+        #
 
         self.citation_list.currentRowChanged.connect(
             self._show_selected_citation,
@@ -117,14 +189,19 @@ class CitationWidget(QWidget):
             self._open_source,
         )
 
+
         self.clear()
+
+
 
     def set_citations(
         self,
         citations: list[ResolvedCitation],
         validations: list[CitationValidation] | None = None,
     ) -> None:
-        """Display citation list."""
+        """
+        Display citation list.
+        """
 
         self._citations = citations
 
@@ -136,30 +213,53 @@ class CitationWidget(QWidget):
 
         self.citation_list.clear()
 
+
         for index, citation in enumerate(
             citations,
             start=1,
         ):
+
             self.citation_list.addItem(
                 (
                     f"{index}. "
-                    f"{citation.document_name} "
-                    f"(p.{citation.page})"
+                    f"📄 {citation.document_name} "
+                    f"(page {citation.page})"
                 ),
             )
 
+            item = self.citation_list.item(
+                self.citation_list.count() - 1,
+            )
+
+            item.setToolTip(
+                (
+                    "Citation source\n"
+                    f"Document: {citation.document_name}\n"
+                    f"Page: {citation.page}\n"
+                    f"Confidence: {citation.score:.1%}"
+                ),
+            )
+
+
         if citations:
+
             self.citation_list.setCurrentRow(
                 0,
             )
+
         else:
+
             self.clear()
+
+
 
     def _show_selected_citation(
         self,
         index: int,
     ) -> None:
-        """Show selected citation details."""
+        """
+        Display selected citation intelligence.
+        """
 
         if index < 0:
             return
@@ -169,45 +269,75 @@ class CitationWidget(QWidget):
         ):
             return
 
+
         citation = self._citations[index]
+
 
         validation = None
 
         if index < len(
             self._validations,
         ):
-            validation = self._validations[index]
+
+            validation = (
+                self._validations[index]
+            )
+
+
+        #
+        # Summary
+        #
 
         self.source_label.setText(
-            f"Source: {citation.document_name}",
+            (
+                f"📄 Source: "
+                f"{citation.document_name}"
+            ),
         )
 
         self.page_label.setText(
-            f"Page: {citation.page}",
+            (
+                f"Page: {citation.page}"
+            ),
         )
 
         self.score_label.setText(
-            f"Score: {citation.score:.3f}",
+            (
+                f"Confidence: "
+                f"{citation.score:.1%}"
+            ),
         )
+
+
+        #
+        # Validation
+        #
 
         if validation:
 
-            status = (
-                "VALID"
-                if validation.supported
-                else "NOT VERIFIED"
-            )
+            if validation.supported:
+
+                status = "✓ VALID"
+
+            else:
+
+                status = "⚠ NOT VERIFIED"
+
 
             self.validation_label.setText(
                 (
-                    f"Validation: {status} "
-                    f"({validation.confidence:.3f})"
+                    f"Validation: "
+                    f"{status} "
+                    f"({validation.confidence:.1%})"
                 ),
             )
 
+
             validation_text = (
-                "\n\nValidation reasons:\n\n"
-                + "\n".join(
+                "\n\n"
+                "Validation reasons:\n\n"
+                +
+                "\n".join(
                     validation.reasons,
                 )
             )
@@ -220,26 +350,51 @@ class CitationWidget(QWidget):
 
             validation_text = ""
 
+
+        #
+        # Evidence intelligence
+        #
+
         explanation = (
-            "Why selected:\n\n"
-            + "\n".join(
-                citation.reasons,
+            "📊 Evidence Intelligence\n\n"
+            f"Confidence: {citation.score:.1%}\n\n"
+            "Why Athena selected this source:\n\n"
+            +
+            "\n".join(
+                f"• {reason}"
+                for reason in citation.reasons
             )
-            + "\n\nSupporting passage:\n\n"
-            + citation.snippet
-            + validation_text
+            +
+            "\n\n"
+            "Supporting passage:\n\n"
+            +
+            citation.snippet
+            +
+            validation_text
         )
+
 
         self.details.setPlainText(
             explanation,
         )
 
+
+        self.open_button.setEnabled(
+            citation.document_path is not None,
+        )
+
+
+
     def _open_source(
         self,
     ) -> None:
-        """Open selected citation document."""
+        """
+        Open selected citation document.
+        """
 
-        index = self.citation_list.currentRow()
+        index = (
+            self.citation_list.currentRow()
+        )
 
         if index < 0:
             return
@@ -249,20 +404,27 @@ class CitationWidget(QWidget):
         ):
             return
 
+
         citation = self._citations[index]
+
 
         if citation.document_path is None:
             return
+
 
         self.document_requested.emit(
             citation.document_path,
             citation.page,
         )
 
+
+
     def clear(
         self,
     ) -> None:
-        """Clear citations."""
+        """
+        Clear citations.
+        """
 
         self._citations.clear()
 
@@ -270,8 +432,9 @@ class CitationWidget(QWidget):
 
         self.citation_list.clear()
 
+
         self.source_label.setText(
-            "Source: -",
+            "📄 Source: -",
         )
 
         self.page_label.setText(
@@ -279,11 +442,17 @@ class CitationWidget(QWidget):
         )
 
         self.score_label.setText(
-            "Score: -",
+            "Confidence: -",
         )
 
         self.validation_label.setText(
             "Validation: -",
         )
+
+
+        self.open_button.setEnabled(
+            False,
+        )
+
 
         self.details.clear()
