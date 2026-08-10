@@ -373,7 +373,7 @@ class MainWindow(QMainWindow):
         self,
         workspace: Workspace,
     ) -> None:
-        """Set the active workspace."""
+        """Set the active workspace and refresh workspace-aware UI."""
 
         self.current_workspace = workspace
 
@@ -381,9 +381,43 @@ class MainWindow(QMainWindow):
             workspace,
         )
 
+        #
+        # Initialize workspace-specific services.
+        #
+
         self.context.open_workspace(
             workspace.path,
         )
+
+        #
+        # Workspace Intelligence (A20.3)
+        #
+
+        workspace_intelligence_service = (
+            self.context.workspace_intelligence_service
+        )
+
+        current_workspace = (
+            self.context.current_workspace
+        )
+
+        if (
+            workspace_intelligence_service is not None
+            and current_workspace is not None
+        ):
+            snapshot = (
+                workspace_intelligence_service.snapshot(
+                    current_workspace,
+                )
+            )
+
+            self.home.set_workspace_intelligence(
+                snapshot,
+            )
+
+        #
+        # LLM runtime
+        #
 
         if (
             self.context.llm_runtime_bootstrap
@@ -396,11 +430,20 @@ class MainWindow(QMainWindow):
                 .default()
             )
 
-        # Refresh AI Control Center after runtime initialization
+        #
+        # AI Control Center
+        #
+
         if self.ai_control_center is not None:
             self.ai_control_center.refresh()
 
-        document_service = self.context.document_service
+        #
+        # Document services
+        #
+
+        document_service = (
+            self.context.document_service
+        )
 
         if document_service is not None:
             self.documents.set_document_service(
@@ -411,7 +454,10 @@ class MainWindow(QMainWindow):
                 document_service.document_service,
             )
 
-        # Connect Indexed Documents page to the newly created service
+        #
+        # Indexed Documents
+        #
+
         indexed_document_service = (
             self.context.indexed_document_service
         )
@@ -421,14 +467,26 @@ class MainWindow(QMainWindow):
                 indexed_document_service,
             )
 
-        search_service = self.context.search_service
+        #
+        # Search
+        #
+
+        search_service = (
+            self.context.search_service
+        )
 
         if search_service is not None:
             self.search.set_search_service(
                 search_service,
             )
 
-        bookmark_service = self.context.bookmark_service
+        #
+        # Bookmarks
+        #
+
+        bookmark_service = (
+            self.context.bookmark_service
+        )
 
         if bookmark_service is not None:
             self.bookmarks.set_bookmark_service(
@@ -438,6 +496,10 @@ class MainWindow(QMainWindow):
             self.documents.set_bookmark_service(
                 bookmark_service,
             )
+
+        #
+        # Conversation / Ask Athena
+        #
 
         query_service = (
             self.context.conversation_query_service
@@ -452,12 +514,22 @@ class MainWindow(QMainWindow):
             self.context.conversation_service,
         )
 
-        settings_service = self.context.ai_settings_service
+        #
+        # Settings
+        #
+
+        settings_service = (
+            self.context.ai_settings_service
+        )
 
         if settings_service is not None:
             self.settings.set_settings_service(
                 settings_service,
             )
+
+        #
+        # Notes
+        #
 
         note_service = self.context.note_service
 
@@ -465,6 +537,10 @@ class MainWindow(QMainWindow):
             self.documents.set_note_service(
                 note_service,
             )
+
+        #
+        # Window state
+        #
 
         self.status_bar.showMessage(
             f"Workspace: {workspace.name}",
@@ -475,7 +551,6 @@ class MainWindow(QMainWindow):
         )
 
         self._update_action_states()
-
     def _clear_current_workspace(self) -> None:
         """Clear the active workspace."""
 
