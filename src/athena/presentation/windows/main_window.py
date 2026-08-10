@@ -373,69 +373,124 @@ class MainWindow(QMainWindow):
         self,
         workspace: Workspace,
     ) -> None:
-        """Set the active workspace and refresh workspace-aware UI."""
+        """
+        Set the active workspace and refresh workspace-aware UI.
+        """
 
         self.current_workspace = workspace
+
+        #
+        # Workspace header
+        #
 
         self.home.set_workspace(
             workspace,
         )
 
+
         #
-        # Initialize workspace-specific services.
+        # Initialize workspace services
         #
 
         self.context.open_workspace(
             workspace.path,
         )
 
-        #
-        # Workspace Intelligence (A20.3)
-        #
 
-        workspace_intelligence_service = (
-            self.context.workspace_intelligence_service
+    #
+    # Workspace Intelligence Dashboard (A20.7)
+    #
+
+    workspace_intelligence_service = (
+        self.context.workspace_intelligence_service
+    )
+
+    current_workspace = (
+        self.context.current_workspace
+    )
+
+
+    if (
+        workspace_intelligence_service is not None
+        and current_workspace is not None
+    ):
+
+        snapshot = (
+            workspace_intelligence_service.snapshot(
+                current_workspace,
+            )
         )
 
-        current_workspace = (
-            self.context.current_workspace
+
+        #
+        # Workspace Dashboard
+        #
+
+        self.home.set_workspace_snapshot(
+            snapshot,
         )
 
-        if (
-            workspace_intelligence_service is not None
-            and current_workspace is not None
-        ):
-            snapshot = (
-                workspace_intelligence_service.snapshot(
-                    current_workspace,
-                )
-            )
 
-            self.home.set_workspace_intelligence(
-                snapshot,
-            )
+        #
+        # Workspace Health
+        #
+
+        self.home.set_workspace_health(
+            documents=(
+                snapshot.document_count > 0
+            ),
+
+            knowledge=(
+                snapshot.knowledge_item_count > 0
+            ),
+
+            retrieval=(
+                self.context.search_service is not None
+            ),
+
+            conversation=(
+                self.context.conversation_service is not None
+            ),
+
+            runtime=(
+                self.context.llm_runtime_bootstrap is not None
+            ),
+        )
+
+
+        #
+        # Ask Athena Workspace Context
+        #
+
+        self.ask_athena.set_workspace_snapshot(
+            current_workspace.name,
+            snapshot,
+        )
+
 
         #
         # LLM runtime
         #
 
-        if (
+        runtime = (
             self.context.llm_runtime_bootstrap
-            is not None
-        ):
+        )
+
+        if runtime is not None:
+
             self.settings.set_provider(
-                self.context
-                .llm_runtime_bootstrap
-                .providers
-                .default()
+                runtime.providers.default(),
             )
+
 
         #
         # AI Control Center
         #
 
         if self.ai_control_center is not None:
+
             self.ai_control_center.refresh()
+
 
         #
         # Document services
@@ -446,6 +501,7 @@ class MainWindow(QMainWindow):
         )
 
         if document_service is not None:
+
             self.documents.set_document_service(
                 document_service,
             )
@@ -453,6 +509,7 @@ class MainWindow(QMainWindow):
             self.search.set_document_service(
                 document_service.document_service,
             )
+
 
         #
         # Indexed Documents
@@ -463,9 +520,11 @@ class MainWindow(QMainWindow):
         )
 
         if indexed_document_service is not None:
+
             self.indexed_documents.set_document_service(
                 indexed_document_service,
             )
+
 
         #
         # Search
@@ -476,9 +535,11 @@ class MainWindow(QMainWindow):
         )
 
         if search_service is not None:
+
             self.search.set_search_service(
                 search_service,
             )
+
 
         #
         # Bookmarks
@@ -489,6 +550,7 @@ class MainWindow(QMainWindow):
         )
 
         if bookmark_service is not None:
+
             self.bookmarks.set_bookmark_service(
                 bookmark_service,
             )
@@ -497,8 +559,9 @@ class MainWindow(QMainWindow):
                 bookmark_service,
             )
 
+
         #
-        # Conversation / Ask Athena
+        # Ask Athena / Conversation
         #
 
         query_service = (
@@ -506,13 +569,16 @@ class MainWindow(QMainWindow):
         )
 
         if query_service is not None:
+
             self.ask_athena.set_query_service(
                 query_service,
             )
 
+
         self.ask_athena.set_conversation_service(
             self.context.conversation_service,
         )
+
 
         #
         # Settings
@@ -523,20 +589,26 @@ class MainWindow(QMainWindow):
         )
 
         if settings_service is not None:
+
             self.settings.set_settings_service(
                 settings_service,
             )
+
 
         #
         # Notes
         #
 
-        note_service = self.context.note_service
+        note_service = (
+            self.context.note_service
+        )
 
         if note_service is not None:
+
             self.documents.set_note_service(
                 note_service,
             )
+
 
         #
         # Window state
@@ -550,7 +622,10 @@ class MainWindow(QMainWindow):
             f"Athena — {workspace.name}",
         )
 
+
         self._update_action_states()
+
+
     def _clear_current_workspace(self) -> None:
         """Clear the active workspace."""
 
@@ -581,6 +656,7 @@ class MainWindow(QMainWindow):
         )
 
         self._update_action_states()
+
 
     def _on_new_workspace(self) -> None:
         """Handle File → New Workspace."""

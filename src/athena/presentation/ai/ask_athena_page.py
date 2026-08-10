@@ -45,6 +45,10 @@ from athena.presentation.ai.conversation_widget import (
     ConversationWidget,
 )
 
+from athena.workspace.intelligence.models import (
+    WorkspaceIntelligenceSnapshot,
+)
+
 
 class AskAthenaPage(QWidget):
     """AI question answering workspace."""
@@ -536,12 +540,10 @@ class AskAthenaPage(QWidget):
         # Workspace Intelligence Context
         #
 
-    def set_workspace_context(
+    def set_workspace_snapshot(
         self,
         name: str,
-        documents: int,
-        pages: int,
-        knowledge_items: int,
+        snapshot: WorkspaceIntelligenceSnapshot,
     ) -> None:
         """
         Display workspace intelligence summary.
@@ -550,9 +552,10 @@ class AskAthenaPage(QWidget):
         self.workspace_context.setText(
             (
                 f"<b>Workspace:</b> {name}<br>"
-                f"Documents: {documents} | "
-                f"Pages: {pages} | "
-                f"Knowledge Items: {knowledge_items}"
+                f"Documents: {snapshot.document_count}<br>"
+                f"Pages: {snapshot.page_count}<br>"
+                f"Knowledge Items: "
+                f"{snapshot.knowledge_item_count}"
             )
         )
 
