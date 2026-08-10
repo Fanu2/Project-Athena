@@ -16,7 +16,9 @@ class RetrievalReportReporter:
         self,
         report: RetrievalReport,
     ) -> str:
-        """Generate a Markdown retrieval intelligence report."""
+        """
+        Generate a Markdown retrieval intelligence report.
+        """
 
         lines = [
             "# Retrieval Intelligence Report",
@@ -37,8 +39,12 @@ class RetrievalReportReporter:
                 ]
             )
 
-            for key, value in sorted(report.metadata.items()):
-                lines.append(f"- {key}: {value}")
+            for key, value in sorted(
+                report.metadata.items()
+            ):
+                lines.append(
+                    f"- {key}: {value}"
+                )
 
             lines.append("")
 
@@ -49,12 +55,21 @@ class RetrievalReportReporter:
             ]
         )
 
-        for index, candidate in enumerate(report.results, start=1):
+        for index, candidate in enumerate(
+            report.results,
+            start=1,
+        ):
+            document = (
+                candidate.document_name
+                or candidate.title
+                or candidate.document_id
+            )
+
             lines.extend(
                 [
                     f"### Rank {index}",
                     "",
-                    f"**Document:** {candidate.title}",
+                    f"**Document:** {document}",
                     "",
                     "| Signal | Score |",
                     "|-------|------:|",
@@ -63,10 +78,12 @@ class RetrievalReportReporter:
                     f"| Keyword | {candidate.keyword_score:.3f} |",
                     f"| Metadata | {candidate.metadata_score:.3f} |",
                     f"| Identity | {candidate.identity_score:.3f} |",
+                    f"| Authority | {candidate.document_authority_score:.3f} |",
                     "",
                     "**Explanation**",
                     "",
-                    candidate.explanation or "_No explanation available._",
+                    candidate.explanation
+                    or "_No explanation available._",
                     "",
                 ]
             )
@@ -78,4 +95,5 @@ class RetrievalReportReporter:
         report: RetrievalReport,
     ) -> str:
         """Backward-compatible alias."""
+
         return self.analyze(report)

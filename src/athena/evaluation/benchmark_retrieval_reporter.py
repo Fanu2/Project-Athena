@@ -28,7 +28,7 @@ class BenchmarkRetrievalReportReporter:
         report: BenchmarkRetrievalReport,
     ) -> str:
         """
-        Generate benchmark retrieval intelligence report.
+        Generate benchmark retrieval report.
         """
 
         lines = [
@@ -48,22 +48,29 @@ class BenchmarkRetrievalReportReporter:
             "",
         ]
 
-        language_questions = report.metadata.get(
+        #
+        # Evaluation intelligence
+        #
+
+        metadata = report.metadata
+
+        language_questions = metadata.get(
             "language_questions",
             {},
         )
 
-        language_accuracy = report.metadata.get(
+        language_accuracy = metadata.get(
             "language_accuracy",
             {},
         )
 
-        document_type_accuracy = report.metadata.get(
+        document_type_accuracy = metadata.get(
             "document_type_accuracy",
             {},
         )
 
         if language_questions:
+
             lines.extend(
                 [
                     "---",
@@ -76,7 +83,7 @@ class BenchmarkRetrievalReportReporter:
             )
 
             for language in sorted(
-                language_questions,
+                language_questions
             ):
                 lines.append(
                     "| "
@@ -88,6 +95,7 @@ class BenchmarkRetrievalReportReporter:
             lines.append("")
 
         if document_type_accuracy:
+
             lines.extend(
                 [
                     "---",
@@ -100,7 +108,7 @@ class BenchmarkRetrievalReportReporter:
             )
 
             for document_type in sorted(
-                document_type_accuracy,
+                document_type_accuracy
             ):
                 lines.append(
                     "| "
@@ -110,10 +118,15 @@ class BenchmarkRetrievalReportReporter:
 
             lines.append("")
 
+        #
+        # Individual retrieval reports
+        #
+
         for index, retrieval in enumerate(
             report.reports,
             start=1,
         ):
+
             lines.extend(
                 [
                     "---",
