@@ -200,6 +200,10 @@ from athena.services.knowledge_workspace_service import (
 
 from athena.ai.llm.model_manager import ModelManager
 
+from athena.workspace.intelligence.service import (
+    WorkspaceIntelligenceService,
+)
+
 
 class ApplicationContext:
     """Owns application-wide services."""
@@ -217,6 +221,10 @@ class ApplicationContext:
         self.workspace_service = WorkspaceService()
 
         self.current_workspace: Workspace | None = None
+
+        self.workspace_intelligence_service: (
+            WorkspaceIntelligenceService | None
+        ) = None
 
         #
         # Document services
@@ -681,7 +689,23 @@ class ApplicationContext:
             query_service=self.athena_query_service,
         )
         
+        #
+        # Workspace intelligence (A20.2)
+        #
 
+        self.workspace_intelligence_service = (
+            WorkspaceIntelligenceService(
+                workspace_query_service=WorkspaceQueryService(
+                    self.indexed_document_service,
+                ),
+                knowledge_workspace_service=(
+                    self.knowledge_workspace_service
+                ),
+                conversation_service=(
+                    self.conversation_service
+                ),
+            )
+        )
         #
         # User data
         #
