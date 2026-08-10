@@ -1,4 +1,6 @@
-"""Business logic for Athena workspaces."""
+"""
+Business logic for Athena workspaces.
+"""
 
 from __future__ import annotations
 
@@ -15,12 +17,18 @@ from .storage import WorkspaceStorage
 
 
 class WorkspaceService:
-    """Provides high-level workspace operations."""
+    """
+    Provides high-level workspace operations.
+    """
 
     def __init__(self) -> None:
         self._storage = WorkspaceStorage()
 
-    def create_workspace(self, parent: Path, name: str) -> Workspace:
+    def create_workspace(
+        self,
+        parent: Path,
+        name: str,
+    ) -> Workspace:
         """
         Create a new workspace.
 
@@ -38,7 +46,9 @@ class WorkspaceService:
         workspace_path = parent / name
 
         if workspace_path.exists():
-            raise WorkspaceExistsError(f"Workspace '{name}' already exists.")
+            raise WorkspaceExistsError(
+                f"Workspace '{name}' already exists."
+            )
 
         now = datetime.now()
 
@@ -48,30 +58,59 @@ class WorkspaceService:
             version=WORKSPACE_VERSION,
             created=now,
             modified=now,
+            description="",
+            metadata={},
         )
 
-        self._storage.create_directories(workspace_path)
-        self._storage.write_workspace(workspace)
+        self._storage.create_directories(
+            workspace_path,
+        )
+
+        self._storage.write_workspace(
+            workspace,
+        )
 
         return workspace
 
-    def open_workspace(self, path: Path) -> Workspace:
-        """Open an existing workspace."""
+    def open_workspace(
+        self,
+        path: Path,
+    ) -> Workspace:
+        """
+        Open an existing workspace.
+        """
 
         if not self._storage.is_workspace(path):
-            raise InvalidWorkspaceError(f"'{path}' is not an Athena workspace.")
+            raise InvalidWorkspaceError(
+                f"'{path}' is not an Athena workspace."
+            )
 
-        return self._storage.read_workspace(path)
+        return self._storage.read_workspace(
+            path,
+        )
 
-    def save_workspace(self, workspace: Workspace) -> None:
-        """Save workspace metadata."""
+    def save_workspace(
+        self,
+        workspace: Workspace,
+    ) -> None:
+        """
+        Save workspace metadata.
+        """
 
         workspace.modified = datetime.now()
 
-        self._storage.write_workspace(workspace)
+        self._storage.write_workspace(
+            workspace,
+        )
 
-    def is_workspace(self, path: Path) -> bool:
-        """Return True if path is a valid workspace."""
+    def is_workspace(
+        self,
+        path: Path,
+    ) -> bool:
+        """
+        Return True if path is a valid Athena workspace.
+        """
 
-        return self._storage.is_workspace(path)
-
+        return self._storage.is_workspace(
+            path,
+        )
