@@ -209,13 +209,58 @@ class SQLiteChunkRepository(ChunkRepository):
         limit: int = 20,
     ) -> list[DocumentChunk]:
         """
-        Search indexed document chunks.
+        Search indexed document chunks using token matching.
         """
+
+        import re
+        import unicodedata
+
+        def normalize(
+            value: str,
+        ) -> str:
+
+            value = unicodedata.normalize(
+                "NFC",
+                value,
+            )
+
+            value = value.lower()
+
+            value = re.sub(
+                r"[^\w\s\u0900-\u097F\u0980-\u09FF\u0A00-\u0A7F\u0F00-\u0FFF]",
+                " ",
+                value,
+            )
+
+            return value
+
+        terms = [
+            term
+            for term in normalize(query).split()
+            if len(term) > 1
+        ]
+
+        if not terms:
+            return []
+
+        conditions = " OR ".join(
+            [
+                "text LIKE ?"
+                for _ in terms
+            ]
+        )
+
+        parameters = [
+            f"%{term}%"
+            for term in terms
+        ]
+
+        parameters.append(limit)
 
         with self._connect() as connection:
 
             cursor = connection.execute(
-                """
+                f"""
                 SELECT
                     chunk_id,
                     document_id,
@@ -226,11 +271,11 @@ class SQLiteChunkRepository(ChunkRepository):
                     end_offset,
                     text
                 FROM chunks
-                WHERE text LIKE ?
-                ORDER BY document_id, chunk_index
+                WHERE {conditions}
+                ORDER BY chunk_index
                 LIMIT ?
                 """,
-                (f"%{query}%", limit),
+                parameters,
             )
 
             rows = cursor.fetchall()

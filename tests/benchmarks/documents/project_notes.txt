@@ -1,0 +1,12 @@
+Project Athena Notes
+
+Current milestone:
+A19.3 Evidence Intelligence Freeze.
+
+Next milestone:
+A19.4 Multilingual Retrieval Validation.
+
+Future direction:
+A20 Workspace Intelligence.
+
+Athena is designed as a personal offline knowledge workspace.

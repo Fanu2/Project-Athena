@@ -6,7 +6,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from uuid import UUID
 
 
 @dataclass(slots=True, frozen=True)
@@ -19,7 +18,7 @@ class RetrievalResult:
     intelligence context.
     """
 
-    document_id: UUID
+    document_id: str
 
     document_name: str
 

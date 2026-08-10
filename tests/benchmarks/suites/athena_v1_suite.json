@@ -1,0 +1,7 @@
+{
+  "datasets": [
+    {
+      "path": "../datasets/athena_multilingual_v1.json"
+    }
+  ]
+}

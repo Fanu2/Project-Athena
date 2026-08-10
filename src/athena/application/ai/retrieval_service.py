@@ -62,12 +62,28 @@ class RetrievalService:
     ) -> QueryIntent:
         """
         Return parsed query intent.
+
+        Uses the semantic retrieval planner when
+        available. Falls back safely for older
+        retrieval implementations.
         """
 
-        return (
-            self._semantic_retrieval_service.plan_query(
-                question.text,
+        if hasattr(
+            self._semantic_retrieval_service,
+            "plan_query",
+        ):
+            return (
+                self._semantic_retrieval_service.plan_query(
+                    question.text,
+                )
             )
+
+        from athena.retrieval.query_planner import (
+            QueryPlanner,
+        )
+
+        return QueryPlanner().parse(
+            question.text,
         )
 
     def retrieve(
@@ -129,10 +145,6 @@ class RetrievalService:
                         "document_authority_score",
                         0.0,
                     ),
-
-                    #
-                    # A19 Retrieval Intelligence
-                    #
 
                     retrieval_strategy=(
                         intent.strategy
@@ -240,10 +252,6 @@ class RetrievalService:
                             ),
                         )
                     ),
-
-                    #
-                    # A19 Retrieval Intelligence
-                    #
 
                     retrieval_strategy=(
                         intent.strategy

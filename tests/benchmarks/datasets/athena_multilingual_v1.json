@@ -1,0 +1,99 @@
+[
+  {
+    "question_id": "hindi_001",
+    "question": "भूमि का मालिक कौन है?",
+    "expected_document_id": "hindi_land_record",
+    "language": "hindi",
+    "document_type": "docx",
+    "tags": [
+      "hindi",
+      "ownership"
+    ]
+  },
+  {
+    "question_id": "hindi_002",
+    "question": "खसरा संख्या क्या है?",
+    "expected_document_id": "hindi_land_record",
+    "language": "hindi",
+    "document_type": "docx",
+    "tags": [
+      "hindi",
+      "land"
+    ]
+  },
+  {
+    "question_id": "punjabi_001",
+    "question": "ਜ਼ਮੀਨ ਦਾ ਮਾਲਕ ਕੌਣ ਹੈ?",
+    "expected_document_id": "punjabi_land_record",
+    "language": "punjabi",
+    "document_type": "txt",
+    "tags": [
+      "punjabi",
+      "ownership"
+    ]
+  },
+  {
+    "question_id": "french_001",
+    "question": "Qui est le propriétaire du terrain?",
+    "expected_document_id": "french_land_record",
+    "language": "french",
+    "document_type": "txt",
+    "tags": [
+      "french",
+      "ownership"
+    ]
+  },
+  {
+    "question_id": "spanish_001",
+    "question": "¿Quién es el propietario de la tierra?",
+    "expected_document_id": "spanish_land_record",
+    "language": "spanish",
+    "document_type": "txt",
+    "tags": [
+      "spanish",
+      "ownership"
+    ]
+  },
+  {
+    "question_id": "assamese_001",
+    "question": "ভূমিৰ মালিক কোন?",
+    "expected_document_id": "assamese_land_record",
+    "language": "assamese",
+    "document_type": "txt",
+    "tags": [
+      "assamese",
+      "ownership"
+    ]
+  },
+  {
+    "question_id": "mizo_001",
+    "question": "Tu nge ram neitu?",
+    "expected_document_id": "mizo_land_record",
+    "language": "mizo",
+    "document_type": "txt",
+    "tags": [
+      "mizo",
+      "ownership"
+    ]
+  },
+  {
+    "question_id": "athena_001",
+    "question": "Explain Athena architecture",
+    "expected_document_id": "english_architecture",
+    "language": "english",
+    "document_type": "md",
+    "tags": [
+      "architecture"
+    ]
+  },
+  {
+    "question_id": "project_001",
+    "question": "What is the current project direction?",
+    "expected_document_id": "project_notes",
+    "language": "english",
+    "document_type": "txt",
+    "tags": [
+      "project"
+    ]
+  }
+]

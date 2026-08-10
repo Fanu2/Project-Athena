@@ -5,12 +5,23 @@ Hybrid retrieval ranking.
 from __future__ import annotations
 
 from athena.ai.metadata.models import MetadataResult
+
 from athena.ai.retrieval.document_authority_ranker import (
     DocumentAuthorityRanker,
 )
-from athena.ai.retrieval.identity_ranker import IdentityRanker
-from athena.ai.retrieval.metadata_ranker import MetadataRanker
-from athena.ai.retrieval.models import SemanticResult
+
+from athena.ai.retrieval.identity_ranker import (
+    IdentityRanker,
+)
+
+from athena.ai.retrieval.metadata_ranker import (
+    MetadataRanker,
+)
+
+from athena.ai.retrieval.models import (
+    SemanticResult,
+)
+
 from athena.ai.retrieval.ranking import (
     CandidateScorer,
     RankingFeatures,
@@ -29,7 +40,10 @@ class HybridRanker:
     ) -> None:
         """Initialize ranker."""
 
-        self._scorer = scorer or CandidateScorer()
+        self._scorer = (
+            scorer
+            or CandidateScorer()
+        )
 
         self._metadata_ranker = (
             metadata_ranker
@@ -54,7 +68,9 @@ class HybridRanker:
         metadata: MetadataResult | None = None,
         query: str = "",
     ) -> list[SemanticResult]:
-        """Merge candidates and rerank."""
+        """
+        Merge candidates and rerank.
+        """
 
         candidates: dict[str, SemanticResult] = {}
 
@@ -69,22 +85,48 @@ class HybridRanker:
 
         for result in candidates.values():
 
-            keyword_score = 0.0
+            #
+            # Preserve keyword evidence already
+            # attached to the candidate.
+            #
 
-            for keyword_result in keyword_results:
-                if keyword_result.chunk_id == result.chunk_id:
-                    keyword_score = keyword_result.score
-                    break
-
-            metadata_score = self._metadata_score(
-                metadata,
+            keyword_score = getattr(
                 result,
+                "keyword_score",
+                0.0,
             )
 
-            identity_score = self._identity_ranker.score(
-                query,
-                result.document_name,
-                result.document_title,
+            #
+            # Fallback lookup for keyword-only
+            # candidates.
+            #
+
+            if keyword_score == 0.0:
+
+                for keyword_result in keyword_results:
+
+                    if (
+                        keyword_result.chunk_id
+                        == result.chunk_id
+                    ):
+                        keyword_score = (
+                            keyword_result.score
+                        )
+                        break
+
+            metadata_score = (
+                self._metadata_score(
+                    metadata,
+                    result,
+                )
+            )
+
+            identity_score = (
+                self._identity_ranker.score(
+                    query,
+                    result.document_name,
+                    result.document_title,
+                )
             )
 
             document_authority_score = (
@@ -99,7 +141,9 @@ class HybridRanker:
                     keyword_score=keyword_score,
                     metadata_score=metadata_score,
                     identity_score=identity_score,
-                    document_authority_score=document_authority_score,
+                    document_authority_score=(
+                        document_authority_score
+                    ),
                 ),
             )
 
@@ -115,11 +159,18 @@ class HybridRanker:
                     end_offset=result.end_offset,
                     text=result.text,
                     score=final_score,
+
                     semantic_score=result.score,
+
                     keyword_score=keyword_score,
+
                     metadata_score=metadata_score,
+
                     identity_score=identity_score,
-                    document_authority_score=document_authority_score,
+
+                    document_authority_score=(
+                        document_authority_score
+                    ),
                 )
             )
 
@@ -135,15 +186,20 @@ class HybridRanker:
         metadata: MetadataResult | None,
         result: SemanticResult,
     ) -> float:
-        """Calculate metadata score."""
+        """
+        Calculate metadata score.
+        """
 
         if metadata is None:
             return 0.0
 
         for document in metadata.documents:
+
             if (
-                document.document_id == result.document_id
-                or document.title == result.document_title
+                document.document_id
+                == result.document_id
+                or document.title
+                == result.document_title
             ):
                 return document.confidence
 
