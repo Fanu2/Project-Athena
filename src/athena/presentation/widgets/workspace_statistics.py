@@ -36,7 +36,6 @@ class WorkspaceStatistics(
             QFrame.Shape.StyledPanel,
         )
 
-
         self.documents_label = QLabel(
             "0",
         )
@@ -49,13 +48,19 @@ class WorkspaceStatistics(
             "0",
         )
 
+        self.evidence_label = QLabel(
+            "0",
+        )
+
+        self.citation_label = QLabel(
+            "0",
+        )
+
         self.conversation_label = QLabel(
             "0",
         )
 
-
         self._setup_ui()
-
 
 
     def _setup_ui(
@@ -69,7 +74,6 @@ class WorkspaceStatistics(
             self,
         )
 
-
         title = QLabel(
             "📊 Workspace Intelligence",
         )
@@ -78,11 +82,9 @@ class WorkspaceStatistics(
             "font-weight: bold; font-size: 14px;"
         )
 
-
         layout.addWidget(
             title,
         )
-
 
         self._add_metric(
             layout,
@@ -104,10 +106,21 @@ class WorkspaceStatistics(
 
         self._add_metric(
             layout,
+            "Evidence Records",
+            self.evidence_label,
+        )
+
+        self._add_metric(
+            layout,
+            "Citations",
+            self.citation_label,
+        )
+
+        self._add_metric(
+            layout,
             "Conversation Messages",
             self.conversation_label,
         )
-
 
 
     def _add_metric(
@@ -137,7 +150,6 @@ class WorkspaceStatistics(
         )
 
 
-
     def set_snapshot(
         self,
         snapshot: WorkspaceIntelligenceSnapshot,
@@ -158,10 +170,17 @@ class WorkspaceStatistics(
             str(snapshot.knowledge_item_count),
         )
 
+        self.evidence_label.setText(
+            str(snapshot.evidence_count),
+        )
+
+        self.citation_label.setText(
+            str(snapshot.citation_count),
+        )
+
         self.conversation_label.setText(
             str(snapshot.conversation_messages),
         )
-
 
 
     def clear(
@@ -180,6 +199,14 @@ class WorkspaceStatistics(
         )
 
         self.knowledge_label.setText(
+            "0",
+        )
+
+        self.evidence_label.setText(
+            "0",
+        )
+
+        self.citation_label.setText(
             "0",
         )
 

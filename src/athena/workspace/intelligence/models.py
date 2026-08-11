@@ -27,6 +27,10 @@ class WorkspaceIntelligenceSnapshot:
 
     knowledge_item_count: int = 0
 
+    evidence_count: int = 0
+
+    citation_count: int = 0
+
     conversation_id: str | None = None
 
     conversation_messages: int = 0

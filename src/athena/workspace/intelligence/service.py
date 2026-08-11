@@ -8,13 +8,25 @@ a workspace intelligence snapshot.
 from __future__ import annotations
 
 from athena.conversation.service import ConversationService
+
+from athena.knowledge.services.evidence_service import (
+    EvidenceService,
+)
+
+from athena.knowledge.services.citation_service import (
+    CitationService,
+)
+
 from athena.services.knowledge_workspace_service import (
     KnowledgeWorkspaceService,
 )
+
 from athena.services.workspace_query_service import (
     WorkspaceQueryService,
 )
+
 from athena.workspace.models import Workspace
+
 from athena.workspace.intelligence.models import (
     WorkspaceIntelligenceSnapshot,
 )
@@ -33,7 +45,12 @@ class WorkspaceIntelligenceService:
         workspace_query_service: WorkspaceQueryService,
         knowledge_workspace_service: KnowledgeWorkspaceService | None = None,
         conversation_service: ConversationService | None = None,
+        evidence_service: EvidenceService | None = None,
+        citation_service: CitationService | None = None,
     ) -> None:
+        """
+        Initialize workspace intelligence service.
+        """
 
         self._workspace_query = (
             workspace_query_service
@@ -45,6 +62,14 @@ class WorkspaceIntelligenceService:
 
         self._conversation = (
             conversation_service
+        )
+
+        self._evidence = (
+            evidence_service
+        )
+
+        self._citations = (
+            citation_service
         )
 
     def snapshot(
@@ -64,6 +89,20 @@ class WorkspaceIntelligenceService:
         if self._knowledge_workspace is not None:
             knowledge_count = len(
                 self._knowledge_workspace.list_workspace_items()
+            )
+
+        evidence_count = 0
+
+        if self._evidence is not None:
+            evidence_count = len(
+                self._evidence.list_evidence()
+            )
+
+        citation_count = 0
+
+        if self._citations is not None:
+            citation_count = len(
+                self._citations.list_citations()
             )
 
         conversation_id = None
@@ -94,6 +133,8 @@ class WorkspaceIntelligenceService:
                 0,
             ),
             knowledge_item_count=knowledge_count,
+            evidence_count=evidence_count,
+            citation_count=citation_count,
             conversation_id=conversation_id,
             conversation_messages=conversation_messages,
         )

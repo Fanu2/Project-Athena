@@ -689,9 +689,9 @@ class ApplicationContext:
             query_service=self.athena_query_service,
         )
         
-        #
-        # Workspace intelligence (A20.2)
-        #
+		#
+		# Workspace intelligence (A20.2)
+		#
 
         self.workspace_intelligence_service = (
             WorkspaceIntelligenceService(
@@ -704,6 +704,8 @@ class ApplicationContext:
                 conversation_service=(
                     self.conversation_service
                 ),
+                evidence_service=evidence_service,
+                citation_service=citation_service,
             )
         )
         #
