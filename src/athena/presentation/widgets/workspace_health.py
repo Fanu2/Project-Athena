@@ -11,6 +11,10 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from athena.workspace.intelligence.health import (
+    WorkspaceHealthReport,
+)
+
 
 class WorkspaceHealth(QFrame):
     """
@@ -36,6 +40,14 @@ class WorkspaceHealth(QFrame):
 
         self.knowledge_status = QLabel(
             "⚠ Knowledge: Unknown",
+        )
+
+        self.evidence_status = QLabel(
+            "⚠ Evidence: Unknown",
+        )
+
+        self.citation_status = QLabel(
+            "⚠ Citations: Unknown",
         )
 
         self.retrieval_status = QLabel(
@@ -88,6 +100,14 @@ class WorkspaceHealth(QFrame):
         )
 
         layout.addWidget(
+            self.evidence_status,
+        )
+
+        layout.addWidget(
+            self.citation_status,
+        )
+
+        layout.addWidget(
             self.retrieval_status,
         )
 
@@ -102,12 +122,7 @@ class WorkspaceHealth(QFrame):
 
     def update_health(
         self,
-        *,
-        documents: bool,
-        knowledge: bool,
-        retrieval: bool,
-        conversation: bool,
-        runtime: bool,
+        report: WorkspaceHealthReport,
     ) -> None:
         """
         Update health indicators.
@@ -116,50 +131,62 @@ class WorkspaceHealth(QFrame):
         self.documents_status.setText(
             self._format(
                 "Documents",
-                documents,
+                report.documents_ready,
             )
         )
 
         self.knowledge_status.setText(
             self._format(
                 "Knowledge",
-                knowledge,
+                report.knowledge_ready,
+            )
+        )
+
+        self.evidence_status.setText(
+            self._format(
+                "Evidence",
+                report.evidence_ready,
+            )
+        )
+
+        self.citation_status.setText(
+            self._format(
+                "Citations",
+                report.citation_ready,
             )
         )
 
         self.retrieval_status.setText(
             self._format(
                 "Retrieval",
-                retrieval,
+                report.retrieval_ready,
             )
         )
 
         self.conversation_status.setText(
             self._format(
                 "Conversation",
-                conversation,
+                True,
             )
         )
 
         self.runtime_status.setText(
             self._format(
                 "AI Runtime",
-                runtime,
+                report.ai_ready,
             )
         )
 
 
-    def clear(self) -> None:
+    def clear(
+        self,
+    ) -> None:
         """
         Reset health state.
         """
 
         self.update_health(
-            documents=False,
-            knowledge=False,
-            retrieval=False,
-            conversation=False,
-            runtime=False,
+            WorkspaceHealthReport(),
         )
 
 

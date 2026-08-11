@@ -17,6 +17,10 @@ from athena.workspace.intelligence.models import (
     WorkspaceIntelligenceSnapshot,
 )
 
+from athena.workspace.intelligence.health import (
+    WorkspaceHealthReport,
+)
+
 from athena.presentation.widgets.workspace_identity import (
     WorkspaceIdentity,
 )
@@ -44,7 +48,6 @@ class HomePage(QWidget):
             parent,
         )
 
-
         #
         # Header
         #
@@ -60,11 +63,9 @@ class HomePage(QWidget):
             """
         )
 
-
         self.subtitle_label = QLabel(
             "Personal offline AI workspace",
         )
-
 
         #
         # Dashboard widgets
@@ -82,9 +83,7 @@ class HomePage(QWidget):
             WorkspaceHealth()
         )
 
-
         self._setup_ui()
-
 
 
     def _setup_ui(
@@ -98,7 +97,6 @@ class HomePage(QWidget):
             self,
         )
 
-
         layout.addWidget(
             self.title_label,
         )
@@ -107,9 +105,7 @@ class HomePage(QWidget):
             self.subtitle_label,
         )
 
-
         cards = QHBoxLayout()
-
 
         cards.addWidget(
             self.workspace_identity,
@@ -123,14 +119,11 @@ class HomePage(QWidget):
             self.workspace_health,
         )
 
-
         layout.addLayout(
             cards,
         )
 
-
         layout.addStretch()
-
 
 
     def set_workspace(
@@ -149,11 +142,9 @@ class HomePage(QWidget):
             "Athena workspace intelligence",
         )
 
-
         self.workspace_identity.set_workspace(
             workspace,
         )
-
 
 
     def set_workspace_snapshot(
@@ -169,28 +160,17 @@ class HomePage(QWidget):
         )
 
 
-
     def set_workspace_health(
         self,
-        *,
-        documents: bool,
-        knowledge: bool,
-        retrieval: bool,
-        conversation: bool,
-        runtime: bool,
+        report: WorkspaceHealthReport,
     ) -> None:
         """
         Update workspace health status.
         """
 
         self.workspace_health.update_health(
-            documents=documents,
-            knowledge=knowledge,
-            retrieval=retrieval,
-            conversation=conversation,
-            runtime=runtime,
+            report,
         )
-
 
 
     def clear_workspace(
@@ -207,7 +187,6 @@ class HomePage(QWidget):
         self.subtitle_label.setText(
             "Personal offline AI workspace",
         )
-
 
         self.workspace_identity.clear()
 

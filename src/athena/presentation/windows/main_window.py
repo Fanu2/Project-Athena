@@ -64,6 +64,9 @@ from athena.presentation.ai.ai_control_center_page import (
 from athena.knowledge.ui.knowledge_workspace_page import (
     KnowledgeWorkspacePage,
 )
+from athena.workspace.intelligence.health_service import (
+    WorkspaceHealthService,
+)
 
 
 class MainWindow(QMainWindow):
@@ -473,26 +476,15 @@ class MainWindow(QMainWindow):
             # Workspace Health
             #
 
+            health_report = (
+                WorkspaceHealthService()
+                .evaluate(
+                    snapshot,
+                )
+            )
+
             self.home.set_workspace_health(
-                documents=(
-                    snapshot.document_count > 0
-                ),
-
-                knowledge=(
-                    snapshot.knowledge_item_count > 0
-                ),
-
-                retrieval=(
-                    self.context.search_service is not None
-                ),
-
-                conversation=(
-                    self.context.conversation_service is not None
-                ),
-
-                runtime=(
-                    self.context.llm_runtime_bootstrap is not None
-                ),
+                health_report,
             )
 
 
