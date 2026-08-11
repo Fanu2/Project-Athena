@@ -492,10 +492,14 @@ class MainWindow(QMainWindow):
             # Ask Athena Workspace Context
             #
 
-            self.ask_athena.set_workspace_snapshot(
-                current_workspace.name,
-                snapshot,
-            )
+        self.ask_athena.set_workspace_snapshot(
+            current_workspace.name,
+            snapshot,
+        )
+
+        self.ask_athena.set_workspace_intelligence_snapshot(
+            snapshot,
+        )
 
 
         #

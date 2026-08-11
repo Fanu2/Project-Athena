@@ -53,6 +53,12 @@ from athena.presentation.ai.conversation_widget import (
     ConversationWidget,
 )
 
+from athena.presentation.widgets.assistant_plan import (
+    AssistantPlanWidget,
+)
+
+
+
 
 class AskAthenaPage(QWidget):
     """AI question answering workspace."""
@@ -161,6 +167,14 @@ class AskAthenaPage(QWidget):
         self.evidence_widget = EvidenceWidget() 
 
         self.retrieval_inspector = RetrievalInspectorWidget()       
+
+        #
+        # Assistant Plan (A22.7)
+        #
+
+        self.assistant_plan = (
+            AssistantPlanWidget()
+        )
 
 
         #
@@ -366,6 +380,10 @@ class AskAthenaPage(QWidget):
             self.sources,
         )
 
+        layout.addWidget(
+            self.assistant_plan,
+        )
+
         #
         # Citation Intelligence
         #
@@ -480,6 +498,8 @@ class AskAthenaPage(QWidget):
 
         self.citation_widget.clear()
 
+        self.assistant_plan.clear()
+
         if self._conversation_service is not None:
             self._conversation_service.clear()
 
@@ -562,6 +582,11 @@ class AskAthenaPage(QWidget):
                     decision,
                 )
             )
+
+            self.assistant_plan.set_plan(
+                plan,
+            )
+            
 
             self.status.setText(
                 (
