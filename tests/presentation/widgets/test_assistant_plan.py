@@ -6,6 +6,10 @@ from athena.application.assistant.plan import (
     AssistantPlan,
 )
 
+from athena.application.assistant.validation import (
+    AssistantPlanValidation,
+)
+
 from athena.application.assistant.workflow import (
     AssistantWorkflowStep,
 )
@@ -20,7 +24,7 @@ def test_plan_widget_displays_plan(
 ):
     """
     Widget displays capability,
-    context, and workflow.
+    context, workflow, and quality.
     """
 
     widget = AssistantPlanWidget()
@@ -53,6 +57,14 @@ def test_plan_widget_displays_plan(
                     "Attach source references"
                 ),
                 category="citation",
+            ),
+        ),
+        validation=AssistantPlanValidation(
+            valid=True,
+            checks=(
+                "capability_available",
+                "workflow_present",
+                "context_available",
             ),
         ),
     )
@@ -95,5 +107,25 @@ def test_plan_widget_displays_plan(
 
     assert (
         "attach citations"
+        in text
+    )
+
+    assert (
+        "Quality:"
+        in text
+    )
+
+    assert (
+        "VALID"
+        in text
+    )
+
+    assert (
+        "capability available"
+        in text
+    )
+
+    assert (
+        "workflow present"
         in text
     )

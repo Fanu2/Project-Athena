@@ -1,4 +1,3 @@
-
 """
 Assistant execution planning models.
 """
@@ -6,6 +5,10 @@ Assistant execution planning models.
 from __future__ import annotations
 
 from dataclasses import dataclass
+
+from .validation import (
+    AssistantPlanValidation,
+)
 
 from .workflow import (
     AssistantWorkflowStep,
@@ -28,3 +31,5 @@ class AssistantPlan:
         AssistantWorkflowStep,
         ...
     ] = ()
+
+    validation: AssistantPlanValidation | None = None

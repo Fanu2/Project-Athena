@@ -99,12 +99,57 @@ class AssistantPlanWidget(QFrame):
                 "",
             )
 
+
+        if plan.validation:
+            lines.append(
+                "Quality:"
+            )
+
+            lines.append(
+                "VALID"
+                if plan.validation.valid
+                else "INVALID"
+            )
+
+            lines.append(
+                "",
+            )
+
+            lines.append(
+                "Checks:"
+            )
+
+            for check in plan.validation.checks:
+                lines.append(
+                    f"✓ {check.replace('_', ' ')}"
+                )
+
+            if plan.validation.warnings:
+                lines.append(
+                    "",
+                )
+
+                lines.append(
+                    "Warnings:"
+                )
+
+                for warning in plan.validation.warnings:
+                    lines.append(
+                        f"! {warning.replace('_', ' ')}"
+                    )
+
+            lines.append(
+                "",
+            )
+
+
         lines.extend(
             [
                 f"Capability: {plan.capability}",
                 "",
             ]
         )
+
 
         if plan.workflow_steps:
             lines.append(
@@ -138,6 +183,7 @@ class AssistantPlanWidget(QFrame):
                 lines.append(
                     f"{index}. {step.replace('_', ' ')}"
                 )
+
 
         self.content.setText(
             "\n".join(lines),

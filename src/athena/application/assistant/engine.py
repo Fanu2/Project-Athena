@@ -4,7 +4,9 @@ Athena Assistant Engine.
 Combines intent understanding,
 capability routing,
 workspace context,
-and planning.
+planning,
+execution boundaries,
+and quality validation.
 """
 
 from __future__ import annotations
@@ -29,16 +31,20 @@ from .decision import (
     AssistantDecision,
 )
 
-from .plan import (
-    AssistantPlan,
-)
-
 from .execution import (
     AssistantExecutionRequest,
 )
 
+from .plan import (
+    AssistantPlan,
+)
+
 from .planner import (
     AssistantPlanner,
+)
+
+from .quality import (
+    AssistantQualityService,
 )
 
 from .workspace_context import (
@@ -66,6 +72,10 @@ class AssistantEngine:
 
         self._planner = (
             AssistantPlanner()
+        )
+
+        self._quality_service = (
+            AssistantQualityService()
         )
 
         self._workspace_context: (
@@ -141,6 +151,42 @@ class AssistantEngine:
 
         return AssistantExecutionRequest(
             plan=plan,
+        )
+
+
+    def validate_plan(
+        self,
+        plan: AssistantPlan,
+    ):
+        """
+        Validate assistant plan quality.
+        """
+
+        return self._quality_service.validate(
+            plan,
+        )
+
+
+    def attach_validation(
+        self,
+        plan: AssistantPlan,
+    ) -> AssistantPlan:
+        """
+        Attach quality diagnostics to plan.
+        """
+
+        validation = (
+            self.validate_plan(
+                plan,
+            )
+        )
+
+        return AssistantPlan(
+            capability=plan.capability,
+            steps=plan.steps,
+            context_notes=plan.context_notes,
+            workflow_steps=plan.workflow_steps,
+            validation=validation,
         )
 
 
