@@ -103,17 +103,41 @@ class AssistantPlanWidget(QFrame):
             [
                 f"Capability: {plan.capability}",
                 "",
-                "Steps:",
             ]
         )
 
-        for index, step in enumerate(
-            plan.steps,
-            start=1,
-        ):
+        if plan.workflow_steps:
             lines.append(
-                f"{index}. {step.replace('_', ' ')}"
+                "Workflow:"
             )
+
+            for index, step in enumerate(
+                plan.workflow_steps,
+                start=1,
+            ):
+                lines.append(
+                    (
+                        f"{index}. "
+                        f"{step.name.replace('_', ' ')}"
+                    )
+                )
+
+                lines.append(
+                    f"   {step.description}"
+                )
+
+        else:
+            lines.append(
+                "Steps:"
+            )
+
+            for index, step in enumerate(
+                plan.steps,
+                start=1,
+            ):
+                lines.append(
+                    f"{index}. {step.replace('_', ' ')}"
+                )
 
         self.content.setText(
             "\n".join(lines),

@@ -6,6 +6,10 @@ from athena.application.assistant.plan import (
     AssistantPlan,
 )
 
+from athena.application.assistant.workflow import (
+    AssistantWorkflowStep,
+)
+
 from athena.presentation.widgets.assistant_plan import (
     AssistantPlanWidget,
 )
@@ -15,8 +19,8 @@ def test_plan_widget_displays_plan(
     qtbot,
 ):
     """
-    Widget displays capability, steps,
-    and workspace context.
+    Widget displays capability,
+    context, and workflow.
     """
 
     widget = AssistantPlanWidget()
@@ -34,7 +38,22 @@ def test_plan_widget_displays_plan(
         context_notes=(
             "Workspace: Research",
             "Documents available: 10",
-            "Knowledge items: 5",
+        ),
+        workflow_steps=(
+            AssistantWorkflowStep(
+                name="retrieve_information",
+                description=(
+                    "Search workspace documents"
+                ),
+                category="retrieval",
+            ),
+            AssistantWorkflowStep(
+                name="attach_citations",
+                description=(
+                    "Attach source references"
+                ),
+                category="citation",
+            ),
         ),
     )
 
@@ -50,7 +69,7 @@ def test_plan_widget_displays_plan(
     )
 
     assert (
-        "retrieve information"
+        "Context:"
         in text
     )
 
@@ -60,11 +79,21 @@ def test_plan_widget_displays_plan(
     )
 
     assert (
-        "Documents available: 10"
+        "Workflow:"
         in text
     )
 
     assert (
-        "Knowledge items: 5"
+        "retrieve information"
+        in text
+    )
+
+    assert (
+        "Search workspace documents"
+        in text
+    )
+
+    assert (
+        "attach citations"
         in text
     )
