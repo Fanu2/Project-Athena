@@ -204,6 +204,10 @@ from athena.workspace.intelligence.service import (
     WorkspaceIntelligenceService,
 )
 
+from athena.application.assistant.engine import (
+    AssistantEngine,
+)
+
 
 class ApplicationContext:
     """Owns application-wide services."""
@@ -708,6 +712,11 @@ class ApplicationContext:
                 citation_service=citation_service,
             )
         )
+
+        self.assistant_engine = AssistantEngine(
+            intent_service=intent_service,
+        )
+
         #
         # User data
         #
