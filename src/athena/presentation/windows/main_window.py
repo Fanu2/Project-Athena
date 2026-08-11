@@ -605,6 +605,18 @@ class MainWindow(QMainWindow):
             )
 
 
+    
+        #
+        # Assistant Engine (A22.6)
+        #
+
+        if self.context.assistant_engine is not None:
+
+            self.ask_athena.set_assistant_engine(
+                self.context.assistant_engine,
+            )
+
+
         self.ask_athena.set_conversation_service(
             self.context.conversation_service,
         )

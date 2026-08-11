@@ -82,6 +82,14 @@ class AskAthenaPage(QWidget):
 
         self._conversation_service_path: Path | None = None
 
+        #
+        # Assistant Engine (A22.6)
+        #
+
+        self._assistant_engine = None
+
+        self._workspace_snapshot = None
+
 
         #
         # Workspace Context (A20.7)
@@ -423,6 +431,29 @@ class AskAthenaPage(QWidget):
             "Model: -",
         )
 
+
+    def set_assistant_engine(
+        self,
+        engine,
+    ) -> None:
+        """
+        Attach Assistant Engine.
+        """
+
+        self._assistant_engine = engine
+
+
+    def set_workspace_intelligence_snapshot(
+        self,
+        snapshot,
+    ) -> None:
+        """
+        Attach workspace intelligence snapshot.
+        """
+
+        self._workspace_snapshot = snapshot
+
+
     def clear_query_service(self) -> None:
         """Detach Athena query service."""
 
@@ -510,6 +541,34 @@ class AskAthenaPage(QWidget):
             return
 
         self.ask_button.setEnabled(False)
+
+        #
+        # Assistant Planning (A22.6)
+        #
+
+        if (
+            self._assistant_engine is not None
+            and self._workspace_snapshot is not None
+        ):
+            decision = (
+                self._assistant_engine.analyze_request(
+                    question,
+                    self._workspace_snapshot,
+                )
+            )
+
+            plan = (
+                self._assistant_engine.create_plan(
+                    decision,
+                )
+            )
+
+            self.status.setText(
+                (
+                    f"Athena plan: "
+                    f"{plan.capability}"
+                ),
+            )
 
         try:
             self.status.setText(
