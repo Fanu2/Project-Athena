@@ -209,7 +209,12 @@ class SQLiteChunkRepository(ChunkRepository):
         limit: int = 20,
     ) -> list[DocumentChunk]:
         """
-        Search indexed document chunks using token matching.
+        Search indexed document chunks.
+
+        Searches:
+        - chunk content
+        - document path
+        - document title
         """
 
         import re
@@ -245,15 +250,28 @@ class SQLiteChunkRepository(ChunkRepository):
 
         conditions = " OR ".join(
             [
-                "text LIKE ?"
+                """
+                chunks.text LIKE ?
+                OR documents.path LIKE ?
+                OR documents.title LIKE ?
+                """
                 for _ in terms
             ]
         )
 
-        parameters = [
-            f"%{term}%"
-            for term in terms
-        ]
+        parameters: list[str | int] = []
+
+        for term in terms:
+
+            value = f"%{term}%"
+
+            parameters.extend(
+                [
+                    value,
+                    value,
+                    value,
+                ]
+            )
 
         parameters.append(limit)
 
@@ -262,17 +280,20 @@ class SQLiteChunkRepository(ChunkRepository):
             cursor = connection.execute(
                 f"""
                 SELECT
-                    chunk_id,
-                    document_id,
-                    document_path,
-                    chunk_index,
-                    page_number,
-                    start_offset,
-                    end_offset,
-                    text
+                    chunks.chunk_id,
+                    chunks.document_id,
+                    documents.path,
+                    documents.title,
+                    chunks.chunk_index,
+                    chunks.page_number,
+                    chunks.start_offset,
+                    chunks.end_offset,
+                    chunks.text
                 FROM chunks
+                JOIN documents
+                ON chunks.document_id = documents.document_id
                 WHERE {conditions}
-                ORDER BY chunk_index
+                ORDER BY chunks.chunk_index
                 LIMIT ?
                 """,
                 parameters,
@@ -289,11 +310,11 @@ class SQLiteChunkRepository(ChunkRepository):
                     if row[2]
                     else None
                 ),
-                chunk_index=row[3],
-                page_number=row[4],
-                start_offset=row[5],
-                end_offset=row[6],
-                text=row[7],
+                chunk_index=row[4],
+                page_number=row[5],
+                start_offset=row[6],
+                end_offset=row[7],
+                text=row[8],
             )
             for row in rows
         ]

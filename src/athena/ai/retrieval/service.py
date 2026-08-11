@@ -10,33 +10,43 @@ from uuid import UUID
 from athena.ai.embeddings.repository import (
     EmbeddingRepository,
 )
+
 from athena.ai.embeddings.service import (
     EmbeddingService,
 )
+
 from athena.ai.metadata.models import (
     MetadataResult,
 )
+
 from athena.ai.retrieval.hybrid_ranker import (
     HybridRanker,
 )
+
 from athena.ai.retrieval.keyword_adapter import (
     KeywordAdapter,
 )
+
 from athena.ai.retrieval.models import (
     SemanticResult,
 )
+
 from athena.ai.retrieval.similarity import (
     SimilarityCalculator,
 )
+
 from athena.indexing.repositories.sqlite import (
     SQLiteChunkRepository,
 )
+
 from athena.repositories.document_repository import (
     DocumentRepository,
 )
+
 from athena.retrieval.metadata_filter import (
     MetadataFilter,
 )
+
 from athena.retrieval.query_planner import (
     QueryPlanner,
 )
@@ -56,7 +66,9 @@ class RetrievalService:
     ) -> None:
         """Initialize retrieval service."""
 
-        self._embedding_service = embedding_service
+        self._embedding_service = (
+            embedding_service
+        )
 
         self._embedding_repository = (
             embedding_repository
@@ -70,18 +82,26 @@ class RetrievalService:
             document_repository
         )
 
-        self._similarity = SimilarityCalculator()
+        self._similarity = (
+            SimilarityCalculator()
+        )
 
-        self._query_planner = QueryPlanner()
+        self._query_planner = (
+            QueryPlanner()
+        )
 
-        self._metadata_filter = MetadataFilter()
+        self._metadata_filter = (
+            MetadataFilter()
+        )
 
         self._hybrid_ranker = (
             hybrid_ranker
             or HybridRanker()
         )
 
-        self._keyword_adapter = KeywordAdapter()
+        self._keyword_adapter = (
+            KeywordAdapter()
+        )
 
         self._max_chunks_per_document = (
             max_chunks_per_document
@@ -102,13 +122,14 @@ class RetrievalService:
         """
         Resolve document display metadata.
 
-        Supports both:
-        - filename based document ids
-        - UUID based document ids
+        Supports:
+        - SQLite indexed documents
+        - domain document repositories
+        - filename based ids
         """
 
         document_name = Path(
-            document_id
+            document_id,
         ).name
 
         document_title = document_name
@@ -120,21 +141,53 @@ class RetrievalService:
             )
 
         try:
+
             document = None
 
-            try:
+            if hasattr(
+                self._document_repository,
+                "load_document",
+            ):
                 document = (
-                    self._document_repository.get(
-                        UUID(document_id),
+                    self._document_repository
+                    .load_document(
+                        document_id,
                     )
                 )
-            except ValueError:
-                pass
+
+            elif hasattr(
+                self._document_repository,
+                "get",
+            ):
+
+                try:
+                    document = (
+                        self._document_repository
+                        .get(
+                            UUID(document_id),
+                        )
+                    )
+
+                except ValueError:
+                    document = None
 
             if document is not None:
-                document_name = Path(
-                    document.filename
-                ).name
+
+                if hasattr(
+                    document,
+                    "filename",
+                ):
+                    document_name = Path(
+                        document.filename,
+                    ).name
+
+                elif hasattr(
+                    document,
+                    "path",
+                ):
+                    document_name = Path(
+                        document.path,
+                    ).name
 
                 document_title = (
                     document.title
@@ -168,14 +221,17 @@ class RetrievalService:
         )
 
         embeddings = (
-            self._embedding_repository.list_all()
+            self._embedding_repository
+            .list_all()
         )
 
         scored: list[tuple] = []
 
         for embedding in embeddings:
+
             score = (
-                self._similarity.cosine_similarity(
+                self._similarity
+                .cosine_similarity(
                     query_vector,
                     embedding.vector,
                 )
@@ -188,12 +244,15 @@ class RetrievalService:
                 )
             )
 
-        semantic_results: list[SemanticResult] = []
+        semantic_results: list[
+            SemanticResult
+        ] = []
 
         for embedding, score in scored:
 
             chunk = (
-                self._chunk_repository.get_chunk(
+                self._chunk_repository
+                .get_chunk(
                     embedding.chunk_id,
                 )
             )
@@ -231,14 +290,16 @@ class RetrievalService:
         )
 
         keyword_chunks = (
-            self._chunk_repository.search_chunks(
+            self._chunk_repository
+            .search_chunks(
                 query,
                 limit=limit * 2,
             )
         )
 
         keyword_results = (
-            self._keyword_adapter.convert(
+            self._keyword_adapter
+            .convert(
                 keyword_chunks,
                 query,
             )
