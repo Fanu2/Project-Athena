@@ -12,6 +12,10 @@ from ..domain.knowledge_context import (
     KnowledgeContext,
 )
 
+from athena.knowledge.repositories.sqlite_document_intelligence_repository import (
+    SQLiteDocumentIntelligenceRepository,
+)
+
 
 class KnowledgeRuntimeFactory:
     """
@@ -30,7 +34,16 @@ class KnowledgeRuntimeFactory:
         evidence_build_service=None,
         citation_build_service=None,
         document_evidence_service=None,
+        document_intelligence_repository=None,
     ) -> None:
+
+        if document_intelligence_repository is None:
+
+            document_intelligence_repository = (
+                SQLiteDocumentIntelligenceRepository(
+                    "athena_intelligence.db",
+                )
+            )
 
         self._services = {
             "provider_manager": provider_manager,
@@ -44,7 +57,11 @@ class KnowledgeRuntimeFactory:
             "document_evidence_service": (
                 document_evidence_service
             ),
+            "document_intelligence_repository": (
+                document_intelligence_repository
+            ),
         }
+
 
     def create_context(
         self,
@@ -60,6 +77,7 @@ class KnowledgeRuntimeFactory:
         )
 
         return context
+
 
     def create_document_context(
         self,
@@ -80,6 +98,7 @@ class KnowledgeRuntimeFactory:
         )
 
         return context
+
 
     def _register_services(
         self,

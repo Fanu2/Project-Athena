@@ -43,11 +43,14 @@ class IntelligencePass(PipelineStage):
             else DocumentIntelligenceService()
         )
 
+
     @property
     def name(
         self,
     ) -> str:
+
         return "intelligence"
+
 
     def execute(
         self,
@@ -56,7 +59,7 @@ class IntelligencePass(PipelineStage):
     ) -> Any:
         """
         Analyze knowledge representation
-        and persist document evidence.
+        and persist document intelligence.
         """
 
         if not isinstance(
@@ -65,6 +68,7 @@ class IntelligencePass(PipelineStage):
         ):
             return input_data
 
+
         document = context.get_service(
             "document",
         )
@@ -72,15 +76,38 @@ class IntelligencePass(PipelineStage):
         if document is None:
             return input_data
 
+
         intelligence = self._service.analyze(
             document,
             input_data,
         )
 
+
         context.add_service(
             "document_intelligence",
             intelligence,
         )
+
+
+        #
+        # Athena Document Intelligence Persistence
+        #
+
+        intelligence_repository = (
+            context.get_service(
+                "document_intelligence_repository",
+            )
+        )
+
+        if intelligence_repository is not None:
+
+            intelligence_repository.save(
+                str(
+                    document.id,
+                ),
+                intelligence,
+            )
+
 
         #
         # Athena Evidence Persistence
@@ -95,5 +122,6 @@ class IntelligencePass(PipelineStage):
             evidence_service.build(
                 document,
             )
+
 
         return input_data
