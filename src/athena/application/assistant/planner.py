@@ -14,6 +14,10 @@ from .plan import (
     AssistantPlan,
 )
 
+from .workspace_context import (
+    AssistantWorkspaceContext,
+)
+
 
 class AssistantPlanner:
     """
@@ -23,6 +27,7 @@ class AssistantPlanner:
     def create_plan(
         self,
         capability: AssistantCapability,
+        context: AssistantWorkspaceContext | None = None,
     ) -> AssistantPlan:
         """
         Create a plan from a capability.
@@ -54,7 +59,27 @@ class AssistantPlanner:
                 "attach_citations"
             )
 
+        context_notes: list[str] = []
+
+        if context is not None:
+            context_notes.append(
+                f"Workspace: {context.workspace_name}"
+            )
+
+            context_notes.append(
+                f"Documents available: {context.document_count}"
+            )
+
+            context_notes.append(
+                f"Knowledge items: {context.knowledge_item_count}"
+            )
+
+            context_notes.append(
+                f"Conversation messages: {context.conversation_messages}"
+            )
+
         return AssistantPlan(
             capability=capability.name,
             steps=tuple(steps),
+            context_notes=tuple(context_notes),
         )

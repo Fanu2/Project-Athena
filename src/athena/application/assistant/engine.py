@@ -3,6 +3,7 @@ Athena Assistant Engine.
 
 Combines intent understanding,
 capability routing,
+workspace context,
 and planning.
 """
 
@@ -36,6 +37,10 @@ from .planner import (
     AssistantPlanner,
 )
 
+from .workspace_context import (
+    AssistantWorkspaceContext,
+)
+
 
 class AssistantEngine:
     """
@@ -59,6 +64,10 @@ class AssistantEngine:
             AssistantPlanner()
         )
 
+        self._workspace_context: (
+            AssistantWorkspaceContext | None
+        ) = None
+
 
     def analyze_request(
         self,
@@ -80,6 +89,23 @@ class AssistantEngine:
             workspace=workspace,
         )
 
+        self._workspace_context = (
+            AssistantWorkspaceContext(
+                workspace_name=(
+                    workspace.workspace_name
+                ),
+                document_count=(
+                    workspace.document_count
+                ),
+                knowledge_item_count=(
+                    workspace.knowledge_item_count
+                ),
+                conversation_messages=(
+                    workspace.conversation_messages
+                ),
+            )
+        )
+
         return self._decide(
             context,
         )
@@ -95,6 +121,7 @@ class AssistantEngine:
 
         return self._planner.create_plan(
             decision.capability,
+            self._workspace_context,
         )
 
 

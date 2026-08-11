@@ -84,11 +84,28 @@ class AssistantPlanWidget(QFrame):
         Display assistant plan.
         """
 
-        lines = [
-            f"Capability: {plan.capability}",
-            "",
-            "Steps:",
-        ]
+        lines: list[str] = []
+
+        if plan.context_notes:
+            lines.append(
+                "Context:"
+            )
+
+            lines.extend(
+                plan.context_notes,
+            )
+
+            lines.append(
+                "",
+            )
+
+        lines.extend(
+            [
+                f"Capability: {plan.capability}",
+                "",
+                "Steps:",
+            ]
+        )
 
         for index, step in enumerate(
             plan.steps,

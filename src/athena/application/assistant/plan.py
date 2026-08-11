@@ -16,3 +16,5 @@ class AssistantPlan:
     capability: str
 
     steps: tuple[str, ...]
+
+    context_notes: tuple[str, ...] = ()
