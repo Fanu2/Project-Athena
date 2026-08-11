@@ -33,6 +33,10 @@ from .plan import (
     AssistantPlan,
 )
 
+from .execution import (
+    AssistantExecutionRequest,
+)
+
 from .planner import (
     AssistantPlanner,
 )
@@ -122,6 +126,21 @@ class AssistantEngine:
         return self._planner.create_plan(
             decision.capability,
             self._workspace_context,
+        )
+
+
+    def create_execution_request(
+        self,
+        plan: AssistantPlan,
+    ) -> AssistantExecutionRequest:
+        """
+        Wrap a plan for future execution.
+
+        Execution is handled separately.
+        """
+
+        return AssistantExecutionRequest(
+            plan=plan,
         )
 
 
