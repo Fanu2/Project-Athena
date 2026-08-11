@@ -1,5 +1,6 @@
 from pathlib import Path
 
+
 from PySide6.QtCore import (
     Qt,
     Signal,
@@ -12,18 +13,17 @@ from PySide6.QtGui import (
 
 from PySide6.QtWidgets import (
     QApplication,
-    QGroupBox,
     QHBoxLayout,
     QLabel,
     QPlainTextEdit,
     QPushButton,
-    QSplitter,
     QTextEdit,
     QTreeWidget,
     QTreeWidgetItem,
     QVBoxLayout,
     QWidget,
 )
+
 
 from athena.application.conversation.conversation_query_service import (
     ConversationQueryService,
@@ -37,16 +37,20 @@ from athena.presentation.ai.citation_widget import (
     CitationWidget,
 )
 
+from athena.presentation.ai.evidence_widget import (
+    EvidenceWidget,
+)
+
+from athena.presentation.retrieval.retrieval_inspector_widget import (
+RetrievalInspectorWidget,
+)
+
 from athena.presentation.ai.conversation_model import (
     ConversationModel,
 )
 
 from athena.presentation.ai.conversation_widget import (
     ConversationWidget,
-)
-
-from athena.workspace.intelligence.models import (
-    WorkspaceIntelligenceSnapshot,
 )
 
 
@@ -59,54 +63,60 @@ class AskAthenaPage(QWidget):
         self,
         parent: QWidget | None = None,
     ) -> None:
-        """Initialize Ask Athena page."""
+        """
+        Initialize Ask Athena page.
+        """
 
-        super().__init__(parent)
+        super().__init__(
+            parent,
+        )
+
 
         #
         # Services
         #
 
-        self._query_service: (
-            ConversationQueryService | None
-        ) = None
+        self._query_service: ConversationQueryService | None = None
 
-        self._conversation_service: (
-            ConversationService | None
-        ) = None
+        self._conversation_service: ConversationService | None = None
+
+        self._conversation_service_path: Path | None = None
+
 
         #
-        # Workspace Intelligence Context
+        # Workspace Context (A20.7)
         #
 
-        self.workspace_context = QLabel(
-            "No workspace open",
+        self.workspace_label = QLabel(
+            "Workspace: -",
         )
 
-        self.workspace_context.setWordWrap(
-            True,
+        self.workspace_stats_label = QLabel(
+            "Workspace Intelligence: -",
         )
 
+
         #
-        # Question Input
+        # Question input
         #
 
         self.question = QTextEdit()
 
         self.question.setPlaceholderText(
-            "Ask Athena about your workspace documents..."
+            "Ask Athena about your indexed documents..."
         )
 
         self.question.setMaximumHeight(
-            120,
+            100,
         )
 
+
         #
-        # Action Buttons
+        # Buttons
         #
 
         self.ask_button = QPushButton(
-            "Ask Athena",
+            "Ask",
         )
 
         self.clear_button = QPushButton(
@@ -117,11 +127,13 @@ class AskAthenaPage(QWidget):
             "Copy Answer",
         )
 
+
         #
         # Conversation
         #
 
         self.conversation = ConversationWidget()
+
 
         #
         # Citation Intelligence
@@ -132,6 +144,16 @@ class AskAthenaPage(QWidget):
         self.citation_widget.document_requested.connect(
             self.document_requested.emit,
         )
+
+
+        #
+        # Evidence Intelligence
+        #
+
+        self.evidence_widget = EvidenceWidget() 
+
+        self.retrieval_inspector = RetrievalInspectorWidget()       
+
 
         #
         # Retrieved Evidence
@@ -156,9 +178,14 @@ class AskAthenaPage(QWidget):
             True,
         )
 
+        self.sources.setMaximumHeight(
+            180,
+        )
+
         self.sources.itemDoubleClicked.connect(
             self._open_source,
         )
+
 
         #
         # Retrieved Passage
@@ -171,30 +198,42 @@ class AskAthenaPage(QWidget):
         )
 
         self.passage.setPlaceholderText(
-            "Select evidence to view the complete retrieved passage..."
+            "Select an evidence row to view the complete retrieved passage..."
+        )
+
+        self.passage.setMaximumHeight(
+            180,
         )
 
         self.sources.itemSelectionChanged.connect(
             self._show_selected_passage,
         )
 
+
         #
-        # Runtime Status
+        # Status
         #
 
         self.status = QLabel(
             "Ready",
         )
 
+
+        #
+        # Current model
+        #
+
         self.model_label = QLabel(
             "Model: -",
         )
+
 
         #
         # Build UI
         #
 
         self._setup_ui()
+
 
         #
         # Signals
@@ -212,8 +251,9 @@ class AskAthenaPage(QWidget):
             self.copy_answer,
         )
 
+
         #
-        # Ctrl + Enter shortcut
+        # Keyboard shortcut
         #
 
         shortcut = QShortcut(
@@ -227,84 +267,41 @@ class AskAthenaPage(QWidget):
         shortcut.activated.connect(
             self.ask_question,
         )
+
     def _setup_ui(self) -> None:
-        """Create Ask Athena research dashboard."""
+        """Create the page layout."""
 
-        layout = QVBoxLayout(
-            self,
-        )
-
-        layout.setContentsMargins(
-            12,
-            12,
-            12,
-            12,
-        )
-
-        layout.setSpacing(
-            10,
-        )
+        layout = QVBoxLayout(self)
 
         #
-        # Workspace Context
+        # Workspace Context (A20.7)
         #
 
-        context_box = QGroupBox(
-            "Workspace Context",
-        )
-
-        context_layout = QVBoxLayout(
-            context_box,
-        )
-
-        self.workspace_context.setStyleSheet(
-            """
-            QLabel {
-                font-size: 13px;
-                padding: 6px;
-            }
-            """
-        )
-
-        context_layout.addWidget(
-            self.workspace_context,
+        layout.addWidget(
+            self.workspace_label,
         )
 
         layout.addWidget(
-            context_box,
+            self.workspace_stats_label,
         )
-
 
         #
-        # Question Panel
+        # Question
         #
 
-        question_box = QGroupBox(
-            "Ask Athena",
+        layout.addWidget(
+            QLabel("Question"),
         )
 
-        question_layout = QVBoxLayout(
-            question_box,
-        )
-
-        self.question.setMinimumHeight(
-            80,
-        )
-
-        question_layout.addWidget(
+        layout.addWidget(
             self.question,
         )
 
+        #
+        # Buttons
+        #
 
         button_layout = QHBoxLayout()
-
-        self.ask_button.setMinimumWidth(
-            120,
-        )
-
-        self.copy_button.setMinimumWidth(
-            120,
-        )
 
         button_layout.addWidget(
             self.ask_button,
@@ -320,346 +317,218 @@ class AskAthenaPage(QWidget):
 
         button_layout.addStretch()
 
-
-        question_layout.addLayout(
+        layout.addLayout(
             button_layout,
         )
 
+        #
+        # Status
+        #
+
         layout.addWidget(
-            question_box,
-        )
-
-
-        #
-        # Athena Runtime Status
-        #
-
-        status_box = QGroupBox(
-            "Athena Status",
-        )
-
-        status_layout = QHBoxLayout(
-            status_box,
-        )
-
-        status_layout.addWidget(
             self.status,
         )
 
-        status_layout.addStretch()
-
-        status_layout.addWidget(
+        layout.addWidget(
             self.model_label,
         )
 
+        #
+        # Conversation
+        #
+
         layout.addWidget(
-            status_box,
+            QLabel("Conversation"),
         )
 
-
-        #
-        # Conversation Panel
-        #
-
-        conversation_box = QGroupBox(
-            "Conversation",
-        )
-
-        conversation_layout = QVBoxLayout(
-            conversation_box,
-        )
-
-        conversation_layout.addWidget(
+        layout.addWidget(
             self.conversation,
-        )
-
-
-        #
-        # Evidence Panel
-        #
-
-        evidence_box = QGroupBox(
-            "Retrieved Evidence",
-        )
-
-        evidence_layout = QVBoxLayout(
-            evidence_box,
-        )
-
-        self.sources.setColumnWidth(
-            0,
-            230,
-        )
-
-        self.sources.setColumnWidth(
-            1,
-            60,
-        )
-
-        self.sources.setColumnWidth(
             2,
-            90,
         )
 
-        evidence_layout.addWidget(
+        #
+        # Retrieved Evidence
+        #
+
+        layout.addWidget(
+            QLabel("Retrieved Evidence"),
+        )
+
+        layout.addWidget(
             self.sources,
         )
 
-
         #
-        # Citation Intelligence Panel
+        # Citation Intelligence
         #
 
-        citation_box = QGroupBox(
-            "Citation Intelligence",
+        layout.addWidget(
+            QLabel("Citation Intelligence"),
         )
 
-        citation_layout = QVBoxLayout(
-            citation_box,
-        )
-
-        citation_layout.addWidget(
+        layout.addWidget(
             self.citation_widget,
         )
 
-
         #
-        # Evidence + Citation Split
+        # Evidence Intelligence
         #
-
-        evidence_splitter = QSplitter(
-            Qt.Orientation.Horizontal,
-        )
-
-        evidence_splitter.addWidget(
-            evidence_box,
-        )
-
-        evidence_splitter.addWidget(
-            citation_box,
-        )
-
-        evidence_splitter.setStretchFactor(
-            0,
-            3,
-        )
-
-        evidence_splitter.setStretchFactor(
-            1,
-            2,
-        )
-
-
-        #
-        # Conversation + Evidence Split
-        #
-
-        main_splitter = QSplitter(
-            Qt.Orientation.Vertical,
-        )
-
-        main_splitter.addWidget(
-            conversation_box,
-        )
-
-        main_splitter.addWidget(
-            evidence_splitter,
-        )
-
-        main_splitter.setStretchFactor(
-            0,
-            5,
-        )
-
-        main_splitter.setStretchFactor(
-            1,
-            3,
-        )
-
 
         layout.addWidget(
-            main_splitter,
-            1,
+            self.evidence_widget,
         )
 
+        layout.addWidget(
+            self.retrieval_inspector,
+        )
 
         #
         # Retrieved Passage
         #
 
-        passage_box = QGroupBox(
-            "Retrieved Passage",
-        )
-
-        passage_layout = QVBoxLayout(
-            passage_box,
-        )
-
-        passage_layout.addWidget(
-            self.passage,
+        layout.addWidget(
+            QLabel("Retrieved Passage"),
         )
 
         layout.addWidget(
-            passage_box,
+            self.passage,
         )
 
-
-        #
-        # Athena visual theme
-        #
-
-        self.setStyleSheet(
-            """
-            QGroupBox {
-                font-weight: bold;
-                border: 1px solid palette(mid);
-                border-radius: 8px;
-                margin-top: 8px;
-                padding-top: 8px;
-            }
-
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                left: 10px;
-                padding: 0 5px;
-            }
-
-            QPushButton {
-                padding: 6px 14px;
-                border-radius: 5px;
-            }
-
-            QTextEdit,
-            QPlainTextEdit,
-            QTreeWidget {
-                border-radius: 5px;
-            }
-            """
-        )
-        #
-        # Workspace Intelligence Context
-        #
-
-    def set_workspace_snapshot(
+    def showEvent(
         self,
-        name: str,
-        snapshot: WorkspaceIntelligenceSnapshot,
+        event,
     ) -> None:
-        """
-        Display workspace intelligence summary.
-        """
+        """Refresh conversation when page becomes visible."""
 
-        self.workspace_context.setText(
-            (
-                f"<b>Workspace:</b> {name}<br>"
-                f"Documents: {snapshot.document_count}<br>"
-                f"Pages: {snapshot.page_count}<br>"
-                f"Knowledge Items: "
-                f"{snapshot.knowledge_item_count}"
-            )
+        super().showEvent(
+            event,
         )
 
+        if self._conversation_service is not None:
+            self.conversation.refresh()
 
-    def clear_workspace_context(
+    def set_query_service(
         self,
+        service: ConversationQueryService,
     ) -> None:
-        """
-        Clear workspace summary.
-        """
+        """Attach Athena query service."""
 
-        self.workspace_context.setText(
+        self._query_service = service
+
+        self.status.setText(
+            "Ready",
+        )
+
+        self.model_label.setText(
+            "Model: -",
+        )
+
+    def clear_query_service(self) -> None:
+        """Detach Athena query service."""
+
+        self._query_service = None
+
+        self.clear_page()
+
+        self.status.setText(
             "No workspace open",
         )
 
-
-    #
-    # Status handling
-    #
-
-    def set_status(
-        self,
-        message: str,
-    ) -> None:
-        """
-        Update Athena status.
-        """
-
-        self.status.setText(
-            message,
+        self.model_label.setText(
+            "Model: -",
         )
 
-
-    #
-    # Research view reset
-    #
-
-    def reset_research_view(
+    def clear_page(
         self,
     ) -> None:
-        """
-        Reset evidence and citation panels.
-        """
+        """Clear the current conversation."""
+
+        self.question.clear()
 
         self.sources.clear()
 
         self.citation_widget.clear()
 
-        self.passage.clear()
+        if self._conversation_service is not None:
+            self._conversation_service.clear()
 
-        self.set_status(
-            "Ready",
+        self.conversation.refresh()
+
+        self.model_label.setText(
+            "Model: -",
         )
+
+        if self._query_service is None:
+            self.status.setText(
+                "No workspace open",
+            )
+        else:
+            self.status.setText(
+                "Ready",
+            )
+
+    def copy_answer(
+        self,
+    ) -> None:
+        """Copy the most recent response."""
+
+        model = self.conversation.model()
+
+        if model is None:
+            return
+
+        message = model.last_message()
+
+        if message is None:
+            return
+
+        QApplication.clipboard().setText(
+            message.text,
+        )
+
+        self.status.setText(
+            "Latest response copied",
+        )
+
     def ask_question(
         self,
     ) -> None:
         """Ask Athena a question."""
 
         if self._query_service is None:
-            self.set_status(
+            self.status.setText(
                 "No AI service available",
             )
             return
 
-        question = (
-            self.question
-            .toPlainText()
-            .strip()
-        )
+        question = self.question.toPlainText().strip()
 
         if not question:
-            self.set_status(
+            self.status.setText(
                 "Please enter a question",
             )
             return
 
-        self.ask_button.setEnabled(
-            False,
-        )
+        self.ask_button.setEnabled(False)
 
         try:
-            self.set_status(
-                "Searching workspace knowledge...",
+            self.status.setText(
+                "Searching Athena knowledge...",
             )
 
-            result = (
-                self._query_service
-                .answer(question)
+            result = self._query_service.answer(
+                question,
             )
+            #
+            # Refresh conversation display
+            #
 
             if self._conversation_service is not None:
                 self.conversation.refresh()
 
-
-            #
-            # Clear previous research results
-            #
-
             self.sources.clear()
 
             self.passage.clear()
-
-            self.citation_widget.clear()
-
 
             #
             # Workspace intelligence response
@@ -673,22 +542,39 @@ class AskAthenaPage(QWidget):
                     "Model: Built-in",
                 )
 
-                self.set_status(
-                    "Completed • workspace information",
+                self.status.setText(
+                    "Completed (workspace information)",
                 )
 
                 return
 
-
             #
-            # RAG response
+            # RAG response with citations
             #
 
             self.model_label.setText(
                 f"Model: {result.model}",
             )
 
+            self.retrieval_inspector.set_results(
+            result.retrieval_results,
+            )
 
+            #
+            # Evidence Intelligence
+            #
+
+            if result.evidence:
+
+                self.evidence_widget.set_evidence(
+                    result.evidence[0],
+                )
+
+            else:
+
+                self.evidence_widget.clear()
+
+            #
             #
             # Citation Intelligence
             #
@@ -705,67 +591,41 @@ class AskAthenaPage(QWidget):
                 self.citation_widget.clear()
 
 
-            #
-            # Evidence Intelligence
-            #
 
-            for index, (
-                source,
-                retrieval,
-            ) in enumerate(
+            for index, (source, retrieval) in enumerate(
                 zip(
                     result.sources,
                     result.retrieval_results,
                     strict=False,
                 )
             ):
-
                 similarity = int(
                     source.score * 100,
                 )
 
-                preview = (
-                    retrieval.text
-                    .replace(
-                        "\n",
-                        " ",
-                    )
-                    .strip()
-                )
+                preview = retrieval.text.replace(
+                    "\n",
+                    " ",
+                ).strip()
 
-                if len(preview) > 100:
-                    preview = (
-                        preview[:100]
-                        + "..."
-                    )
-
+                if len(preview) > 80:
+                    preview = preview[:80] + "..."
 
                 item = QTreeWidgetItem(
                     [
-                        (
-                            source.document_name
-                            or str(source.document_id)
-                        ),
-                        str(
-                            source.page_number,
-                        ),
+                        source.document_name or str(source.document_id),
+                        str(source.page_number),
                         f"{similarity}%",
                         preview,
                     ]
                 )
 
-
                 #
-                # Evidence explanation
+                # Evidence intelligence explanation.
                 #
 
-                if index < len(
-                    result.evidence,
-                ):
-
-                    evidence = (
-                        result.evidence[index]
-                    )
+                if index < len(result.evidence):
+                    evidence = result.evidence[index]
 
                     reasons = "\n".join(
                         evidence.ranking_reasons,
@@ -774,18 +634,10 @@ class AskAthenaPage(QWidget):
                     item.setToolTip(
                         2,
                         (
-                            f"Score: "
-                            f"{evidence.final_score:.3f}"
-                            "\n\n"
-                            "Why selected:\n"
-                            f"{reasons}"
+                            f"Score: {evidence.final_score:.3f}\n\n"
+                            f"Why selected:\n{reasons}"
                         ),
                     )
-
-
-                #
-                # Store passage
-                #
 
                 item.setData(
                     3,
@@ -793,24 +645,19 @@ class AskAthenaPage(QWidget):
                     retrieval.text,
                 )
 
-
                 #
-                # Source navigation
+                # Store metadata for navigation.
                 #
 
                 if hasattr(
                     source,
                     "document_path",
                 ):
-
                     item.setData(
                         0,
                         Qt.ItemDataRole.UserRole,
-                        str(
-                            source.document_path,
-                        ),
+                        str(source.document_path),
                     )
-
 
                 item.setData(
                     1,
@@ -818,57 +665,200 @@ class AskAthenaPage(QWidget):
                     source.page_number,
                 )
 
-
-                item.setToolTip(
-                    0,
-                    "Double click to open source document",
-                )
-
-
                 self.sources.addTopLevelItem(
                     item,
                 )
 
-
-            self.set_status(
-                (
-                    f"Completed • "
-                    f"{len(result.sources)} sources • "
-                    f"{len(result.citations)} citations"
-                ),
-            )
-
+                self.status.setText(
+                    (
+                        f"Completed "
+                        f"({len(result.sources)} sources, "
+                        f"{len(result.citations)} citations)"
+                    ),
+                )
 
         except Exception as exc:
-
             self.sources.clear()
 
             self.passage.clear()
 
-            self.citation_widget.clear()
-
-
             if self._conversation_service is not None:
-
                 self._conversation_service.add_system_message(
                     f"Error: {exc}",
                 )
 
                 self.conversation.refresh()
 
-
             self.model_label.setText(
                 "Model: -",
             )
 
-            self.set_status(
+            self.status.setText(
                 f"Error: {exc}",
             )
 
-
         finally:
-
             self.ask_button.setEnabled(
                 True,
             )
+
+    def _show_selected_passage(
+        self,
+    ) -> None:
+        """Display the selected retrieved passage."""
+
+        items = self.sources.selectedItems()
+
+        if not items:
+            self.passage.clear()
+            return
+
+        passage = items[0].data(
+            3,
+            Qt.ItemDataRole.UserRole,
+        )
+
+        self.passage.setPlainText(
+            passage or "",
+        )
+
+    def _open_source(
+        self,
+        item: QTreeWidgetItem,
+        column: int,
+    ) -> None:
+        """Open a cited source document."""
+
+        del column
+
+        path = item.data(
+            0,
+            Qt.ItemDataRole.UserRole,
+        )
+
+        page = item.data(
+            1,
+            Qt.ItemDataRole.UserRole,
+        )
+
+        if path is None:
+            return
+
+        self.document_requested.emit(
+            Path(path),
+            int(page),
+        )
+
+    def set_workspace_snapshot(
+        self,
+        workspace_name: str,
+        snapshot,
+    ) -> None:
+        """
+        Display workspace intelligence context.
+        """
+
+        self.workspace_label.setText(
+            f"Workspace: {workspace_name}",
+        )
+
+        self.workspace_stats_label.setText(
+            (
+                f"Documents: {snapshot.document_count}\n"
+                f"Pages: {snapshot.page_count}\n"
+                f"Knowledge Items: "
+                f"Conversation Messages: "
+                f"{snapshot.conversation_messages}\n"
+                f"Active Document: "
+                f"{snapshot.active_document or '-'}"
+                f"{snapshot.conversation_messages}"
+            ),
+        )
+
+    def set_workspace_context(
+        self,
+        name: str,
+        documents: int,
+        pages: int,
+        knowledge_items: int,
+    ) -> None:
+        """
+        Backward compatible workspace context update.
+        """
+
+        self.workspace_label.setText(
+            f"Workspace: {name}",
+        )
+
+        self.workspace_stats_label.setText(
+            (
+                f"Documents: {documents}\n"
+                f"Pages: {pages}\n"
+                f"Knowledge Items: {knowledge_items}"
+            ),
+        )
+
+
+    def clear_workspace_context(
+        self,
+    ) -> None:
+        """
+        Clear workspace intelligence context.
+        """
+
+        if hasattr(
+            self,
+            "workspace_label",
+        ):
+            self.workspace_label.setText(
+                "Workspace: -"
+            )
+
+        if hasattr(
+            self,
+            "workspace_stats_label",
+        ):
+            self.workspace_stats_label.setText(
+                ""
+            )
+
+    def set_conversation_service(
+        self,
+        service: ConversationService,
+    ) -> None:
+        """Attach conversation service and restore history."""
+
+        self._conversation_service = service
+
+        #
+        # Create conversation model
+        #
+
+        model = ConversationModel(
+            service,
+        )
+
+        #
+        # Attach model to widget
+        #
+
+        self.conversation.set_model(
+            model,
+        )
+
+        #
+        # Restore persisted conversation
+        #
+
+        self.conversation.refresh()
+
+    def set_conversation_path(
+        self,
+        path: Path,
+    ) -> None:
+        """
+        Set persistent conversation storage path.
+        """
+
+        self._conversation_service_path = path
 

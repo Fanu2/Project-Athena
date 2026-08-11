@@ -61,6 +61,9 @@ from athena.presentation.ai.ask_athena_page import (
 from athena.presentation.ai.ai_control_center_page import (
     AIControlCenterPage,
 )
+from athena.knowledge.ui.knowledge_workspace_page import (
+    KnowledgeWorkspacePage,
+)
 
 
 class MainWindow(QMainWindow):
@@ -89,6 +92,7 @@ class MainWindow(QMainWindow):
         self.ask_athena: AskAthenaPage
         self.page_stack: QStackedWidget
         self.ai_control_center: AIControlCenterPage
+        self.knowledge_workspace: KnowledgeWorkspacePage
         self.ai_control_center = AIControlCenterPage(context,)
         self.status_bar: QStatusBar
         self.toolbar: QToolBar
@@ -180,6 +184,9 @@ class MainWindow(QMainWindow):
         self.search = SearchWorkspace()
         self.bookmarks = BookmarkPage()
         self.ask_athena = AskAthenaPage()
+        self.knowledge_workspace = KnowledgeWorkspacePage(
+            self.context.knowledge_workspace_service,
+        )
 
         self.settings = AISettingsPage(
             provider=None,
@@ -230,6 +237,10 @@ class MainWindow(QMainWindow):
         self.page_stack.addWidget(
 			self.ai_control_center,
 		)
+
+        self.page_stack.addWidget(
+            self.knowledge_workspace,
+        )
 
         self.page_stack.addWidget(
             self.settings,
@@ -283,6 +294,14 @@ class MainWindow(QMainWindow):
         self.navigation.ai_control_center_selected.connect(
 			self.show_ai_control_center,
 		)
+
+        self.navigation.knowledge_workspace_selected.connect(
+            self.show_knowledge_workspace,
+        )
+
+        self.page_stack.addWidget(
+            self.knowledge_workspace,
+        )
 
         self.documents.table.document_activated.connect(
             self._open_document_viewer,
@@ -352,6 +371,15 @@ class MainWindow(QMainWindow):
             self.ai_control_center,
         )
 
+    def show_knowledge_workspace(self) -> None:
+        """Show Knowledge Workspace page."""
+
+        self.knowledge_workspace.refresh()
+
+        self.page_stack.setCurrentWidget(
+            self.knowledge_workspace,
+        )
+
     def _create_status_bar(self) -> None:
         """Create the application status bar."""
 
@@ -379,6 +407,9 @@ class MainWindow(QMainWindow):
 
         self.current_workspace = workspace
 
+        self.ai_control_center.refresh()
+
+
         #
         # Workspace header
         #
@@ -396,76 +427,83 @@ class MainWindow(QMainWindow):
             workspace.path,
         )
 
-
-    #
-    # Workspace Intelligence Dashboard (A20.7)
-    #
-
-    workspace_intelligence_service = (
-        self.context.workspace_intelligence_service
-    )
-
-    current_workspace = (
-        self.context.current_workspace
-    )
-
-
-    if (
-        workspace_intelligence_service is not None
-        and current_workspace is not None
-    ):
-
-        snapshot = (
-            workspace_intelligence_service.snapshot(
-                current_workspace,
+        if self.context.knowledge_workspace_service is not None:
+            self.knowledge_workspace.set_service(
+                self.context.knowledge_workspace_service,
             )
+
+            self.knowledge_workspace.refresh()        
+
+
+        #
+        # Workspace Intelligence Dashboard (A20.7)
+        #
+
+        workspace_intelligence_service = (
+            self.context.workspace_intelligence_service
+        )
+
+        current_workspace = (
+            self.context.current_workspace
         )
 
 
-        #
-        # Workspace Dashboard
-        #
+        if (
+            workspace_intelligence_service is not None
+            and current_workspace is not None
+        ):
 
-        self.home.set_workspace_snapshot(
-            snapshot,
-        )
-
-
-        #
-        # Workspace Health
-        #
-
-        self.home.set_workspace_health(
-            documents=(
-                snapshot.document_count > 0
-            ),
-
-            knowledge=(
-                snapshot.knowledge_item_count > 0
-            ),
-
-            retrieval=(
-                self.context.search_service is not None
-            ),
-
-            conversation=(
-                self.context.conversation_service is not None
-            ),
-
-            runtime=(
-                self.context.llm_runtime_bootstrap is not None
-            ),
-        )
+            snapshot = (
+                workspace_intelligence_service.snapshot(
+                    current_workspace,
+                )
+            )
 
 
-        #
-        # Ask Athena Workspace Context
-        #
+            #
+            # Workspace Dashboard
+            #
 
-        self.ask_athena.set_workspace_snapshot(
-            current_workspace.name,
-            snapshot,
-        )
+            self.home.set_workspace_snapshot(
+                snapshot,
+            )
+
+
+            #
+            # Workspace Health
+            #
+
+            self.home.set_workspace_health(
+                documents=(
+                    snapshot.document_count > 0
+                ),
+
+                knowledge=(
+                    snapshot.knowledge_item_count > 0
+                ),
+
+                retrieval=(
+                    self.context.search_service is not None
+                ),
+
+                conversation=(
+                    self.context.conversation_service is not None
+                ),
+
+                runtime=(
+                    self.context.llm_runtime_bootstrap is not None
+                ),
+            )
+
+
+            #
+            # Ask Athena Workspace Context
+            #
+
+            self.ask_athena.set_workspace_snapshot(
+                current_workspace.name,
+                snapshot,
+            )
 
 
         #
@@ -579,6 +617,10 @@ class MainWindow(QMainWindow):
             self.context.conversation_service,
         )
 
+        self.ask_athena.set_conversation_path(
+            workspace.path / ".athena" / "conversation.json",
+        )
+
 
         #
         # Settings
@@ -624,7 +666,6 @@ class MainWindow(QMainWindow):
 
 
         self._update_action_states()
-
 
     def _clear_current_workspace(self) -> None:
         """Clear the active workspace."""

@@ -1,7 +1,7 @@
 """
 Retrieval Inspector.
 
-Displays the semantic search results used to generate
+Displays the retrieval results used to generate
 an Athena answer.
 """
 
@@ -14,12 +14,12 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from athena.ai.retrieval.models import SemanticResult
+from athena.domain.ai.retrieval_result import RetrievalResult
 
 
 class RetrievalInspectorWidget(QWidget):
     """
-    Displays retrieved semantic results.
+    Displays retrieved results.
     """
 
     def __init__(
@@ -51,7 +51,7 @@ class RetrievalInspectorWidget(QWidget):
 
     def set_results(
         self,
-        results: list[SemanticResult],
+        results: list[RetrievalResult],
     ) -> None:
         """
         Populate the inspector with retrieval results.
@@ -67,10 +67,9 @@ class RetrievalInspectorWidget(QWidget):
 
             self._results.addItem(
                 (
-                    f"{result.document_title}\n"
+                    f"{result.document_name}\n"
                     f"Score : {result.score:.3f}\n"
-                    f"Page  : {result.page_number}\n\n"
+                    f"Page  : {result.page}\n\n"
                     f"{preview}"
                 )
             )
-

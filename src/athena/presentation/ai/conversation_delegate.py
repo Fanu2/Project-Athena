@@ -18,6 +18,7 @@ from PySide6.QtGui import (
 )
 
 from PySide6.QtWidgets import (
+    QStyle,
     QStyleOptionViewItem,
     QStyledItemDelegate,
 )
@@ -140,7 +141,7 @@ class ConversationDelegate(
 
         if (
             option.state
-            & option.StateFlag.State_Selected
+            & QStyle.StateFlag.State_Selected
         ):
             background = (
                 option.palette
@@ -205,8 +206,8 @@ class ConversationDelegate(
         )
 
         painter.setPen(
-            option.palette.text(),
-        )
+            option.palette.text().color()),
+        
 
         header_rect = QRect(
             content_rect.left(),
