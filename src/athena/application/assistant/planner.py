@@ -6,6 +6,10 @@ Converts capabilities into execution plans.
 
 from __future__ import annotations
 
+from .action import (
+    AssistantAction,
+)
+
 from .capability import (
     AssistantCapability,
 )
@@ -40,6 +44,10 @@ class AssistantPlanner:
             AssistantMemoryItem,
             ...
         ] = (),
+        actions: tuple[
+            AssistantAction,
+            ...
+        ] = (),
     ) -> AssistantPlan:
         """
         Create a plan from a capability.
@@ -52,6 +60,7 @@ class AssistantPlanner:
         ] = []
 
         if capability.requires_retrieval:
+
             steps.append(
                 "retrieve_information"
             )
@@ -67,6 +76,7 @@ class AssistantPlanner:
             )
 
         if capability.requires_evidence:
+
             steps.append(
                 "build_evidence"
             )
@@ -86,6 +96,7 @@ class AssistantPlanner:
             "explanation",
             "analysis",
         ):
+
             steps.append(
                 "generate_response"
             )
@@ -101,6 +112,7 @@ class AssistantPlanner:
             )
 
         if capability.requires_citations:
+
             steps.append(
                 "attach_citations"
             )
@@ -118,6 +130,7 @@ class AssistantPlanner:
         context_notes: list[str] = []
 
         if context is not None:
+
             context_notes.append(
                 f"Workspace: {context.workspace_name}"
             )
@@ -135,11 +148,13 @@ class AssistantPlanner:
             )
 
         if memories:
+
             context_notes.append(
                 "Memory:"
             )
 
             for memory in memories:
+
                 context_notes.append(
                     (
                         f"{memory.key}: "
@@ -152,4 +167,5 @@ class AssistantPlanner:
             steps=tuple(steps),
             context_notes=tuple(context_notes),
             workflow_steps=tuple(workflow_steps),
+            actions=actions,
         )

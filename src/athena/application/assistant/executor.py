@@ -20,6 +20,8 @@ from .execution import (
 class AssistantExecutor(ABC):
     """
     Boundary for future assistant executors.
+
+    Execution remains explicitly controlled.
     """
 
     @abstractmethod
@@ -33,6 +35,7 @@ class AssistantExecutor(ABC):
         Implementations must provide
         controlled execution.
         """
+
         raise NotImplementedError
 
 
@@ -49,6 +52,9 @@ class DisabledAssistantExecutor(
         self,
         request: AssistantExecutionRequest,
     ) -> AssistantExecutionResult:
+        """
+        Reject execution until enabled.
+        """
 
         return AssistantExecutionResult(
             success=False,

@@ -5,7 +5,7 @@ Combines intent understanding,
 capability routing,
 workspace context,
 memory context,
-planning,
+action planning,
 execution boundaries,
 and quality validation.
 """
@@ -18,6 +18,10 @@ from athena.ai.intent.service import (
 
 from athena.workspace.intelligence.models import (
     WorkspaceIntelligenceSnapshot,
+)
+
+from .action_registry import (
+    ActionRegistry,
 )
 
 from .capability_registry import (
@@ -77,6 +81,10 @@ class AssistantEngine:
 
         self._registry = (
             CapabilityRegistry()
+        )
+
+        self._action_registry = (
+            ActionRegistry()
         )
 
         self._planner = (
@@ -152,10 +160,17 @@ class AssistantEngine:
         Create a non-executing assistant plan.
         """
 
+        actions = (
+            self._action_registry.resolve(
+                decision.capability,
+            )
+        )
+
         return self._planner.create_plan(
             decision.capability,
             self._workspace_context,
             self._memories,
+            actions,
         )
 
 
@@ -206,6 +221,7 @@ class AssistantEngine:
             steps=plan.steps,
             context_notes=plan.context_notes,
             workflow_steps=plan.workflow_steps,
+            actions=plan.actions,
             validation=validation,
         )
 
