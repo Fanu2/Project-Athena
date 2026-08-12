@@ -129,9 +129,14 @@ class DocumentActions:
             "*.docx",
             "*.txt",
             "*.md",
+            "*.epub",
+            "*.html",
+            "*.htm",
+            "*.odt",
+            "*.xlsx",
         ):
             documents.extend(
-                Path(folder).glob(pattern),
+                Path(folder).rglob(pattern),
             )
 
         if not documents:
