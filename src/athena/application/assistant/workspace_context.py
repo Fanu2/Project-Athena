@@ -20,3 +20,9 @@ class AssistantWorkspaceContext:
     knowledge_item_count: int
 
     conversation_messages: int
+
+    recent_documents: tuple[str, ...] = ()
+
+    recent_queries: tuple[str, ...] = ()
+
+    recent_sessions: tuple[str, ...] = ()

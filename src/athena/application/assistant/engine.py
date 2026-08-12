@@ -153,14 +153,49 @@ class AssistantEngine:
                 workspace_name=(
                     workspace.workspace_name
                 ),
+
                 document_count=(
                     workspace.document_count
                 ),
+
                 knowledge_item_count=(
                     workspace.knowledge_item_count
                 ),
+
                 conversation_messages=(
                     workspace.conversation_messages
+                ),
+
+                #
+                # A20.4 Workspace Intelligence Context
+                #
+                # Use safe access so older callers
+                # passing Workspace objects continue
+                # to work.
+                #
+
+                recent_documents=(
+                    getattr(
+                        workspace,
+                        "recent_documents",
+                        (),
+                    )
+                ),
+
+                recent_queries=(
+                    getattr(
+                        workspace,
+                        "recent_queries",
+                        (),
+                    )
+                ),
+
+                recent_sessions=(
+                    getattr(
+                        workspace,
+                        "recent_sessions",
+                        (),
+                    )
                 ),
             )
         )
@@ -198,8 +233,6 @@ class AssistantEngine:
     ) -> AssistantExecutionRequest:
         """
         Wrap a plan for future execution.
-
-        Execution is handled separately.
         """
 
         return AssistantExecutionRequest(
@@ -267,8 +300,7 @@ class AssistantEngine:
         ],
     ) -> None:
         """
-        Attach explicit user-approved memories
-        for planning context.
+        Attach explicit user-approved memories.
         """
 
         self._memories = memories
@@ -297,9 +329,6 @@ class AssistantEngine:
         AssistantMemoryItem,
         ...
     ]:
-        """
-        Retrieve explicitly selected memories.
-        """
 
         memories: list[
             AssistantMemoryItem
