@@ -8,6 +8,7 @@ and historical workspace context.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from uuid import UUID
 
 
@@ -39,6 +40,12 @@ class WorkspaceIntelligenceSnapshot:
     conversation_messages: int = 0
 
     active_document: str | None = None
+
+    #
+    # A20.3 Workspace Activity Intelligence
+    #
+
+    last_activity: datetime | None = None
 
     #
     # A20.4 Workspace Intelligence Context

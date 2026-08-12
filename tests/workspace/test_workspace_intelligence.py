@@ -95,6 +95,11 @@ def test_workspace_intelligence_snapshot():
     )
 
     assert (
+        snapshot.last_activity
+        is not None
+    )
+
+    assert (
         snapshot.recent_queries
         == (
             "Explain Athena architecture",

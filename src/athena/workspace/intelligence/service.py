@@ -7,6 +7,8 @@ a workspace intelligence snapshot.
 
 from __future__ import annotations
 
+from datetime import datetime
+
 from athena.application.assistant.session_store import (
     AssistantSessionStore,
 )
@@ -101,10 +103,6 @@ class WorkspaceIntelligenceService:
     ) -> tuple[str, ...]:
         """
         Return recent workspace documents.
-
-        A20.4.1.1:
-        Exposes document activity context
-        through workspace intelligence.
         """
 
         if self._documents is None:
@@ -124,10 +122,6 @@ class WorkspaceIntelligenceService:
     ) -> tuple[str, ...]:
         """
         Return recent user queries.
-
-        A20.4.1.2:
-        Exposes conversation activity context
-        through workspace intelligence.
         """
 
         if self._conversation is None:
@@ -152,12 +146,7 @@ class WorkspaceIntelligenceService:
         workspace: Workspace,
     ) -> tuple[str, ...]:
         """
-        Return recent assistant sessions
-        for the workspace.
-
-        A20.4.1.3:
-        Exposes assistant continuity
-        through workspace intelligence.
+        Return recent assistant sessions.
         """
 
         if self._session_store is None:
@@ -173,6 +162,33 @@ class WorkspaceIntelligenceService:
         return tuple(
             sessions[-5:]
         )
+
+    def _last_activity(
+        self,
+    ) -> datetime | None:
+        """
+        Return latest known workspace activity.
+        """
+
+        timestamps: list[datetime] = []
+
+        if self._conversation is not None:
+            timestamps.append(
+                self._conversation.conversation.modified
+            )
+
+        if self._session_store is not None:
+            sessions = self._session_store.list_sessions()
+
+            timestamps.extend(
+                session.updated_at
+                for session in sessions
+            )
+
+        if not timestamps:
+            return None
+
+        return max(timestamps)
 
     def snapshot(
         self,
@@ -255,9 +271,9 @@ class WorkspaceIntelligenceService:
 
             active_document=None,
 
-            #
-            # A20.4 Workspace Intelligence Context
-            #
+            last_activity=(
+                self._last_activity()
+            ),
 
             recent_documents=(
                 self._recent_documents()
