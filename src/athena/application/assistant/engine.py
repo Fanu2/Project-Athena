@@ -4,6 +4,7 @@ Athena Assistant Engine.
 Combines intent understanding,
 capability routing,
 workspace context,
+memory context,
 planning,
 execution boundaries,
 and quality validation.
@@ -33,6 +34,14 @@ from .decision import (
 
 from .execution import (
     AssistantExecutionRequest,
+)
+
+from .memory import (
+    AssistantMemoryItem,
+)
+
+from .memory_store import (
+    AssistantMemoryStore,
 )
 
 from .plan import (
@@ -82,6 +91,15 @@ class AssistantEngine:
             AssistantWorkspaceContext | None
         ) = None
 
+        self._memory_store: (
+            AssistantMemoryStore | None
+        ) = None
+
+        self._memories: tuple[
+            AssistantMemoryItem,
+            ...
+        ] = ()
+
 
     def analyze_request(
         self,
@@ -101,6 +119,7 @@ class AssistantEngine:
         context = AssistantContext(
             intent=intent,
             workspace=workspace,
+            memories=self._memories,
         )
 
         self._workspace_context = (
@@ -136,6 +155,7 @@ class AssistantEngine:
         return self._planner.create_plan(
             decision.capability,
             self._workspace_context,
+            self._memories,
         )
 
 
@@ -188,6 +208,86 @@ class AssistantEngine:
             workflow_steps=plan.workflow_steps,
             validation=validation,
         )
+
+
+    #
+    # Memory Boundary (A22.12)
+    #
+
+    def set_memory_store(
+        self,
+        store: AssistantMemoryStore,
+    ) -> None:
+        """
+        Attach explicit memory store.
+        """
+
+        self._memory_store = store
+
+
+    def set_memories(
+        self,
+        memories: tuple[
+            AssistantMemoryItem,
+            ...
+        ],
+    ) -> None:
+        """
+        Attach explicit user-approved memories
+        for planning context.
+        """
+
+        self._memories = memories
+
+
+    def load_memory(
+        self,
+        key: str,
+    ) -> AssistantMemoryItem | None:
+        """
+        Retrieve explicit user memory.
+        """
+
+        if self._memory_store is None:
+            return None
+
+        return self._memory_store.retrieve(
+            key,
+        )
+
+
+    def load_memories(
+        self,
+        keys: tuple[str, ...],
+    ) -> tuple[
+        AssistantMemoryItem,
+        ...
+    ]:
+        """
+        Retrieve explicitly selected memories.
+        """
+
+        memories: list[
+            AssistantMemoryItem
+        ] = []
+
+        if self._memory_store is None:
+            return tuple(memories)
+
+        for key in keys:
+
+            memory = (
+                self._memory_store.retrieve(
+                    key,
+                )
+            )
+
+            if memory is not None:
+                memories.append(
+                    memory,
+                )
+
+        return tuple(memories)
 
 
     def _decide(

@@ -1,29 +1,38 @@
 """
-Assistant execution context.
+Assistant request context.
 
-Provides the information available to
-Athena Assistant when handling a request.
+Combines intent, workspace,
+and explicit user-controlled memory.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 
-from athena.ai.intent.models import IntentResult
+from athena.ai.intent.models import (
+    IntentResult,
+)
 
 from athena.workspace.intelligence.models import (
     WorkspaceIntelligenceSnapshot,
 )
 
+from .memory import (
+    AssistantMemoryItem,
+)
 
-@dataclass(slots=True)
+
+@dataclass(frozen=True, slots=True)
 class AssistantContext:
     """
-    Runtime context available to Athena Assistant.
+    Context available during assistant planning.
     """
 
     intent: IntentResult
 
     workspace: WorkspaceIntelligenceSnapshot
 
-    model_name: str | None = None
+    memories: tuple[
+        AssistantMemoryItem,
+        ...
+    ] = ()

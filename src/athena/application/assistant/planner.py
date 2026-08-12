@@ -10,6 +10,10 @@ from .capability import (
     AssistantCapability,
 )
 
+from .memory import (
+    AssistantMemoryItem,
+)
+
 from .plan import (
     AssistantPlan,
 )
@@ -32,6 +36,10 @@ class AssistantPlanner:
         self,
         capability: AssistantCapability,
         context: AssistantWorkspaceContext | None = None,
+        memories: tuple[
+            AssistantMemoryItem,
+            ...
+        ] = (),
     ) -> AssistantPlan:
         """
         Create a plan from a capability.
@@ -52,8 +60,7 @@ class AssistantPlanner:
                 AssistantWorkflowStep(
                     name="retrieve_information",
                     description=(
-                        "Search workspace documents "
-                        "for relevant information"
+                        "Search workspace information"
                     ),
                     category="retrieval",
                 )
@@ -68,8 +75,7 @@ class AssistantPlanner:
                 AssistantWorkflowStep(
                     name="build_evidence",
                     description=(
-                        "Collect supporting evidence "
-                        "from retrieved sources"
+                        "Collect supporting evidence"
                     ),
                     category="evidence",
                 )
@@ -88,10 +94,9 @@ class AssistantPlanner:
                 AssistantWorkflowStep(
                     name="generate_response",
                     description=(
-                        "Generate a grounded response "
-                        "using available evidence"
+                        "Generate assistant response"
                     ),
-                    category="generation",
+                    category="response",
                 )
             )
 
@@ -104,8 +109,7 @@ class AssistantPlanner:
                 AssistantWorkflowStep(
                     name="attach_citations",
                     description=(
-                        "Attach citations to supporting "
-                        "evidence sources"
+                        "Attach source citations"
                     ),
                     category="citation",
                 )
@@ -129,6 +133,19 @@ class AssistantPlanner:
             context_notes.append(
                 f"Conversation messages: {context.conversation_messages}"
             )
+
+        if memories:
+            context_notes.append(
+                "Memory:"
+            )
+
+            for memory in memories:
+                context_notes.append(
+                    (
+                        f"{memory.key}: "
+                        f"{memory.value}"
+                    )
+                )
 
         return AssistantPlan(
             capability=capability.name,
