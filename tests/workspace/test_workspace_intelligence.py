@@ -80,6 +80,11 @@ def test_workspace_intelligence_snapshot():
     )
 
     assert (
+        snapshot.indexed_document_count
+        == 0
+    )
+
+    assert (
         snapshot.conversation_id
         is not None
     )

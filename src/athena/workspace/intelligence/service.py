@@ -70,9 +70,7 @@ class WorkspaceIntelligenceService:
         Initialize workspace intelligence service.
         """
 
-        self._workspace_query = (
-            workspace_query_service
-        )
+        self._workspace_query = workspace_query_service
 
         self._knowledge_workspace = (
             knowledge_workspace_service
@@ -128,7 +126,7 @@ class WorkspaceIntelligenceService:
         Return recent user queries.
 
         A20.4.1.2:
-        Exposes conversation activity
+        Exposes conversation activity context
         through workspace intelligence.
         """
 
@@ -237,6 +235,11 @@ class WorkspaceIntelligenceService:
 
             page_count=library.get(
                 "pages",
+                0,
+            ),
+
+            indexed_document_count=library.get(
+                "documents",
                 0,
             ),
 

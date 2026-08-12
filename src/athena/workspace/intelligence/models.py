@@ -26,6 +26,8 @@ class WorkspaceIntelligenceSnapshot:
 
     page_count: int = 0
 
+    indexed_document_count: int = 0
+
     knowledge_item_count: int = 0
 
     evidence_count: int = 0
