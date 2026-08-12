@@ -5,6 +5,7 @@ Combines intent understanding,
 capability routing,
 workspace context,
 memory context,
+session context,
 action planning,
 execution boundaries,
 and quality validation.
@@ -60,6 +61,14 @@ from .quality import (
     AssistantQualityService,
 )
 
+from .session import (
+    AssistantSession,
+)
+
+from .session_store import (
+    AssistantSessionStore,
+)
+
 from .workspace_context import (
     AssistantWorkspaceContext,
 )
@@ -108,6 +117,14 @@ class AssistantEngine:
             ...
         ] = ()
 
+        self._session_store: (
+            AssistantSessionStore | None
+        ) = None
+
+        self._session: (
+            AssistantSession | None
+        ) = None
+
 
     def analyze_request(
         self,
@@ -128,6 +145,7 @@ class AssistantEngine:
             intent=intent,
             workspace=workspace,
             memories=self._memories,
+            session=self._session,
         )
 
         self._workspace_context = (
@@ -304,6 +322,42 @@ class AssistantEngine:
                 )
 
         return tuple(memories)
+
+
+    #
+    # Session Boundary (A22.16)
+    #
+
+    def set_session_store(
+        self,
+        store: AssistantSessionStore,
+    ) -> None:
+        """
+        Attach assistant session storage.
+        """
+
+        self._session_store = store
+
+
+    def set_session(
+        self,
+        session: AssistantSession,
+    ) -> None:
+        """
+        Attach active assistant session.
+        """
+
+        self._session = session
+
+
+    def get_session(
+        self,
+    ) -> AssistantSession | None:
+        """
+        Return active assistant session.
+        """
+
+        return self._session
 
 
     def _decide(

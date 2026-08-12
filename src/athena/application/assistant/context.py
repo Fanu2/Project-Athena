@@ -2,7 +2,8 @@
 Assistant request context.
 
 Combines intent, workspace,
-and explicit user-controlled memory.
+explicit user-controlled memory,
+and assistant session state.
 """
 
 from __future__ import annotations
@@ -21,6 +22,10 @@ from .memory import (
     AssistantMemoryItem,
 )
 
+from .session import (
+    AssistantSession,
+)
+
 
 @dataclass(frozen=True, slots=True)
 class AssistantContext:
@@ -36,3 +41,5 @@ class AssistantContext:
         AssistantMemoryItem,
         ...
     ] = ()
+
+    session: AssistantSession | None = None
