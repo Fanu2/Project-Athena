@@ -1,7 +1,8 @@
 """
 Athena Workspace Intelligence models.
 
-Read models used to expose workspace state.
+Read models used to expose workspace state
+and historical workspace context.
 """
 
 from __future__ import annotations
@@ -36,3 +37,13 @@ class WorkspaceIntelligenceSnapshot:
     conversation_messages: int = 0
 
     active_document: str | None = None
+
+    #
+    # A20.4 Workspace Intelligence Context
+    #
+
+    recent_documents: tuple[str, ...] = ()
+
+    recent_queries: tuple[str, ...] = ()
+
+    recent_sessions: tuple[str, ...] = ()

@@ -56,6 +56,11 @@ def test_assistant_workspace_contains_components(
     )
 
     assert (
+        widget.memory_widget
+        is not None
+    )
+
+    assert (
         widget.conversation_widget
         is not None
     )

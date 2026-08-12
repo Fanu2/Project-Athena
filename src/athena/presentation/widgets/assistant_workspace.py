@@ -1,8 +1,8 @@
 """
 Assistant workspace widget.
 
-Composes session, conversation,
-and plan views.
+Composes session, memory,
+conversation, and plan views.
 """
 
 from __future__ import annotations
@@ -17,12 +17,16 @@ from athena.application.assistant.workspace_service import (
     AssistantWorkspaceService,
 )
 
+from athena.presentation.ai.conversation_widget import (
+    ConversationWidget,
+)
+
 from athena.workspace.intelligence.models import (
     WorkspaceIntelligenceSnapshot,
 )
 
-from athena.presentation.ai.conversation_widget import (
-    ConversationWidget,
+from .assistant_memory import (
+    AssistantMemoryWidget,
 )
 
 from .assistant_plan import (
@@ -61,6 +65,12 @@ class AssistantWorkspaceWidget(QFrame):
             )
         )
 
+        self.memory_widget = (
+            AssistantMemoryWidget(
+                self,
+            )
+        )
+
         self.conversation_widget = (
             ConversationWidget(
                 self,
@@ -93,6 +103,10 @@ class AssistantWorkspaceWidget(QFrame):
 
         layout.addWidget(
             self.session_widget,
+        )
+
+        layout.addWidget(
+            self.memory_widget,
         )
 
         layout.addWidget(
