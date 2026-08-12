@@ -11,7 +11,9 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from athena.workspace.models import Workspace
+from athena.workspace.models import (
+    Workspace,
+)
 
 from athena.workspace.intelligence.models import (
     WorkspaceIntelligenceSnapshot,
@@ -31,6 +33,10 @@ from athena.presentation.widgets.workspace_statistics import (
 
 from athena.presentation.widgets.workspace_health import (
     WorkspaceHealth,
+)
+
+from athena.presentation.widgets.workspace_activity import (
+    WorkspaceActivity,
 )
 
 
@@ -83,6 +89,10 @@ class HomePage(QWidget):
             WorkspaceHealth()
         )
 
+        self.workspace_activity = (
+            WorkspaceActivity()
+        )
+
         self._setup_ui()
 
 
@@ -117,6 +127,10 @@ class HomePage(QWidget):
 
         cards.addWidget(
             self.workspace_health,
+        )
+
+        cards.addWidget(
+            self.workspace_activity,
         )
 
         layout.addLayout(
@@ -159,6 +173,10 @@ class HomePage(QWidget):
             snapshot,
         )
 
+        self.workspace_activity.set_snapshot(
+            snapshot,
+        )
+
 
     def set_workspace_health(
         self,
@@ -193,3 +211,5 @@ class HomePage(QWidget):
         self.workspace_statistics.clear()
 
         self.workspace_health.clear()
+
+        self.workspace_activity.clear()
