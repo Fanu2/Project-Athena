@@ -30,17 +30,22 @@ class WorkspaceHealthService:
             documents_ready=(
                 snapshot.document_count > 0
             ),
+
             knowledge_ready=(
                 snapshot.knowledge_item_count > 0
             ),
+
             evidence_ready=(
                 snapshot.evidence_count > 0
             ),
+
             citation_ready=(
                 snapshot.citation_count > 0
             ),
+
             retrieval_ready=(
-                snapshot.document_count > 0
+                snapshot.indexed_document_count > 0
             ),
+
             ai_ready=True,
         )
