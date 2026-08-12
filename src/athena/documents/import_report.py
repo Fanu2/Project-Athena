@@ -30,18 +30,30 @@ class ImportReport:
         default_factory=list,
     )
 
+    manifest: dict[Path, Path] = field(
+        default_factory=dict,
+    )
+
     @property
     def imported_count(
         self,
     ) -> int:
-        """Return number of imported documents."""
+        """
+        Return number of imported documents.
+        """
 
-        return len(self.imported)
+        return len(
+            self.imported,
+        )
 
     @property
     def failed_count(
         self,
     ) -> int:
-        """Return number of failed imports."""
+        """
+        Return number of failed imports.
+        """
 
-        return len(self.failed)
+        return len(
+            self.failed,
+        )

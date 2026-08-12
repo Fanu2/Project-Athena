@@ -10,7 +10,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from athena.documents.import_report import ImportReport
+from athena.documents.import_report import (
+    ImportReport,
+)
+
 from athena.services.workspace_document_service import (
     WorkspaceDocumentService,
 )
@@ -75,6 +78,12 @@ class WorkspaceImportService:
 
                 report.imported.append(
                     imported,
+                )
+
+                report.manifest[
+                    imported
+                ] = source.relative_to(
+                    folder,
                 )
 
             except Exception as exc:
