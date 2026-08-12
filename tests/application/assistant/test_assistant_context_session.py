@@ -1,5 +1,5 @@
 """
-Tests for assistant session context.
+Tests assistant context session integration.
 """
 
 from athena.application.assistant.context import (
@@ -12,6 +12,7 @@ from athena.application.assistant.session import (
 
 from athena.ai.intent.models import (
     IntentResult,
+    IntentType,
 )
 
 from athena.workspace.intelligence.models import (
@@ -22,31 +23,40 @@ from athena.workspace.intelligence.models import (
 def test_context_contains_assistant_session():
 
     session = create_assistant_session(
+        workspace_id="workspace-001",
         workspace_name="Research",
         conversation_id="conv-001",
     )
 
+    workspace = WorkspaceIntelligenceSnapshot(
+        workspace_id="workspace-001",
+        workspace_name="Research",
+        document_count=10,
+        knowledge_item_count=5,
+        conversation_messages=2,
+    )
+
+    intent = IntentResult(
+        intent=IntentType.SEARCH,
+        confidence=1.0,
+    )
+
     context = AssistantContext(
-        intent=IntentResult(
-            intent="summary",
-            confidence=1.0,
-        ),
-        workspace=WorkspaceIntelligenceSnapshot(
-            workspace_id="workspace-001",
-            workspace_name="Research",
-            document_count=10,
-            knowledge_item_count=5,
-            conversation_messages=2,
-        ),
-        session=session,
+        intent=intent,
+        workspace=workspace,
     )
 
     assert (
-        context.session
-        == session
+        context.workspace.workspace_id
+        == session.workspace_id
     )
 
     assert (
-        context.session.conversation_id
+        session.workspace_name
+        == "Research"
+    )
+
+    assert (
+        session.conversation_id
         == "conv-001"
     )

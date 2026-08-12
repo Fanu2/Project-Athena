@@ -20,7 +20,9 @@ class InMemoryAssistantSessionStore(
     Simple in-memory session storage.
     """
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+    ) -> None:
 
         self._sessions: dict[
             str,
@@ -33,7 +35,7 @@ class InMemoryAssistantSessionStore(
         session: AssistantSession,
     ) -> None:
         """
-        Save session.
+        Save or update session.
         """
 
         self._sessions[
@@ -51,4 +53,33 @@ class InMemoryAssistantSessionStore(
 
         return self._sessions.get(
             session_id,
+        )
+
+
+    def delete(
+        self,
+        session_id: str,
+    ) -> None:
+        """
+        Delete session.
+        """
+
+        self._sessions.pop(
+            session_id,
+            None,
+        )
+
+
+    def list_sessions(
+        self,
+    ) -> tuple[
+        AssistantSession,
+        ...
+    ]:
+        """
+        Return all stored sessions.
+        """
+
+        return tuple(
+            self._sessions.values(),
         )

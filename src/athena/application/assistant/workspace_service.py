@@ -2,7 +2,8 @@
 Assistant workspace orchestration service.
 
 Coordinates assistant requests,
-planning, and workspace context.
+planning, workspace context,
+and session recovery.
 """
 
 from __future__ import annotations
@@ -19,6 +20,14 @@ from .plan import (
     AssistantPlan,
 )
 
+from .recovery_service import (
+    AssistantRecoveryService,
+)
+
+from .session import (
+    AssistantSession,
+)
+
 
 class AssistantWorkspaceService:
     """
@@ -28,10 +37,15 @@ class AssistantWorkspaceService:
     def __init__(
         self,
         assistant_engine: AssistantEngine,
+        recovery_service: AssistantRecoveryService,
     ) -> None:
 
         self._assistant_engine = (
             assistant_engine
+        )
+
+        self._recovery_service = (
+            recovery_service
         )
 
 
@@ -55,4 +69,34 @@ class AssistantWorkspaceService:
             self._assistant_engine.create_plan(
                 decision,
             )
+        )
+
+
+    def restore_session(
+        self,
+        session_id: str,
+    ) -> AssistantSession | None:
+        """
+        Restore previous assistant session.
+        """
+
+        return (
+            self._recovery_service.restore(
+                session_id,
+            )
+        )
+
+
+    def available_sessions(
+        self,
+    ) -> tuple[
+        AssistantSession,
+        ...
+    ]:
+        """
+        Return recoverable sessions.
+        """
+
+        return (
+            self._recovery_service.available_sessions()
         )

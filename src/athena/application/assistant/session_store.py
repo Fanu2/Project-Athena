@@ -13,7 +13,7 @@ from .session import (
 
 class AssistantSessionStore(ABC):
     """
-    Storage interface for assistant sessions.
+    Storage boundary for assistant sessions.
     """
 
     @abstractmethod
@@ -22,7 +22,7 @@ class AssistantSessionStore(ABC):
         session: AssistantSession,
     ) -> None:
         """
-        Store assistant session.
+        Store or update session.
         """
 
         raise NotImplementedError
@@ -34,7 +34,33 @@ class AssistantSessionStore(ABC):
         session_id: str,
     ) -> AssistantSession | None:
         """
-        Retrieve assistant session.
+        Retrieve session.
+        """
+
+        raise NotImplementedError
+
+
+    @abstractmethod
+    def delete(
+        self,
+        session_id: str,
+    ) -> None:
+        """
+        Remove session.
+        """
+
+        raise NotImplementedError
+
+
+    @abstractmethod
+    def list_sessions(
+        self,
+    ) -> tuple[
+        AssistantSession,
+        ...
+    ]:
+        """
+        Return stored sessions.
         """
 
         raise NotImplementedError

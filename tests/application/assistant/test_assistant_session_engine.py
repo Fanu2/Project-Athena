@@ -23,6 +23,7 @@ def test_engine_accepts_session():
 
     session = create_assistant_session(
         workspace_name="Research",
+        workspace_id="workspace-001",
         conversation_id="conv-001",
     )
 

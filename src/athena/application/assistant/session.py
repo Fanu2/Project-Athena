@@ -22,14 +22,19 @@ class AssistantSession:
 
     session_id: str
 
+    workspace_id: str
+
     workspace_name: str
 
     conversation_id: str
 
     created_at: datetime
 
+    updated_at: datetime
+
 
 def create_assistant_session(
+    workspace_id: str,
     workspace_name: str,
     conversation_id: str,
 ) -> AssistantSession:
@@ -37,11 +42,15 @@ def create_assistant_session(
     Create a new assistant session.
     """
 
+    now = datetime.now(
+        timezone.utc,
+    )
+
     return AssistantSession(
         session_id=str(uuid4()),
+        workspace_id=workspace_id,
         workspace_name=workspace_name,
         conversation_id=conversation_id,
-        created_at=datetime.now(
-            timezone.utc
-        ),
+        created_at=now,
+        updated_at=now,
     )
