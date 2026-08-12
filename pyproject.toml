@@ -18,6 +18,8 @@ authors = [
 dependencies = [
     "PySide6>=6.11",
     "python-docx>=1.2.0",
+    "odfpy>=1.4.1",
+    "openpyxl>=3.1.5",
 ]
 
 
@@ -102,8 +104,12 @@ testpaths = [
 # ============================================================================
 
 [tool.setuptools]
-package-dir = {"" = "src"}
+
+package-dir = { "" = "src" }
+
 
 [tool.setuptools.packages.find]
+
 where = ["src"]
+
 include = ["athena*"]

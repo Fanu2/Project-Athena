@@ -8,5 +8,8 @@ SUPPORTED_DOCUMENT_TYPES = (
     ".md",
     ".epub",
     ".docx",
+    ".html",
+    ".htm",
+    ".odt",
+    ".xlsx",
 )
-

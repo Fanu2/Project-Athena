@@ -9,42 +9,68 @@ from pathlib import Path
 from athena.indexing.exceptions import (
     UnsupportedDocumentError,
 )
+
 from athena.indexing.extractors.base import (
     BaseExtractor,
 )
+
 from athena.indexing.extractors.docling_pdf import (
     DoclingPDFExtractor,
 )
+
 from athena.indexing.extractors.docx import (
     DOCXExtractor,
 )
+
 from athena.indexing.extractors.epub import (
     EPUBExtractor,
 )
+
+from athena.indexing.extractors.html import (
+    HTMLExtractor,
+)
+
+from athena.indexing.extractors.odt import (
+    ODTExtractor,
+)
+
+from athena.indexing.extractors.xlsx import (
+    XLSXExtractor,
+)
+
 from athena.indexing.extractors.markdown import (
     MarkdownExtractor,
 )
+
 from athena.indexing.extractors.pdf import (
     PDFExtractor,
 )
+
 from athena.indexing.extractors.python import (
     PythonExtractor,
 )
+
 from athena.indexing.extractors.text import (
     TextExtractor,
 )
 
 
 class ExtractorFactory:
-    """Factory for document extractors."""
+    """
+    Factory for document extractors.
+    """
 
     # Toggle between the legacy PDF extractor and Docling.
     # Set to True to enable Docling.
     USE_DOCLING = True
 
     @classmethod
-    def _pdf_extractor(cls) -> BaseExtractor:
-        """Return the configured PDF extractor."""
+    def _pdf_extractor(
+        cls,
+    ) -> BaseExtractor:
+        """
+        Return the configured PDF extractor.
+        """
 
         if cls.USE_DOCLING:
             return DoclingPDFExtractor()
@@ -73,19 +99,40 @@ class ExtractorFactory:
 
         extension = document.suffix.lower()
 
-        extractors: tuple[BaseExtractor, ...] = (
+        extractors: tuple[
+            BaseExtractor,
+            ...
+        ] = (
             cls._pdf_extractor(),
 
+            #
             # Specific source/code extractors
-            # must come before generic text handling.
+            # must come before generic handling.
+            #
+
             PythonExtractor(),
 
-            # Generic text extractor fallback
-            TextExtractor(),
+            #
+            # Document format extractors.
+            #
+
+            DOCXExtractor(),
+
+            EPUBExtractor(),
+
+            HTMLExtractor(),
+
+            ODTExtractor(),
+
+            XLSXExtractor(),
 
             MarkdownExtractor(),
-            DOCXExtractor(),
-            EPUBExtractor(),
+
+            #
+            # Generic text fallback.
+            #
+
+            TextExtractor(),
         )
 
         for extractor in extractors:
@@ -95,4 +142,3 @@ class ExtractorFactory:
         raise UnsupportedDocumentError(
             f"Unsupported document type: {extension}"
         )
-
