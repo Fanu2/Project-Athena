@@ -138,36 +138,90 @@ class MainWindow(QMainWindow):
             self._on_close_workspace,
         )
 
+        # A20.12:
+        # Workspace backup and restore actions
+        self.backup_workspace_action = QAction(
+            "Backup Workspace...",
+            self,
+        )
+        self.backup_workspace_action.triggered.connect(
+            self._on_backup_workspace,
+        )
+
+        self.restore_workspace_action = QAction(
+            "Restore Workspace...",
+            self,
+        )
+        self.restore_workspace_action.triggered.connect(
+            self._on_restore_workspace,
+        )
+
         self.exit_action = QAction(
             "Exit",
             self,
         )
-        self.exit_action.triggered.connect(self.close)
+        self.exit_action.triggered.connect(
+            self.close,
+        )
 
     def _create_menu(self) -> None:
         """Create the application menu."""
 
-        file_menu = self.menuBar().addMenu("&File")
+        file_menu = self.menuBar().addMenu(
+            "&File"
+        )
 
-        file_menu.addAction(self.new_workspace_action)
-        file_menu.addAction(self.open_workspace_action)
-        file_menu.addAction(self.close_workspace_action)
+        file_menu.addAction(
+            self.new_workspace_action,
+        )
+
+        file_menu.addAction(
+            self.open_workspace_action,
+        )
+
+        file_menu.addAction(
+            self.close_workspace_action,
+        )
 
         file_menu.addSeparator()
 
-        file_menu.addAction(self.exit_action)
+        # A20.12:
+        # Workspace backup and restore
+        file_menu.addAction(
+            self.backup_workspace_action,
+        )
 
+        file_menu.addAction(
+            self.restore_workspace_action,
+        )
+
+        file_menu.addSeparator()
+
+        file_menu.addAction(
+            self.exit_action,
+        )
+        
     def _create_toolbar(self) -> None:
         """Create the main toolbar."""
 
         self.toolbar = QToolBar("Main")
         self.toolbar.setMovable(False)
 
-        self.toolbar.addAction(self.new_workspace_action)
-        self.toolbar.addAction(self.open_workspace_action)
-        self.toolbar.addAction(self.close_workspace_action)
+        self.toolbar.addAction(
+            self.new_workspace_action,
+        )
 
-        self.addToolBar(self.toolbar)
+        self.toolbar.addAction(
+            self.open_workspace_action,
+        )
+
+        self.toolbar.addAction(
+            self.close_workspace_action,
+        )
+
+        self.addToolBar(
+            self.toolbar,
+        )
 
     def _create_ui(self) -> None:
         """Create the central user interface."""
@@ -238,8 +292,8 @@ class MainWindow(QMainWindow):
         )
         
         self.page_stack.addWidget(
-			self.ai_control_center,
-		)
+            self.ai_control_center,
+        )
 
         self.page_stack.addWidget(
             self.knowledge_workspace,
@@ -295,8 +349,8 @@ class MainWindow(QMainWindow):
         )
         
         self.navigation.ai_control_center_selected.connect(
-			self.show_ai_control_center,
-		)
+            self.show_ai_control_center,
+        )
 
         self.navigation.knowledge_workspace_selected.connect(
             self.show_knowledge_workspace,
@@ -783,6 +837,83 @@ class MainWindow(QMainWindow):
             return
 
         self._clear_current_workspace()
+        
+    def _on_backup_workspace(self) -> None:
+        """
+        Create a backup of the current workspace.
+
+        A20.12:
+        Exposes WorkspaceBackupService through UI.
+        """
+
+        if self.current_workspace is None:
+            QMessageBox.warning(
+                self,
+                "No Workspace",
+                "Open a workspace before creating a backup.",
+            )
+            return
+
+        archive_path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Backup Workspace",
+            f"{self.current_workspace.name}-backup.zip",
+            "ZIP Files (*.zip)",
+        )
+
+        if not archive_path:
+            return
+
+        if not archive_path.endswith(".zip"):
+            archive_path += ".zip"
+
+        result = self.workspace_actions.backup_workspace(
+            self.current_workspace,
+            Path(archive_path),
+        )
+
+        QMessageBox.information(
+            self,
+            "Backup Complete",
+            f"Workspace backup created:\n{result.archive_path}",
+        )
+
+    def _on_restore_workspace(self) -> None:
+        """
+        Restore a workspace from backup.
+
+        A20.12:
+        Exposes WorkspaceRestoreService through UI.
+        """
+
+        archive_path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Restore Workspace",
+            "",
+            "ZIP Files (*.zip)",
+        )
+
+        if not archive_path:
+            return
+
+        destination = QFileDialog.getExistingDirectory(
+            self,
+            "Select Restore Location",
+        )
+
+        if not destination:
+            return
+
+        result = self.workspace_actions.restore_workspace(
+            Path(archive_path),
+            Path(destination),
+        )
+
+        QMessageBox.information(
+            self,
+            "Restore Complete",
+            f"Workspace restored:\n{result.workspace_path}",
+        )
 
     def _open_document_viewer(
         self,
