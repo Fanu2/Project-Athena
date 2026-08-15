@@ -19,6 +19,7 @@ class NavigationWidget(QListWidget):
     ai_selected = Signal()
     ai_control_center_selected = Signal()
     knowledge_workspace_selected = Signal()
+    collections_selected = Signal()
     settings_selected = Signal()
 
     def __init__(self) -> None:
@@ -36,6 +37,7 @@ class NavigationWidget(QListWidget):
         self.addItem("🤖 Ask Athena")
         self.addItem("🧠 AI Control Center")
         self.addItem("🧠 Knowledge Workspace")
+        self.addItem("📁 Collections")
         self.addItem("⚙ Settings")
 
         self.setCurrentRow(0)
@@ -76,4 +78,7 @@ class NavigationWidget(QListWidget):
                 self.knowledge_workspace_selected.emit()
 
             case 8:
+                self.collections_selected.emit()
+
+            case 9:
                 self.settings_selected.emit()

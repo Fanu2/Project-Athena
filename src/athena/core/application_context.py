@@ -433,6 +433,29 @@ class ApplicationContext:
             )
         )
 
+        #
+        # Workspace Collections
+        #
+
+        collection_repository = (
+            SQLiteCollectionRepository(
+                str(knowledge_db)
+            )
+        )
+
+        collection_document_repository = (
+            SQLiteCollectionDocumentRepository(
+                knowledge_db
+            )
+        )
+
+        self.collection_service = (
+            CollectionService(
+                collection_repository,
+                collection_document_repository,
+            )
+        )
+
 
         #
         # Knowledge application services

@@ -6,6 +6,7 @@ from pathlib import Path
 
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
+    QInputDialog,
     QFileDialog,
     QMainWindow,
     QMessageBox,
@@ -43,6 +44,11 @@ from athena.presentation.search.search_workspace import (
 from athena.presentation.pages.bookmark_page import (
     BookmarkPage,
 )
+
+from athena.presentation.widgets.collections_widget import (
+    CollectionsWidget,
+)
+
 from athena.presentation.ai.ask_athena_page import (
     AskAthenaPage,
 )
@@ -96,6 +102,7 @@ class MainWindow(QMainWindow):
         self.page_stack: QStackedWidget
         self.ai_control_center: AIControlCenterPage
         self.knowledge_workspace: KnowledgeWorkspacePage
+        self.collections: CollectionsWidget
         self.ai_control_center = AIControlCenterPage(context,)
         self.status_bar: QStatusBar
         self.toolbar: QToolBar
@@ -245,6 +252,13 @@ class MainWindow(QMainWindow):
             self.context.knowledge_workspace_service,
         )
 
+        self.collections = CollectionsWidget()
+
+        if self.context.collection_service:
+            self.collections.set_collections(
+                self.context.collection_service.list_collections()
+            )
+
         self.settings = AISettingsPage(
             provider=None,
         )     
@@ -328,6 +342,16 @@ class MainWindow(QMainWindow):
             self.show_home,
         )
 
+        self.navigation.collections_selected.connect(
+            lambda: self.page_stack.setCurrentWidget(
+                self.collections,
+            )
+        )
+
+        self.collections.create_collection_requested.connect(
+            self._on_create_collection,
+        )
+
         self.navigation.documents_selected.connect(
             self.show_documents,
         )
@@ -358,6 +382,10 @@ class MainWindow(QMainWindow):
 
         self.page_stack.addWidget(
             self.knowledge_workspace,
+        )
+
+        self.page_stack.addWidget(
+            self.collections,
         )
 
         self.documents.table.document_activated.connect(
@@ -797,6 +825,34 @@ class MainWindow(QMainWindow):
                     "Workspace Error",
                     str(exc),
                 )
+
+    def _on_create_collection(self) -> None:
+        """
+        Create a new workspace collection.
+
+        UI collects the name.
+        CollectionService handles persistence.
+        """
+
+        if self.context.collection_service is None:
+            return
+
+        name, ok = QInputDialog.getText(
+            self,
+            "New Collection",
+            "Collection name:",
+        )
+
+        if not ok or not name.strip():
+            return
+
+        self.context.collection_service.create_collection(
+            name.strip(),
+        )
+
+        self.collections.set_collections(
+            self.context.collection_service.list_collections(),
+        )
 
     def _on_open_workspace(self) -> None:
         """Handle File → Open Workspace."""
