@@ -27,6 +27,14 @@ from athena.infrastructure.database.models.knowledge_object_model import (
     KnowledgeObjectModel,  # noqa: F401
 )
 
+from athena.infrastructure.database.models.collection_model import (
+    CollectionModel,  # noqa: F401
+)
+
+from athena.infrastructure.database.models.collection_document_model import (
+    CollectionDocumentModel,  # noqa: F401
+)
+
 
 from athena.infrastructure.database.base import Base
 from athena.infrastructure.database.engine import engine
@@ -42,6 +50,8 @@ def initialize_database() -> None:
         - DocumentChecksum
         - DocumentVersion
         - KnowledgeObject
+        - Collection
+        - CollectionDocument
     """
 
     Base.metadata.create_all(

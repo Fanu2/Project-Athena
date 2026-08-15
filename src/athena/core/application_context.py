@@ -48,7 +48,10 @@ from athena.ai.llm.runtime_router import (
     RuntimeRouter,
 )
 
-from athena.ai.providers.provider import Provider
+from athena.ai.providers.provider import (
+    Provider,
+)
+
 from athena.ai.providers.provider_registry import (
     ProviderRegistry,
 )
@@ -71,6 +74,10 @@ from athena.ai.retrieval.service import (
 
 from athena.application.ai.retrieval_service import (
     RetrievalService,
+)
+
+from athena.application.assistant.engine import (
+    AssistantEngine,
 )
 
 from athena.application.conversation.conversation_query_service import (
@@ -109,6 +116,54 @@ from athena.indexing.services.indexed_document_service import (
     IndexedDocumentService,
 )
 
+from athena.knowledge.acquisition.providers.docling_provider import (
+    DoclingProvider,
+)
+
+from athena.knowledge.acquisition.runtime.knowledge_runtime_factory import (
+    KnowledgeRuntimeFactory,
+)
+
+from athena.knowledge.acquisition.services.provider_manager import (
+    ProviderManager,
+)
+
+from athena.knowledge.repositories.sqlite_citation_repository import (
+    SQLiteCitationRepository,
+)
+
+from athena.knowledge.repositories.sqlite_evidence_repository import (
+    SQLiteEvidenceRepository,
+)
+
+from athena.knowledge.repositories.sqlite_knowledge_repository import (
+    SQLiteKnowledgeRepository,
+)
+
+from athena.knowledge.services.citation_build_service import (
+    CitationBuildService,
+)
+
+from athena.knowledge.services.citation_service import (
+    CitationService,
+)
+
+from athena.knowledge.services.evidence_build_service import (
+    EvidenceBuildService,
+)
+
+from athena.knowledge.services.evidence_service import (
+    EvidenceService,
+)
+
+from athena.knowledge.services.knowledge_compilation_service import (
+    KnowledgeCompilationService,
+)
+
+from athena.knowledge.services.knowledge_service import (
+    KnowledgeService,
+)
+
 from athena.notes.service import (
     NoteService,
 )
@@ -125,6 +180,10 @@ from athena.services.athena_query_service import (
     AthenaQueryService,
 )
 
+from athena.services.knowledge_workspace_service import (
+    KnowledgeWorkspaceService,
+)
+
 from athena.services.workspace_document_service import (
     WorkspaceDocumentService,
 )
@@ -138,6 +197,22 @@ from athena.settings import (
     LLMSettings,
 )
 
+from athena.workspace.collections.service import (
+    CollectionService,
+)
+
+from athena.workspace.collections.sqlite_document_repository import (
+    SQLiteCollectionDocumentRepository,
+)
+
+from athena.workspace.collections.sqlite_repository import (
+    SQLiteCollectionRepository,
+)
+
+from athena.workspace.intelligence.service import (
+    WorkspaceIntelligenceService,
+)
+
 from athena.workspace.models import (
     Workspace,
 )
@@ -146,66 +221,8 @@ from athena.workspace.service import (
     WorkspaceService,
 )
 
-from athena.knowledge.services.knowledge_compilation_service import (
-    KnowledgeCompilationService,
-)
-
-from athena.knowledge.acquisition.runtime.knowledge_runtime_factory import (
-    KnowledgeRuntimeFactory,
-)
-
-from athena.knowledge.repositories.sqlite_knowledge_repository import (
-    SQLiteKnowledgeRepository,
-)
-
-from athena.knowledge.repositories.sqlite_evidence_repository import (
-    SQLiteEvidenceRepository,
-)
-
-from athena.knowledge.repositories.sqlite_citation_repository import (
-    SQLiteCitationRepository,
-)
-
-from athena.knowledge.services.evidence_build_service import (
-    EvidenceBuildService,
-)
-
-from athena.knowledge.services.citation_build_service import (
-    CitationBuildService,
-)
-
-from athena.knowledge.acquisition.services.provider_manager import (
-    ProviderManager,
-)
-
-from athena.knowledge.acquisition.providers.docling_provider import (
-    DoclingProvider,
-)
-
-from athena.knowledge.services.knowledge_service import (
-    KnowledgeService,
-)
-
-from athena.knowledge.services.evidence_service import (
-    EvidenceService,
-)
-
-from athena.knowledge.services.citation_service import (
-    CitationService,
-)
-
-from athena.services.knowledge_workspace_service import (
-    KnowledgeWorkspaceService,
-)
-
-from athena.ai.llm.model_manager import ModelManager
-
-from athena.workspace.intelligence.service import (
-    WorkspaceIntelligenceService,
-)
-
-from athena.application.assistant.engine import (
-    AssistantEngine,
+from athena.ai.llm.model_manager import (
+    ModelManager,
 )
 
 
@@ -248,7 +265,7 @@ class ApplicationContext:
             DocumentViewerService()
         )
 
-        #
+#
         # Search / organization services
         #
 
@@ -257,6 +274,8 @@ class ApplicationContext:
         self.bookmark_service: BookmarkService | None = None
 
         self.note_service: NoteService | None = None
+
+        self.collection_service: CollectionService | None = None
 
         #
         # Knowledge services
@@ -727,6 +746,25 @@ class ApplicationContext:
 
         self.note_service = NoteService(
             athena_directory / "notes.json",
+        )
+
+        #
+        # Collections
+        #
+
+        collection_repository = SQLiteCollectionRepository(
+            athena_directory / "index.db",
+        )
+
+        collection_document_repository = (
+            SQLiteCollectionDocumentRepository(
+                athena_directory / "index.db",
+            )
+        )
+
+        self.collection_service = CollectionService(
+            repository=collection_repository,
+            document_repository=collection_document_repository,
         )
 
     

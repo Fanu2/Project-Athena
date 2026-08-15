@@ -546,6 +546,20 @@ class MainWindow(QMainWindow):
 
 
         #
+        # Collections
+        #
+
+        collection_service = (
+            self.context.collection_service
+        )
+
+        if collection_service is not None:
+
+            self.documents.set_collection_service(
+                collection_service,
+            )
+
+        #
         # Indexed Documents
         #
 

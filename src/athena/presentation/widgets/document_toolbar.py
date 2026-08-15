@@ -22,15 +22,33 @@ class DocumentToolbar(QWidget):
 
         super().__init__(parent)
 
-        self.import_button = QPushButton("Import File")
+        self.import_button = QPushButton(
+            "Import File",
+        )
 
-        self.import_folder_button = QPushButton("Import Folder")
+        self.import_folder_button = QPushButton(
+            "Import Folder",
+        )
 
-        self.delete_button = QPushButton("Delete")
+        self.import_calibre_button = QPushButton(
+            "Import from Calibre",
+        )
 
-        self.refresh_button = QPushButton("Refresh")
+        self.delete_button = QPushButton(
+            "Delete",
+        )
 
-        self.open_folder_button = QPushButton("Open Folder")
+        self.refresh_button = QPushButton(
+            "Refresh",
+        )
+
+        self.add_collection_button = QPushButton(
+            "Add to Collection",
+        )
+
+        self.open_folder_button = QPushButton(
+            "Open Folder",
+        )
 
         self._setup_ui()
 
@@ -48,11 +66,19 @@ class DocumentToolbar(QWidget):
         )
 
         layout.addWidget(
+            self.import_calibre_button,
+        )
+
+        layout.addWidget(
             self.delete_button,
         )
 
         layout.addWidget(
             self.refresh_button,
+        )
+
+        layout.addWidget(
+            self.add_collection_button,
         )
 
         layout.addStretch()
@@ -79,6 +105,10 @@ class DocumentToolbar(QWidget):
             enabled,
         )
 
+        self.import_calibre_button.setEnabled(
+            enabled,
+        )
+
         self.delete_button.setEnabled(
             enabled,
         )
@@ -87,7 +117,10 @@ class DocumentToolbar(QWidget):
             enabled,
         )
 
-        self.open_folder_button.setEnabled(
+        self.add_collection_button.setEnabled(
             enabled,
         )
 
+        self.open_folder_button.setEnabled(
+            enabled,
+        )
