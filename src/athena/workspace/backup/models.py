@@ -19,3 +19,14 @@ class WorkspaceBackupResult:
     workspace_name: str
     created: datetime
     size_bytes: int
+
+
+@dataclass(frozen=True)
+class WorkspaceRestoreResult:
+    """
+    Result of a workspace restore operation.
+    """
+
+    workspace_path: Path
+    workspace_name: str
+    restored_files: int
