@@ -36,11 +36,18 @@ from athena.settings import (
     LLMSettings,
 )
 
+from athena.plugins.registry import (
+    PluginRegistry,
+)
+
 
 class LLMRuntimeBootstrap:
     """Initialize LLM runtime dependencies."""
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        plugin_registry: PluginRegistry | None = None,
+    ) -> None:
         """Initialize runtime."""
 
         #
@@ -66,6 +73,16 @@ class LLMRuntimeBootstrap:
         )
 
         self._initialized = False
+
+        #
+        # Optional plugin registry
+        #
+        # Plugin providers will be connected later.
+        #
+
+        self._plugin_registry = (
+            plugin_registry
+        )
 
     def initialize(
         self,
@@ -103,6 +120,8 @@ class LLMRuntimeBootstrap:
             )
         )
 
+        self._register_plugin_providers()
+
         self._discover_models_safely()
 
         self._initialized = True
@@ -127,6 +146,34 @@ class LLMRuntimeBootstrap:
                 provider,
             )
         )
+
+    def _register_plugin_providers(
+        self,
+    ) -> None:
+        """
+        Register providers supplied by plugins.
+
+        Uses the existing provider registration path.
+        """
+
+        if self._plugin_registry is None:
+            return
+
+        for plugin in self._plugin_registry.plugins():
+
+            if (
+                "ai_provider"
+                not in plugin.info.capabilities
+            ):
+                continue
+
+            provider = (
+                plugin.create_provider()
+            )
+
+            self._register_provider(
+                provider,
+            )
 
     def _discover_models_safely(
         self,

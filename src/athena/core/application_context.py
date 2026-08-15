@@ -225,6 +225,14 @@ from athena.ai.llm.model_manager import (
     ModelManager,
 )
 
+from athena.plugins.registry import (
+    PluginRegistry,
+)
+
+from athena.plugins.builtin.registry import (
+    register_builtin_plugins,
+)
+
 
 class ApplicationContext:
     """Owns application-wide services."""
@@ -234,6 +242,20 @@ class ApplicationContext:
         """Initialize application services."""
 
         self.workspace_actions = WorkspaceActions()
+
+        #
+        # Plugin system (A21.2)
+        #
+        # Stores registered Athena extensions.
+        # Discovery/loading comes later.
+        #
+
+        self.plugin_registry = PluginRegistry()
+
+        register_builtin_plugins(
+            self.plugin_registry,
+        )
+
 
         #
         # Workspace services
@@ -404,11 +426,15 @@ class ApplicationContext:
         # Knowledge Runtime
         #
 
-        provider_manager = ProviderManager()
+        provider_manager = ProviderManager(
+            plugin_registry=self.plugin_registry,
+        )
 
         provider_manager.register(
             DoclingProvider()
         )
+
+        provider_manager.register_plugin_providers()
 
 
         #
