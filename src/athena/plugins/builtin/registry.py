@@ -16,6 +16,10 @@ from athena.plugins.examples.demo_document_provider_plugin import (
     DemoDocumentProviderPlugin,
 )
 
+from athena.plugins.builtin.ollama_plugin import (
+    OllamaAIProviderPlugin,
+)
+
 from athena.plugins.registry import (
     PluginRegistry,
 )
@@ -38,4 +42,8 @@ def register_builtin_plugins(
 
     registry.register(
         DemoDocumentProviderPlugin(),
+    )
+
+    registry.register(
+        OllamaAIProviderPlugin(),
     )
