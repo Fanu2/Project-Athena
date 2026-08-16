@@ -80,6 +80,10 @@ from athena.application.assistant.engine import (
     AssistantEngine,
 )
 
+from athena.application.assistant.workspace_awareness import (
+    WorkspaceAwareness,
+)
+
 from athena.application.conversation.conversation_query_service import (
     ConversationQueryService,
 )
@@ -779,6 +783,10 @@ class ApplicationContext:
                 evidence_service=evidence_service,
                 citation_service=citation_service,
             )
+        )
+
+        self.workspace_awareness = (
+            WorkspaceAwareness()
         )
 
         self.assistant_engine = AssistantEngine(
