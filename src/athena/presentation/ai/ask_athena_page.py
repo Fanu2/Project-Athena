@@ -321,7 +321,7 @@ class AskAthenaPage(QWidget):
         )
 
         #
-        # Main Intelligence Workspace
+        # Main Conversation + Intelligence Area
         #
 
         main_splitter = QSplitter(
@@ -388,11 +388,18 @@ class AskAthenaPage(QWidget):
 
         layout.addWidget(
             main_splitter,
-            1,
+        )
+
+        main_splitter.setMinimumHeight(
+            300,
+        )
+
+        main_splitter.setMaximumHeight(
+            450,
         )
 
         #
-        # Question
+        # Question Input (always visible)
         #
 
         layout.addWidget(
@@ -442,10 +449,6 @@ class AskAthenaPage(QWidget):
         layout.addWidget(
             self.passage,
         )
-
-        #
-        # Status
-        #
 
         layout.addWidget(
             self.status,
