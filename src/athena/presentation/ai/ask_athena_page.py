@@ -16,6 +16,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QPlainTextEdit,
+    QSplitter,
     QPushButton,
     QTextEdit,
     QTreeWidget,
@@ -296,15 +297,98 @@ class AskAthenaPage(QWidget):
         layout = QVBoxLayout(self)
 
         #
-        # Workspace Context (A20.7)
+        # Workspace Context
         #
 
-        layout.addWidget(
+        context_layout = QHBoxLayout()
+
+        context_layout.addWidget(
             self.workspace_label,
         )
 
-        layout.addWidget(
+        context_layout.addWidget(
             self.workspace_stats_label,
+        )
+
+        context_layout.addStretch()
+
+        context_layout.addWidget(
+            self.model_label,
+        )
+
+        layout.addLayout(
+            context_layout,
+        )
+
+        #
+        # Main Intelligence Workspace
+        #
+
+        main_splitter = QSplitter(
+            Qt.Orientation.Horizontal,
+        )
+
+        conversation_panel = QWidget()
+
+        conversation_layout = QVBoxLayout(
+            conversation_panel,
+        )
+
+        conversation_layout.addWidget(
+            QLabel("Conversation"),
+        )
+
+        conversation_layout.addWidget(
+            self.conversation,
+        )
+
+        intelligence_panel = QWidget()
+
+        intelligence_layout = QVBoxLayout(
+            intelligence_panel,
+        )
+
+        intelligence_layout.addWidget(
+            QLabel("Athena Intelligence"),
+        )
+
+        intelligence_layout.addWidget(
+            self.citation_widget,
+        )
+
+        intelligence_layout.addWidget(
+            self.evidence_widget,
+        )
+
+        intelligence_layout.addWidget(
+            self.retrieval_inspector,
+        )
+
+        intelligence_layout.addWidget(
+            self.assistant_plan,
+        )
+
+        main_splitter.addWidget(
+            conversation_panel,
+        )
+
+        main_splitter.addWidget(
+            intelligence_panel,
+        )
+
+        main_splitter.setStretchFactor(
+            0,
+            3,
+        )
+
+        main_splitter.setStretchFactor(
+            1,
+            2,
+        )
+
+        layout.addWidget(
+            main_splitter,
+            1,
         )
 
         #
@@ -318,10 +402,6 @@ class AskAthenaPage(QWidget):
         layout.addWidget(
             self.question,
         )
-
-        #
-        # Buttons
-        #
 
         button_layout = QHBoxLayout()
 
@@ -344,31 +424,6 @@ class AskAthenaPage(QWidget):
         )
 
         #
-        # Status
-        #
-
-        layout.addWidget(
-            self.status,
-        )
-
-        layout.addWidget(
-            self.model_label,
-        )
-
-        #
-        # Conversation
-        #
-
-        layout.addWidget(
-            QLabel("Conversation"),
-        )
-
-        layout.addWidget(
-            self.conversation,
-            2,
-        )
-
-        #
         # Retrieved Evidence
         #
 
@@ -381,43 +436,19 @@ class AskAthenaPage(QWidget):
         )
 
         layout.addWidget(
-            self.assistant_plan,
-        )
-
-        #
-        # Citation Intelligence
-        #
-
-        layout.addWidget(
-            QLabel("Citation Intelligence"),
-        )
-
-        layout.addWidget(
-            self.citation_widget,
-        )
-
-        #
-        # Evidence Intelligence
-        #
-
-        layout.addWidget(
-            self.evidence_widget,
-        )
-
-        layout.addWidget(
-            self.retrieval_inspector,
-        )
-
-        #
-        # Retrieved Passage
-        #
-
-        layout.addWidget(
             QLabel("Retrieved Passage"),
         )
 
         layout.addWidget(
             self.passage,
+        )
+
+        #
+        # Status
+        #
+
+        layout.addWidget(
+            self.status,
         )
 
     def showEvent(
