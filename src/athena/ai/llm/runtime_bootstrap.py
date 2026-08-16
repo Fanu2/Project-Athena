@@ -171,6 +171,11 @@ class LLMRuntimeBootstrap:
                 plugin.create_provider()
             )
 
+            if self._providers.exists(
+                provider.provider_name,
+            ):
+                continue
+
             self._register_provider(
                 provider,
             )

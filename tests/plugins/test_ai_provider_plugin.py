@@ -15,6 +15,6 @@ def test_ai_provider_plugin_metadata():
         "Demo AI Provider"
     )
 
-    assert "ai_provider" in (
+    assert "example_ai_provider" in (
         plugin.info.capabilities
     )

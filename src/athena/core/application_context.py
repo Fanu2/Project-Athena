@@ -675,7 +675,9 @@ class ApplicationContext:
         #
 
         self.llm_runtime_bootstrap = (
-            LLMRuntimeBootstrap()
+            LLMRuntimeBootstrap(
+                plugin_registry=self.plugin_registry,
+            )
         )
 
         self.model_manager = (
