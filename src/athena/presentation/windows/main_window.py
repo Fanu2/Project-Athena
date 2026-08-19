@@ -44,6 +44,12 @@ from athena.presentation.search.search_workspace import (
 from athena.presentation.pages.bookmark_page import (
     BookmarkPage,
 )
+from athena.presentation.workspace.workspace_page import (
+    WorkspacePage,
+)
+from athena.presentation.workspace.athena_workspace_provider import (
+    AthenaWorkspaceProvider,
+)
 
 from athena.presentation.widgets.collections_widget import (
     CollectionsWidget,
@@ -102,6 +108,7 @@ class MainWindow(QMainWindow):
         self.page_stack: QStackedWidget
         self.ai_control_center: AIControlCenterPage
         self.knowledge_workspace: KnowledgeWorkspacePage
+        self.workspace_page: WorkspacePage
         self.collections: CollectionsWidget
         self.ai_control_center = AIControlCenterPage(context,)
         self.status_bar: QStatusBar
@@ -252,6 +259,8 @@ class MainWindow(QMainWindow):
             self.context.knowledge_workspace_service,
         )
 
+        self.workspace_page = WorkspacePage()
+
         self.collections = CollectionsWidget()
 
         if self.context.collection_service:
@@ -380,8 +389,18 @@ class MainWindow(QMainWindow):
             self.show_knowledge_workspace,
         )
 
+        self.navigation.workspace_selected.connect(
+            lambda: self.page_stack.setCurrentWidget(
+                self.workspace_page,
+            ),
+        )
+
         self.page_stack.addWidget(
             self.knowledge_workspace,
+        )
+
+        self.page_stack.addWidget(
+            self.workspace_page,
         )
 
         self.page_stack.addWidget(
@@ -510,6 +529,11 @@ class MainWindow(QMainWindow):
 
         self.context.open_workspace(
             workspace.path,
+        )
+
+        self.workspace_page.set_workspace_provider(
+            AthenaWorkspaceProvider(self.context),
+            str(workspace.workspace_id),
         )
 
         if self.context.knowledge_workspace_service is not None:

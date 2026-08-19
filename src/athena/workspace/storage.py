@@ -104,12 +104,14 @@ class WorkspaceStorage:
         ) as file:
             data = json.load(file)
 
-        return Workspace(
-            workspace_id=(
-                UUID(data["workspace_id"])
-                if data.get("workspace_id")
-                else uuid4()
-            ),
+        workspace_id = (
+            UUID(data["workspace_id"])
+            if data.get("workspace_id")
+            else uuid4()
+        )
+
+        workspace = Workspace(
+            workspace_id=workspace_id,
             name=data["name"],
             path=path,
             version=data["version"],
@@ -128,6 +130,13 @@ class WorkspaceStorage:
                 {},
             ),
         )
+
+        if not data.get("workspace_id"):
+            WorkspaceStorage.write_workspace(
+                workspace,
+            )
+
+        return workspace
 
     @staticmethod
     def is_workspace(

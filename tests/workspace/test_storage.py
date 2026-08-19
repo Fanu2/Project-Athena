@@ -115,6 +115,12 @@ def test_read_legacy_workspace_without_intelligence_fields(
 
     assert loaded.workspace_id is not None
 
+    reloaded = WorkspaceStorage.read_workspace(
+        workspace_path,
+    )
+
+    assert reloaded.workspace_id == loaded.workspace_id
+
     assert loaded.description == ""
 
     assert loaded.metadata == {}
