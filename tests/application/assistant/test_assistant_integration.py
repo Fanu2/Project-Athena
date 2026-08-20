@@ -34,3 +34,8 @@ def test_application_context_creates_assistant_engine(
         context.assistant_engine
         is not None
     )
+
+    assert (
+        context.assistant_executor
+        is not None
+    )

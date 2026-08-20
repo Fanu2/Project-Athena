@@ -76,10 +76,17 @@ from athena.application.ai.retrieval_service import (
     RetrievalService,
 )
 
+from athena.application.assistant.controlled_executor import (
+    ControlledAssistantExecutor,
+)
+
+from athena.application.assistant.retrieval_adapter import (
+    AssistantRetrievalAdapter,
+)
+
 from athena.application.assistant.engine import (
     AssistantEngine,
 )
-
 from athena.application.assistant.workspace_awareness import (
     WorkspaceAwareness,
 )
@@ -793,6 +800,23 @@ class ApplicationContext:
 
         self.assistant_engine = AssistantEngine(
             intent_service=intent_service,
+        )
+
+        self.assistant_retrieval_adapter = (
+            AssistantRetrievalAdapter(
+                self.retrieval_service,
+            )
+        )
+
+        self.assistant_executor = (
+            ControlledAssistantExecutor(
+                query_service=(
+                    self.athena_query_service
+                ),
+                retrieval_adapter=(
+                    self.assistant_retrieval_adapter
+                ),
+            )
         )
 
         #
