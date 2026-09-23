@@ -1,0 +1,10 @@
+# Repository metadata
+.git/
+.github/
+.gitignore
+.gitattributes
+
+# Cloudflare configuration
+wrangler.toml
+wrangler.json
+wrangler.jsonc
